@@ -1,0 +1,12 @@
+version: 2
+
+exposures:
+  
+  - name: bink
+    type: analysis
+    maturity: low
+    # url: https://bi.tool/dashboards/1
+    description: >
+      A reporting warehouse
+    
+
