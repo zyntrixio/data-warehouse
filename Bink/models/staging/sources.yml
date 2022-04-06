@@ -1,0 +1,21 @@
+version: 2
+
+sources:
+  - name: Bink
+    description: Bink
+    database: RAW
+    schema: HERMES
+    loaded_at_field: _SDC_RECEIVED_AT
+
+    tables:
+      - name: User
+        description: Table contains all the information in relation Accounts.
+        freshness:
+          warn_after: { count: 2, period: hour }
+          # error_after: {count: 2, period: hour}
+        # columns:
+        #   - name: __SDC_PRIMARY_KEY
+        #     description: Primary key of ACTIVITY_BOUNCEBACK table
+        #     tests:
+        #       - unique
+        #       - not_null
