@@ -8,14 +8,44 @@ sources:
     loaded_at_field: _SDC_RECEIVED_AT
 
     tables:
-      - name: User
-        description: Table contains all the information in relation Accounts.
+      - name: USER
+        identifier: USER
+        description: Table contains all current users.
         freshness:
           warn_after: { count: 2, period: hour }
           # error_after: {count: 2, period: hour}
-        # columns:
-        #   - name: __SDC_PRIMARY_KEY
-        #     description: Primary key of ACTIVITY_BOUNCEBACK table
-        #     tests:
-        #       - unique
-        #       - not_null
+        columns:
+          - name: 'ID'
+            description: Primary key of user table
+            tests:
+              - unique
+              - not_null
+          - name: 'UID'
+            description: userID of user table
+            tests:
+              - unique
+              - not_null
+          - name: 'EMAIL'
+            description: email of user
+            tests:
+              # - unique
+              # - not_null
+      - name: HISTORY_USER
+        identifier: HISTORY_HISTORICALCUSTOMUSER
+        description: Table contains all updates to users.
+        freshness:
+          warn_after: { count: 2, period: hour }
+          # error_after: {count: 2, period: hour}
+        columns:
+          - name: 'ID'
+            description: Primary key of user table
+            tests:
+              - unique
+              - not_null
+          - name: 'INSTANCE_ID'
+            description: Equivalent to user_id
+            tests:
+              - unique
+              - not_null
+
+      

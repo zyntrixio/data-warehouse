@@ -37,5 +37,5 @@ models:
       +schema: "BINK_STAGING"
       materialized: view
     marts:
-      +schema: "Bink"
+      +schema: "BINK"
       materialized: table

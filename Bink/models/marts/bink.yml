@@ -5,7 +5,7 @@ models:
       description: "Informations about the individual Accounts within the Crm"
       schema: 'Bink'
       columns:
-        - name: assetid
+        - name: 'ID'
           description: Primary Key of the table
           quote: true
           tests:

@@ -10,5 +10,5 @@ deps: clean
 run: compile deps
 	dbt run
 
-test:
+test: compile
 	dbt test
