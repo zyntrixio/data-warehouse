@@ -42,10 +42,5 @@ sources:
             tests:
               - unique
               - not_null
-          - name: 'INSTANCE_ID'
-            description: Equivalent to user_id
-            tests:
-              - unique
-              - not_null
 
       

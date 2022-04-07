@@ -1,5 +1,10 @@
-with final as (
-    select * from {{ ref('stg_user') }}
+WITH final AS (
+    SELECT
+        *
+    FROM
+        {{ ref('stg_user') }}
 )
-
-select * from final
+SELECT
+    *
+FROM
+    final
