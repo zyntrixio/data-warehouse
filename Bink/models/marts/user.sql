@@ -6,7 +6,7 @@ hist_users as (
 
 ,users as (
     SELECT *
-    FROM {{ ref('stg_user')}}
+    FROM {{ ref('transformed_user')}}
 )
 
 ,joined_user_records as (
@@ -26,7 +26,6 @@ hist_users as (
 	FROM
 		users
 )
-
 
 SELECT
     *

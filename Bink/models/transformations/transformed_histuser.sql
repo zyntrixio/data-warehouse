@@ -1,4 +1,5 @@
-WITH deleted_ids as (
+WITH
+deleted_ids as (
 	SELECT
 		INSTANCE_ID as UID,
 		MAX(CREATED) as CREATED,
