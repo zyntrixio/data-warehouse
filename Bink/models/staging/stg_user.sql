@@ -1,3 +1,16 @@
+/*
+Created by:         Sam Pibworth
+Created date:       2022-04-08
+Last modified by:   
+Last modified date: 
+
+Description:
+    Stages the user table, containing data about current users
+
+Parameters:
+    source_object      - HERMES.USER
+*/
+
 WITH
 current_users as (
 	SELECT

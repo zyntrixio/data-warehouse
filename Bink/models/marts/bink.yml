@@ -2,7 +2,7 @@ version: 2
 
 models:
     - name: user
-      description: "Informations about the individual Accounts within the Crm"
+      description: "User table containin gcurrent and historical users"
       schema: 'Bink'
       columns:
         - name: 'ID'

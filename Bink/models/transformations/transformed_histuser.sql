@@ -1,3 +1,17 @@
+/*
+Created by:         Sam Pibworth
+Created date:       2022-04-08
+Last modified by:   
+Last modified date: 
+
+Description:
+    Selects only the records from the history_user table whose latest status is deleted. This is then joined back onto itself to
+	select the last version of the deleted user
+
+Parameters:
+    ref_object      - stg_histuser
+*/
+
 WITH
 deleted_ids as (
 	SELECT
