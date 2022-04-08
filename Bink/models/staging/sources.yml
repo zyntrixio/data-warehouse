@@ -13,7 +13,12 @@ sources:
         description: Table contains all current users.
         freshness:
           warn_after: { count: 2, period: hour }
-          # error_after: {count: 2, period: hour}
+        meta:
+          elementary:
+            timestamp_column: '_AIRBYTE_EMITTED_AT'
+        tests:
+            - elementary.table_anomalies
+            - elementary.schema_changes
         columns:
           - name: 'ID'
             description: Primary key of user table
@@ -25,17 +30,17 @@ sources:
             tests:
               - unique
               - not_null
-          - name: 'EMAIL'
-            description: email of user
-            tests:
-              # - unique
-              # - not_null
       - name: HISTORY_USER
         identifier: HISTORY_HISTORICALCUSTOMUSER
         description: Table contains all updates to users.
         freshness:
           warn_after: { count: 2, period: hour }
-          # error_after: {count: 2, period: hour}
+        meta:
+          elementary:
+            timestamp_column: '_AIRBYTE_EMITTED_AT'
+        tests:
+            - elementary.table_anomalies
+            - elementary.schema_changes
         columns:
           - name: 'ID'
             description: Primary key of user table

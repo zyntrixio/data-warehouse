@@ -4,15 +4,15 @@ clean:
 compile: clean
 	dbt compile
 
-deps: clean
+deps:
 	dbt deps
 
-run: compile deps
+run: deps
 	dbt run
 
-test: compile
+test: compile deps
 	dbt test
 
-source_test: compile
+source_test: compile deps
 	dbt test --select tag:source
 	
