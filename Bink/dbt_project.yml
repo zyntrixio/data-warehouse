@@ -36,6 +36,9 @@ models:
     staging:
       +schema: "BINK_STAGING"
       materialized: view
+    transformations:
+      +schema: "BINK_TRANSFORMED"
+      materialized: view
     marts:
       +schema: "BINK"
       materialized: table
