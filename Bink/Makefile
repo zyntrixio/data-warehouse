@@ -12,3 +12,7 @@ run: compile deps
 
 test: compile
 	dbt test
+
+source_test: compile
+	dbt test --select tag:source
+	
