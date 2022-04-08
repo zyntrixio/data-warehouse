@@ -1,0 +1,13 @@
+version: 2
+
+models:
+    - name: user
+      description: "User table containin gcurrent and historical users"
+      schema: 'Bink'
+      columns:
+        - name: 'ID'
+          description: Primary Key of the table
+          quote: true
+          tests:
+            - unique
+            - not_null
