@@ -16,3 +16,6 @@ test: compile deps
 source_test: compile deps
 	dbt test --select tag:source
 	
+docs:
+	dbt docs generate
+	dbt docs serve

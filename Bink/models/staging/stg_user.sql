@@ -16,7 +16,7 @@ current_users as (
 	SELECT
 		*
 	FROM
-		{{ source('Bink', 'USER') }}
+		{{ source('Hermes', 'USER') }}
 )
 
 ,current_users_renamed as (
