@@ -7,7 +7,7 @@ compile: clean
 deps:
 	dbt deps
 
-run: deps
+run: compile deps
 	dbt run
 
 test: compile deps

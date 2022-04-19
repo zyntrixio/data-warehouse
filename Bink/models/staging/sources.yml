@@ -49,7 +49,7 @@ sources:
               - not_null
 
   - name: Harmonia
-    description: Harmonia schema
+    description: Harmonia schema, containing transaction data
     database: RAW
     schema: HARMONIA
     tags: ['source']
@@ -79,6 +79,28 @@ sources:
               - not_null
       - name: scheme_transaction
         identifier: SCHEME_TRANSACTION
+        description: Table contains transactions
+        freshness:
+          warn_after: { count: 2, period: hour }
+        meta:
+          elementary:
+            timestamp_column: '_AIRBYTE_EMITTED_AT'
+        tests:
+            - elementary.table_anomalies
+            - elementary.schema_changes
+        columns:
+          - name: 'ID'
+            description: Primary key of user table
+            tests:
+              - unique
+              - not_null
+          - name: 'TRANSACTION_ID'
+            description: Business Primary key of user table
+            tests:
+              - unique
+              - not_null
+      - name: export_transaction
+        identifier: EXPORT_TRANSACTION
         description: Table contains transactions
         freshness:
           warn_after: { count: 2, period: hour }

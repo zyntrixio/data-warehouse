@@ -8,35 +8,35 @@ Description:
     Stages the user table, containing data about current users
 
 Parameters:
-    source_object      - Harmonia.scheme_transaction
+    source_object      - Harmonia.export_transaction
 */
 
 WITH
 transactions as (
 	SELECT	*
-	FROM {{ source('Harmonia', 'scheme_transaction') }}
+	FROM {{ source('Harmonia', 'export_transaction') }}
 )
 
 ,select_transactions as (
 	SELECT
 		ID
+		,MID
 		,STATUS
-		,HAS_TIME
-		,AUTH_CODE
-		,FIRST_SIX
-		,LAST_FOUR
+		,USER_ID
+		,BRAND_ID
+		,STORE_ID
+		,FEED_TYPE
 		,CREATED_AT
+		,LOYALTY_ID
 		,UPDATED_AT
-		,MATCH_GROUP
-		,EXTRA_FIELDS
+		,CREDENTIALS
 		,SPEND_AMOUNT
 		,PROVIDER_SLUG
 		,SPEND_CURRENCY
 		,TRANSACTION_ID
-		,SPEND_MULTIPLIER
 		,TRANSACTION_DATE
-		,PAYMENT_PROVIDER_SLUG
-		,MERCHANT_IDENTIFIER_IDS
+		,SCHEME_ACCOUNT_ID
+		,PAYMENT_CARD_ACCOUNT_ID
 	FROM
 		transactions		
 )

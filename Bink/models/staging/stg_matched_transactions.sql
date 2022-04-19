@@ -17,7 +17,7 @@ transactions as (
 	FROM {{ source('Harmonia', 'matched_transaction') }}
 )
 
-select_transactions as (
+,select_transactions as (
 	SELECT
 		ID
 		,STATUS
