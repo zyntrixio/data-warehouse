@@ -5,7 +5,7 @@ Last modified by:
 Last modified date: 
 
 Description:
-    Transaction table from the transformation layer
+    Transaction table from the transformation layer, with nulls removed
 
 Parameters:
     ref_object      - transformed_transactions
@@ -21,7 +21,7 @@ transformed_transactions as (
 	SELECT
 		TRANSACTION_ID
 		,STATUS
-		,USER_ID
+		,COALESCE(USER_ID, 000000) AS USER_ID
 		,TRANSACTION_DATE
 		,HAS_TIME	
 		,AUTH_CODE	
@@ -36,12 +36,12 @@ transformed_transactions as (
 		,PROVIDER_SLUG
 		,SETTLEMENT_KEY
 		,SPEND_CURRENCY
-		,BRAND_ID
-		,STORE_ID
+		,COALESCE(BRAND_ID, 'NOT_APPLICABLE') AS BRAND_ID
+		,COALESCE(STORE_ID, 'NOT_APPLICABLE') AS STORE_ID
 		,FEED_TYPE
-		,SCHEME_TRANSACTION_ID
-		,MERCHANT_IDENTIFIER_ID
-		,PAYMENT_TRANSACTION_ID
+		,COALESCE(SCHEME_TRANSACTION_ID, 000000) AS SCHEME_TRANSACTION_ID
+		,COALESCE(MERCHANT_IDENTIFIER_ID, 000000) AS MERCHANT_IDENTIFIER_ID
+		,COALESCE(PAYMENT_TRANSACTION_ID, 000000) AS PAYMENT_TRANSACTION_ID
 	FROM
 		transformed_transactions
 )
