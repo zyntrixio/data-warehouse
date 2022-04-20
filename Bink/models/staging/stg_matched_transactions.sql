@@ -5,7 +5,7 @@ Last modified by:
 Last modified date: 
 
 Description:
-    Stages the user table, containing data about current users
+    Stages the matched_transaction table, containing the transaction data that has been matched with a payment
 
 Parameters:
     source_object      - Harmonia.matched_transaction

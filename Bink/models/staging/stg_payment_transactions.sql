@@ -5,7 +5,7 @@ Last modified by:
 Last modified date: 
 
 Description:
-    Stages the user table, containing data about current users
+    Stages the payment_transaction table, containing the first layer of transaction data
 
 Parameters:
     source_object      - Harmonia.payment_transaction

@@ -5,7 +5,7 @@ Last modified by:
 Last modified date: 
 
 Description:
-    Stages the user table, containing data about current users
+    Stages the export_transaction table, containing the final layer of transaction data
 
 Parameters:
     source_object      - Harmonia.export_transaction

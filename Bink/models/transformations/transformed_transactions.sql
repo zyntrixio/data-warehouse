@@ -5,10 +5,12 @@ Last modified by:
 Last modified date: 
 
 Description:
-    Adds the ID_DELETD field to the user table
+    Unions the payment and export transaction tables, and then joins in data from the matched transactions table
 
 Parameters:
-    ref_object      - stg_user
+    ref_object      - stg_export_transactions
+					- stg_payment_transactions
+					- stg_matched_transactions
 */
 
 
