@@ -14,51 +14,41 @@ Parameters:
 */
 
 WITH
-matched_transactions as (
+transformed_transactions as (
     SELECT *
-    FROM {{ ref('stg_matched_transactions')}}
+    FROM {{ ref('transformed_transactions')}}
 )
 
-,scheme_transactions as (
-    SELECT *
-    FROM {{ ref('stg_scheme_transactions')}}
-)
-
-,joined_transactions as (
+,select_transactions as (
 	SELECT
-		-- ID
-		-- ,s.STATUS
-		-- ,m.CARD_TOKEN
-		-- ,s.CREATED_AT
-		-- ,s.UPDATED_AT
-		-- ,s.EXTRA_FIELDS
-		-- ,s.SPEND_AMOUNT
-		-- ,m.MATCHING_TYPE
-		-- ,s.SPEND_CURRENCY
-		-- ,s.TRANSACTION_ID
-		-- ,s.SPEND_MULTIPLIER
-		-- ,s.TRANSACTION_DATE
-		-- ,m.SCHEME_TRANSACTION_ID
-		-- ,s.MERCHANT_IDENTIFIER_ID
-		-- ,s.PAYMENT_TRANSACTION_ID
-		-- ,s.HAS_TIME
-		-- ,s.AUTH_CODE
-		-- ,s.FIRST_SIX
-		-- ,s.LAST_FOUR
-		-- ,s.MATCH_GROUP
-		-- ,s.PROVIDER_SLUG
-		-- ,s.PAYMENT_PROVIDER_SLUG
-		-- ,s.MERCHANT_IDENTIFIER_IDS
-		s.*
+		TRANSACTION_ID
+		,STATUS
+		,USER_ID
+		,TRANSACTION_DATE
+		,HAS_TIME	
+		,AUTH_CODE	
+		,FIRST_SIX	
+		,LAST_FOUR	
+		,CARD_TOKEN	
+		,CREATED_AT	
+		,UPDATED_AT
+		,MATCH_GROUP
+		,EXTRA_FIELDS
+		,SPEND_AMOUNT
+		,PROVIDER_SLUG
+		,SETTLEMENT_KEY
+		,SPEND_CURRENCY
+		,BRAND_ID
+		,STORE_ID
+		,FEED_TYPE
+		,SCHEME_TRANSACTION_ID
+		,MERCHANT_IDENTIFIER_ID
+		,PAYMENT_TRANSACTION_ID
 	FROM
-		scheme_transactions  s
-	LEFT JOIN
-		matched_transactions m
-	ON
-		s.Transaction_ID = m.Transaction_ID
+		transformed_transactions
 )
 
 SELECT
     *
 FROM
-    joined_transactions
+    select_transactions
