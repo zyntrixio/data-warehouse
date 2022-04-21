@@ -1,14 +1,14 @@
 /*
-Created by:         Sam Pibworth
-Created date:       2022-04-19
+Created by:         Aidan Summerville
+Created date:       2022-04-21
 Last modified by:   
 Last modified date: 
 
 Description:
-    Stages the export_transaction table, containing the final layer of transaction data
+    Stages the base table for scheme_schemeaccount this holds information about loyalty cards
 
 Parameters:
-    source_object      - Harmonia.export_transaction
+    source_object      - Hermes.SCHEME_SCHEMEACCOUNT
 */
 
 WITH
@@ -23,8 +23,8 @@ source  as (
 
 SELECT  BALANCES
        ,ID                   AS LOYALTY_CARD_ID
-       ,LINK_DATE
-       ,SCHEME_ID            AS LOYALTY_SCHEME_ID
+       ,LINK_DATE::timestamp as LINK_DATE
+       ,SCHEME_ID            AS LOYALTY_PLAN_ID
        ,_AIRBYTE_AB_ID
        ,_AIRBYTE_SCHEME_SCHEMEACCOUNT_HASHID
        ,JOIN_DATE::timestamp AS JOIN_DATE
