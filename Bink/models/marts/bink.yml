@@ -12,7 +12,7 @@ models:
             - unique
             - not_null
     - name: transactions
-      description: "User table containing historical transactions"
+      description: "Table containing historical transactions"
       schema: 'Bink'
       columns:
         - name: 'TRANSACTION_ID'
@@ -29,3 +29,13 @@ models:
             - not_null
             - accepted_values:
                 values: ['placed', 'shipped', 'completed', 'returned']
+    - name: payment_accounts
+      description: "Table containing payment accounts"
+      schema: 'Bink'
+      columns:
+        - name: 'ID'
+          description: Primary Key of the table
+          quote: true
+          tests:
+            - unique
+            - not_null
