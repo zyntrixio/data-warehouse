@@ -32,7 +32,7 @@ payment_accounts AS (
 
 ,joined_payment_accounts AS (
     SELECT
-        a.ID
+        a.PAYMENT_ACCOUNT_ID
 		,a.HASH
 		,a.TOKEN
 		,a.STATUS
