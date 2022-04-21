@@ -15,7 +15,7 @@ WITH hist_users AS (
 	SELECT
 		*
 	FROM
-		{{ source('Bink', 'HISTORY_USER') }}
+		{{ source('Hermes', 'HISTORY_USER') }}
 )
 
 SELECT

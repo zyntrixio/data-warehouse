@@ -7,7 +7,7 @@ compile: clean
 deps:
 	dbt deps
 
-run: deps
+run: compile deps
 	dbt run
 
 test: compile deps
@@ -15,4 +15,10 @@ test: compile deps
 
 source_test: compile deps
 	dbt test --select tag:source
+
+output_tests: compile deps
+	dbt test --exclude tag:source
 	
+docs:
+	dbt docs generate
+	dbt docs serve
