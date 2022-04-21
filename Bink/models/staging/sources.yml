@@ -30,6 +30,30 @@ sources:
             tests:
               - unique
               - not_null
+              
+      - name: SCHEME_SCHEMEACCOUNT
+        identifier: SCHEME_SCHEMEACCOUNT
+        description: This table contains information on the individual loyaltycards
+        freshness:
+          warn_after: { count: 2, period: hour }
+        meta:
+          elementary:
+            timestamp_column: '_AIRBYTE_EMITTED_AT'
+        tests:
+            - elementary.table_anomalies
+            - elementary.schema_changes
+        columns:
+          - name: 'ID'
+            description: Primary key of schemeaccount table
+            tests:
+              - unique
+              - not_null
+          # - name: 'TRANSACTION_ID'
+          #   description: Business Primary key of user table
+          #   tests:
+          #     - unique
+          #     - not_null
+              
       - name: HISTORY_USER
         identifier: HISTORY_HISTORICALCUSTOMUSER
         description: Table contains all updates to users.
@@ -121,3 +145,4 @@ sources:
             tests:
               - unique
               - not_null
+              
