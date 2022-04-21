@@ -8,8 +8,9 @@ Description:
     Unions the payment and export transaction tables, and then joins in data from the matched transactions table
 
 Parameters:
-    ref_object      - stg_payment_account
-                    - stg_payment_status
+    ref_object      - stg_hermes__payment_account
+                    - stg_hermes__payment_status
+					- stg_hermes__payment_card
 */
 
 
@@ -17,17 +18,17 @@ Parameters:
 WITH
 payment_accounts AS (
     SELECT *
-    FROM {{ ref('stg_payment_account')}}
+    FROM {{ ref('stg_hermes__payment_account')}}
 )
 
 ,payment_status AS (
     SELECT *
-    FROM {{ ref('stg_payment_status')}}
+    FROM {{ ref('stg_hermes__payment_status')}}
 )
 
 ,payment_card AS (
     SELECT *
-    FROM {{ ref('stg_payment_card')}}
+    FROM {{ ref('stg_hermes__payment_card')}}
 )
 
 ,joined_payment_accounts AS (

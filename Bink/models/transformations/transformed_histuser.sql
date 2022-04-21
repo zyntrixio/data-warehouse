@@ -9,7 +9,7 @@ Description:
 	select the last version of the deleted user
 
 Parameters:
-    ref_object      - stg_histuser
+    ref_object      - stg_hermes__histuser
 */
 
 WITH
@@ -20,7 +20,7 @@ deleted_ids as (
 		MAX(ID) as ID,
 		CHANGE_TYPE
 	FROM
-		 {{ ref('stg_histuser') }}
+		 {{ ref('stg_hermes__histuser') }}
 	WHERE
 		CHANGE_TYPE = 'delete'
 	GROUP BY
@@ -34,7 +34,7 @@ deleted_ids as (
 	SELECT
 		parse_json(hu.body) as BODY
 	FROM
-		{{ ref('stg_histuser') }} hu
+		{{ ref('stg_hermes__histuser') }} hu
   	INNER JOIN
 	  	deleted_ids ids ON hu.id = ids.id
 )

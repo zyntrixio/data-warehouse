@@ -8,7 +8,7 @@ Description:
     Adds the ID_DELETD field to the user table
 
 Parameters:
-    ref_object      - stg_user
+    ref_object      - stg_hermes__user
 */
 
 
@@ -18,7 +18,7 @@ transformed_user AS (
 		*
 		,FALSE :: boolean AS IS_DELETED
 	FROM
-		{{ ref('stg_user')}}
+		{{ ref('stg_hermes__user')}}
 )
 
 SELECT

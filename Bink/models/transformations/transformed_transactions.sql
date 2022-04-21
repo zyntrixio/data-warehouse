@@ -8,9 +8,9 @@ Description:
     Unions the payment and export transaction tables, and then joins in data from the matched transactions table
 
 Parameters:
-    ref_object      - stg_export_transactions
-					- stg_payment_transactions
-					- stg_matched_transactions
+    ref_object      - stg_harmonia__export_transactions
+					- stg_harmonia__payment_transactions
+					- stg_harmonia__matched_transactions
 */
 
 
@@ -18,17 +18,17 @@ WITH
 
 export_transactions AS (
 	SELECT *
-	FROM {{ ref('stg_export_transactions')}}
+	FROM {{ ref('stg_harmonia__export_transactions')}}
 )
 
 ,payment_transactions AS (
 	SELECT *
-	FROM {{ ref('stg_payment_transactions')}}
+	FROM {{ ref('stg_harmonia__payment_transactions')}}
 )
 
 ,matched_transactions AS (
 	SELECT *
-	FROM {{ ref('stg_matched_transactions')}}
+	FROM {{ ref('stg_harmonia__matched_transactions')}}
 )
 
 ,useful_trans_ids AS (
