@@ -33,7 +33,7 @@ models:
       description: "Table containing payment accounts"
       schema: 'Bink'
       columns:
-        - name: 'ID'
+        - name: 'PAYMENT_ACCOUNT_ID'
           description: Primary Key of the table
           quote: true
           tests:

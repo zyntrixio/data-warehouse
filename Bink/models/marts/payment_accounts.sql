@@ -8,22 +8,24 @@ Description:
 	Processes json values and finishes payment_account table
 
 Parameters:
-    ref_object      - stg_payment_account
+    ref_object      - transformed_payment_accounts
 */
 
 WITH
 payment_accounts AS (
     SELECT *
-    FROM {{ ref('stg_payment_account')}}
+    FROM {{ ref('transformed_payment_accounts')}}
 )
 
 
 ,payment_account_select AS (
 	SELECT
-		ID
+		ID AS PAYMENT_ACCOUNT_ID
 		,HASH
 		,TOKEN
-		,STATUS -- join to status table?
+		,STATUS
+		,PROVIDER_ID
+		,PROVIDER_STATUS_CODE
 		,COUNTRY -- GB And UK???
 		,CREATED
 		,PAN_END
@@ -55,7 +57,6 @@ payment_accounts AS (
             THEN NULL
             ELSE PARSE_JSON(AGENT_DATA):card_uid :: VARCHAR
             END AS CARD_UID
-  ,AGENT_DATA
 		,IS_DELETED
 		,START_YEAR
 		,EXPIRY_YEAR
@@ -66,8 +67,9 @@ payment_accounts AS (
 		,NAME_ON_CARD
 		,CARD_NICKNAME
 		,CURRENCY_CODE
-		,PAYMENT_CARD_ID -- join to payment card table or bring this in too?
-		,FORMATTED_IMAGES -- Complicated JSON - should this be unpacked?
+		,CARD_NAME -- Need to check no conflict with the status join
+		,CARD_TYPE
+		--,FORMATTED_IMAGES -- Complicated JSON - should this be unpacked?
 	FROM
 		payment_accounts
 )
