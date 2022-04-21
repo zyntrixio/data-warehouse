@@ -13,7 +13,7 @@ Parameters:
 
 WITH payment_account AS (
 	SELECT
-		ID
+		ID :: VARCHAR AS PAYMENT_ACCOUNT_ID
 		,HASH
 		,TOKEN
 		,STATUS
