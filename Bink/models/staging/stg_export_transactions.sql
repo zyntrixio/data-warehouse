@@ -22,7 +22,7 @@ transactions as (
 		ID
 		,MID
 		,STATUS
-		,USER_ID
+		,USER_ID :: VARCHAR AS USER_ID
 		,BRAND_ID
 		,STORE_ID
 		,FEED_TYPE

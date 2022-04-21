@@ -15,9 +15,17 @@ models:
       description: "User table containing historical transactions"
       schema: 'Bink'
       columns:
-        - name: 'ID'
+        - name: 'TRANSACTION_ID'
           description: Primary Key of the table
           quote: true
           tests:
             - unique
             - not_null
+        - name: 'STATUS'
+          description: Transaction most recent status
+          quote: true
+          tests:
+            - unique
+            - not_null
+            - accepted_values:
+                values: ['placed', 'shipped', 'completed', 'returned']
