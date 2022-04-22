@@ -58,3 +58,14 @@ models:
           tests:
             - unique
             - not_null
+
+    - name: channel
+      description: "A dimension table containing client data, realting to the channel field in events"
+      schema: 'Bink'
+      columns:
+        - name: 'CHANNEL_ID'
+          description: Primary Key of the table
+          quote: true
+          tests:
+            - unique
+            - not_null
