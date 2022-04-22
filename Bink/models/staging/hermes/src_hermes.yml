@@ -30,6 +30,30 @@ sources:
             tests:
               - unique
               - not_null
+              
+      - name: SCHEME_SCHEMEACCOUNT
+        identifier: SCHEME_SCHEMEACCOUNT
+        description: This table contains information on the individual loyaltycards
+        freshness:
+          warn_after: { count: 2, period: hour }
+        meta:
+          elementary:
+            timestamp_column: '_AIRBYTE_EMITTED_AT'
+        tests:
+            - elementary.table_anomalies
+            - elementary.schema_changes
+        columns:
+          - name: 'ID'
+            description: Primary key of schemeaccount table
+            tests:
+              - unique
+              - not_null
+          # - name: 'TRANSACTION_ID'
+          #   description: Business Primary key of user table
+          #   tests:
+          #     - unique
+          #     - not_null
+              
       - name: HISTORY_USER
         identifier: HISTORY_HISTORICALCUSTOMUSER
         description: Table contains all updates to users.
@@ -98,16 +122,28 @@ sources:
             tests:
               - unique
               - not_null
-  - name: Harmonia
-    description: Harmonia schema, containing transaction data
-    database: RAW
-    schema: HARMONIA
-    tags: ['source']
+              
+      - name: SCHEME_SCHEME
+        identifier: SCHEME_SCHEME
+        description: This table contains information about the individual loyalty plans.
+        freshness:
+          warn_after: { count: 2, period: hour }
+        meta:
+          elementary:
+            timestamp_column: '_AIRBYTE_EMITTED_AT'
+        tests:
+            - elementary.table_anomalies
+            - elementary.schema_changes
+        columns:
+          - name: 'ID'
+            description: Primary key of scheme table
+            tests:
+              - unique
+              - not_null
 
-    tables:
-      - name: payment_transaction
-        identifier: PAYMENT_TRANSACTION
-        description: Table contains transactions
+      - name: SCHEME_CATEGORY
+        identifier: SCHEME_CATEGORY
+        description: Look up table for loyalty plan categorys
         freshness:
           warn_after: { count: 2, period: hour }
         meta:
@@ -118,56 +154,9 @@ sources:
             - elementary.schema_changes
         columns:
           - name: 'ID'
-            description: Primary key of user table
+            description: Primary key of scheme category table
             tests:
               - unique
               - not_null
-          - name: 'TRANSACTION_ID'
-            description: Business Primary key of user table
-            tests:
-              - unique
-              - not_null
-      - name: matched_transaction
-        identifier: MATCHED_TRANSACTION
-        description: Table contains transactions
-        freshness:
-          warn_after: { count: 2, period: hour }
-        meta:
-          elementary:
-            timestamp_column: '_AIRBYTE_EMITTED_AT'
-        tests:
-            - elementary.table_anomalies
-            - elementary.schema_changes
-        columns:
-          - name: 'ID'
-            description: Primary key of user table
-            tests:
-              - unique
-              - not_null
-          - name: 'TRANSACTION_ID'
-            description: Business Primary key of user table
-            tests:
-              - unique
-              - not_null
-      - name: export_transaction
-        identifier: EXPORT_TRANSACTION
-        description: Table contains transactions
-        freshness:
-          warn_after: { count: 2, period: hour }
-        meta:
-          elementary:
-            timestamp_column: '_AIRBYTE_EMITTED_AT'
-        tests:
-            - elementary.table_anomalies
-            - elementary.schema_changes
-        columns:
-          - name: 'ID'
-            description: Primary key of user table
-            tests:
-              - unique
-              - not_null
-          - name: 'TRANSACTION_ID'
-            description: Business Primary key of user table
-            tests:
-              - unique
-              - not_null
+
+ 
