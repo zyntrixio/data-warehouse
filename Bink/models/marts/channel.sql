@@ -9,10 +9,10 @@ Description:
 
 Parameters:
     ref_object      - stg_hermes__CLIENT_APPLICATION
+					- stg_hermes__ORGANISATION
 */
 
 WITH
-
 client AS (
 	SELECT *
 	FROM {{ref('stg_hermes__CLIENT_APPLICATION')}}
@@ -37,34 +37,19 @@ client AS (
 		ON c.ORGANISATION_ID = o.ORGANISATION_ID
 )
 
-// ,users_na_unions AS (
-// 	SELECT
-// 		'NOT_APPLICABLE' AS USER_ID
-// 		,NULL AS UID
-// 		,NULL AS EXTERNAL_ID				
-// 		,NULL AS CLIENT_ID			
-// 		,NULL AS DATE_JOINED
-// 		,NULL AS DELETE_TOKEN		
-// 		,NULL AS EMAIL					
-// 		,NULL AS IS_ACTIVE			
-// 		,NULL AS IS_STAFF			
-// 		,NULL AS IS_SUPERUSER		
-// 		,NULL AS IS_TESTER			
-// 		,NULL AS LAST_LOGIN			
-// 		,NULL AS PASSWORD			
-// 		,NULL AS RESET_TOKEN
-// 		,NULL AS MARKETING_CODE_ID			
-// 		,NULL AS SALT
-// 		,NULL AS APPLE
-// 		,NULL AS FACEBOOK						
-// 		,NULL AS TWITTER									
-// 		,NULL AS MAGIC_LINK_VERIFIED
-// 	UNION ALL
-// 	SELECT *
-// 	FROM users_select
-// )
+,client_na_unions AS (
+	SELECT
+		'NOT_APPICABLE' AS CHANNEL_ID
+		,NULL AS CHANNEL_NAME
+		,NULL AS SECRET
+		,NULL AS ORGANISATION_ID
+		,NULL AS ORGANISATION_NAME
+	UNION ALL
+	SELECT *
+	FROM client_select
+)
 
 SELECT
     *
 FROM
-    client_select
+    client_na_unions

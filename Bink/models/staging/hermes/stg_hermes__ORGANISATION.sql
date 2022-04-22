@@ -5,7 +5,7 @@ Last modified by:
 Last modified date: 
 
 Description:
-    Stages the client_application table
+    Stages the organisation table
 
 Parameters:
     source_object      - HERMES.USER_ORGANISATION
