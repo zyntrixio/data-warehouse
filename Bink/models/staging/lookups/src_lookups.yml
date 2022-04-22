@@ -3,7 +3,7 @@ version: 2
 sources:
  
   - name: LOOKUP
-    description: Harmonia schema, containing transaction data
+    description: Bink lookup tables schema
     database: RAW
     schema: BINK_LOOKUP
     tags: ['source']
