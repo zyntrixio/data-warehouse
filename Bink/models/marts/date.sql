@@ -5,22 +5,23 @@ Last modified by:
 Last modified date: 
 
 Description:
-    Stages the date table
+	The output Dimension table for dates/calendar
 
 Parameters:
-    sources   - lookup.date
+    ref_object      - stg_lookup__date
 
 */
-with source as (
 
-    select *
-    from {{source('LOOKUP','DATE')}}
+
+with datetable as (
+    select * 
+    from {{ref('stg_lookup__date')}}
 )
 
 
-,renaming as (
+,final as (
     select 
-      DATE,
+    DATE,
           YEAR,
           QUARTER,
           MONTH,
@@ -37,9 +38,8 @@ with source as (
            monthNUMBER
           , year_QUARTER
           , year_month  
-          from source
+    from datetable d
 )
 
-
 select *
- from renaming 
+from final
