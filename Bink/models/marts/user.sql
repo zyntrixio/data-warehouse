@@ -1,16 +1,14 @@
 /*
 Created by:         Sam Pibworth
 Created date:       2022-04-08
-Last modified by:   
-Last modified date: 
+Last modified by:   Sam Pibworth
+Last modified date: 2022-04-22
 
 Description:
-    Unions the user and historical_user tables, ensuring that any duplicate IDs are removed. In this instance, the current
-    user record is included and the historical record is not.
+    The DIM user table, relating to hermes.user
 
 Parameters:
-    ref_object      - transformed_user
-    ref_object      - transformed_histuser
+    ref_object      - stg_hermes__user
 */
 
 WITH
