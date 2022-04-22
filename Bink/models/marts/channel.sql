@@ -18,14 +18,23 @@ client AS (
 	FROM {{ref('stg_hermes__CLIENT_APPLICATION')}}
 )
 
+,orgainsation AS (
+	SELECT *
+	FROM {{ref('stg_hermes__ORGANISATION')}}
+)
+
 ,client_select AS (
     SELECT
-		CHANNEL_ID
-		,CHANNEL_NAME
-		,SECRET
-		,ORGANISATION_ID
+		c.CHANNEL_ID
+		,c.CHANNEL_NAME
+		,c.SECRET
+		,c.ORGANISATION_ID
+		,o.ORGANISATION_NAME
     FROM
-		client
+		client c
+	LEFT JOIN
+		orgainsation o
+		ON c.ORGANISATION_ID = o.ORGANISATION_ID
 )
 
 // ,users_na_unions AS (

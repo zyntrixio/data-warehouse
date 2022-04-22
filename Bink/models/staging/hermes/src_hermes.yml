@@ -162,4 +162,20 @@ sources:
             tests:
               - unique
               - not_null
- 
+      - name: ORGANISATION
+        identifier: USER_ORGANISATION
+        description: Table containing organisation names
+        freshness:
+          warn_after: { count: 2, period: hour }
+        meta:
+          elementary:
+            timestamp_column: '_AIRBYTE_EMITTED_AT'
+        tests:
+            - elementary.table_anomalies
+            - elementary.schema_changes
+        columns:
+          - name: 'ID'
+            description: Primary key of scheme category table
+            tests:
+              - unique
+              - not_null
