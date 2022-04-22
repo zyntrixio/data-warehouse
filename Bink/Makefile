@@ -10,7 +10,9 @@ deps:
 run: compile
 	dbt run --exclude +elementary
 
-full_run: compile deps
+full_run: clean
+	dbt compile
+	dbt deps
 	dbt run
 
 test: compile deps
