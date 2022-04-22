@@ -2,12 +2,15 @@ clean:
 	dbt clean
 
 compile: clean
-	dbt compile
+	dbt compile --exclude +elementary
 
 deps:
 	dbt deps
 
-run: compile deps
+run: compile
+	dbt run --exclude +elementary
+
+full_run: compile deps
 	dbt run
 
 test: compile deps
