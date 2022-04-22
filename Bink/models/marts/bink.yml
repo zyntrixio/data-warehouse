@@ -69,3 +69,14 @@ models:
           tests:
             - unique
             - not_null
+
+    - name: date
+      description: "A dimension table For dates / calendars"
+      schema: 'Bink'
+      columns:
+        - name: 'DATE'
+          description: Primary Key of the table
+          quote: true
+          tests:
+            - unique
+            - not_null
