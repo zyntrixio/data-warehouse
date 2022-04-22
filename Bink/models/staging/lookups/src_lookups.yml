@@ -1,0 +1,20 @@
+version: 2
+
+sources:
+ 
+  - name: LOOKUP
+    description: Harmonia schema, containing transaction data
+    database: RAW
+    schema: BINK_LOOKUP
+    tags: ['source']
+
+    tables:
+      - name: DATE
+        identifier: DATE
+        description: This the base of the date table
+        columns:
+          - name: 'DATE'
+            description: Business Primary key of THE DATE table
+            tests:
+              - unique
+              - not_null
