@@ -18,17 +18,17 @@ WITH
 
 export_transactions AS (
 	SELECT *
-	FROM {{ ref('stg_harmonia__export_transactions')}}
+	FROM {{ ref('stg_harmonia__EXPORT_TRANSACTIONS')}}
 )
 
 ,payment_transactions AS (
 	SELECT *
-	FROM {{ ref('stg_harmonia__payment_transactions')}}
+	FROM {{ ref('stg_harmonia__PAYMENT_TRANSACTIONS')}}
 )
 
 ,matched_transactions AS (
 	SELECT *
-	FROM {{ ref('stg_harmonia__matched_transactions')}}
+	FROM {{ ref('stg_harmonia__MATCHED_TRANSACTIONS')}}
 )
 
 ,useful_trans_ids AS (

@@ -15,7 +15,7 @@ WITH
 
 users AS (
 	SELECT *
-	FROM {{ref('stg_hermes__user')}}
+	FROM {{ref('stg_hermes__USER')}}
 )
 
 ,users_select AS (
