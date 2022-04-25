@@ -1,6 +1,7 @@
 version: 2
 
 seeds:
-  - name: account_status
+  - name: "lookup__account_status"
     config:
+      alias: "account_status"
       quote_columns: true
