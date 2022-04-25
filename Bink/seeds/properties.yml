@@ -1,0 +1,6 @@
+version: 2
+
+seeds:
+  - name: account_status
+    config:
+      quote_columns: true
