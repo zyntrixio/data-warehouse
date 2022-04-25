@@ -18,17 +18,17 @@ Parameters:
 WITH
 payment_accounts AS (
     SELECT *
-    FROM {{ ref('stg_hermes__payment_account')}}
+    FROM {{ ref('stg_hermes__PAYMENT_ACCOUNT')}}
 )
 
 ,payment_status AS (
     SELECT *
-    FROM {{ ref('stg_hermes__payment_status')}}
+    FROM {{ ref('stg_hermes__PAYMENT_STATUS')}}
 )
 
 ,payment_card AS (
     SELECT *
-    FROM {{ ref('stg_hermes__payment_card')}}
+    FROM {{ ref('stg_hermes__PAYMENT_CARD')}}
 )
 
 ,joined_payment_accounts AS (
