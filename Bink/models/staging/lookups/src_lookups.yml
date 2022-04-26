@@ -14,7 +14,16 @@ sources:
         description: This the base of the date table
         columns:
           - name: 'DATE'
-            description: Business Primary key of THE DATE table
+            description: Business Primary key of the DATE table
+            tests:
+              - unique
+              - not_null
+      - name: ACCOUNT_STATUS
+        identifier: ACCOUNT_STATUS
+        description: Enrichment data for loyalty card
+        columns:
+          - name: 'CODE'
+            description: Business Primary key of the ACCOUNT_STATUS table
             tests:
               - unique
               - not_null
