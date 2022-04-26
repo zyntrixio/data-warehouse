@@ -31,7 +31,7 @@ With loyalty_card as (
 
 , account_status as (
     SELECT *
-    FROM {{ref('stg_account_status')}}
+    FROM {{ref('stg_lookup__ACCOUNT_STATUS')}}
 )
 
 , join_to_base as (
