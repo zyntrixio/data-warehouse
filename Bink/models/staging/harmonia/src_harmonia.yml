@@ -5,7 +5,7 @@ sources:
   - name: Harmonia
     description: Harmonia schema, containing transaction data
     database: RAW
-    schema: HARMONIA
+    schema: DEV_HARMONIA
     tags: ['source']
 
     tables:

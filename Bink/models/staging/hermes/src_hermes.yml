@@ -4,7 +4,7 @@ sources:
   - name: Hermes
     description: Heremes schema
     database: RAW
-    schema: HERMES
+    schema: DEV_HERMES
     tags: ['source']
 
     tables:
