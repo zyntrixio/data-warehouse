@@ -1,7 +1,7 @@
 version: 2
 
 models:
-    - name: user
+    - name: dim_user
       description: "User table containing current and historical users"
       schema: 'Bink'
       columns:
@@ -35,9 +35,9 @@ models:
           tests:
             - not_null
             - relationships:
-                to: ref('user')
+                to: ref('dim_user')
                 field: ID
-    - name: payment_accounts
+    - name: dim_payment_accounts
       description: "Table containing payment accounts"
       schema: 'Bink'
       columns:
@@ -48,7 +48,7 @@ models:
             - unique
             - not_null
     
-    - name: loyalty_card
+    - name: dim_loyalty_card
       description: "This is a dimension table containing loyalty card information "
       schema: 'Bink'
       columns:
@@ -59,7 +59,7 @@ models:
             - unique
             - not_null
 
-    - name: channel
+    - name: dim_channel
       description: "A dimension table containing client data, realting to the channel field in events"
       schema: 'Bink'
       columns:
@@ -70,7 +70,7 @@ models:
             - unique
             - not_null
 
-    - name: date
+    - name: dim_date
       description: "A dimension table For dates / calendars"
       schema: 'Bink'
       columns:
