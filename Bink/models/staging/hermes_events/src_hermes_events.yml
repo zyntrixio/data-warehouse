@@ -1,0 +1,32 @@
+version: 2
+
+sources:
+  - name: hermes_events
+    description: Heremes events schema
+    database: RAW
+    schema: HERMES_EVENTS
+    tags: ['source']
+
+    tables:
+      - name: events
+        identifier: EVENTS
+        description: Table contains all hermes events
+        freshness:
+          warn_after: { count: 2, period: hour }
+        meta:
+          elementary:
+            timestamp_column: '_AIRBYTE_EMITTED_AT'
+        tests:
+            - elementary.table_anomalies
+            - elementary.schema_changes
+        # columns:
+        #   - name: 'ID'
+        #     description: Primary key of user table
+        #     tests:
+        #       - unique
+        #       - not_null
+        #   - name: 'UID'
+        #     description: userID of user table
+        #     tests:
+        #       - unique
+        #       - not_null
