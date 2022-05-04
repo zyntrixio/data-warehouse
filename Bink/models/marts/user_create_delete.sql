@@ -25,7 +25,9 @@ user_events AS (
 		JSON:internal_user_ref::varchar as USER_ID
 		,CASE WHEN EVENT_TYPE = 'user.created'
 			THEN 'CREATED'
-			ELSE 'DELETED'
+			WHEN EVENT_TYPE = 'user.deleted'
+			THEN 'DELETED'
+			ELSE NULL
 			END AS EVENT_TYPE
 		,EVENT_DATE_TIME
 		,JSON:origin::varchar as ORIGIN

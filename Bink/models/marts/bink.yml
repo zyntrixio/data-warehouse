@@ -84,10 +84,12 @@ models:
     - name: user_create_delete
       description: "Table containing events for user creation / deletion"
       schema: 'Bink'
-      # columns:
-      #   - name: 'TRANSACTION_ID'
-      #     description: Primary Key of the table
-      #     quote: true 
-      #     tests:
-      #       - unique
-      #       - not_null  
+      columns:
+        - name: 'EVENT_TYPE'
+          description: Created or deleted
+          quote: true 
+          tests:
+            - not_null
+            - accepted_values:
+                values: ['CREATED', 'DELETED']
+          # Need a primary key here
