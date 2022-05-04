@@ -96,3 +96,16 @@ models:
             - accepted_values:
                 values: ['CREATED', 'DELETED']
           # Need a primary key here
+
+    - name: fact_payment_account
+      description: "Table containing events for payment account creation / removal"
+      schema: 'Bink'
+      columns:
+        - name: 'EVENT_TYPE'
+          description: Created or removed
+          quote: true 
+          tests:
+            - not_null
+            - accepted_values:
+                values: ['CREATED', 'REMOVED']
+          # Need a primary key here
