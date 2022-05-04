@@ -80,3 +80,14 @@ models:
           tests:
             - unique
             - not_null
+
+    - name: user_create_delete
+      description: "Table containing events for user creation / deletion"
+      schema: 'Bink'
+      # columns:
+      #   - name: 'TRANSACTION_ID'
+      #     description: Primary Key of the table
+      #     quote: true 
+      #     tests:
+      #       - unique
+      #       - not_null  
