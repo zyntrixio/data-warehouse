@@ -10,10 +10,15 @@ deps:
 run: compile
 	dbt run --exclude +elementary
 
-full_run: clean
+run_table:
+	dbt compile --select $(table)
+	dbt run --select $(table)
+
+run_full: clean
 	dbt compile
 	dbt deps
 	dbt run
+	dbt test
 
 test: compile deps
 	dbt test

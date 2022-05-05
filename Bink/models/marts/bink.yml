@@ -5,7 +5,7 @@ models:
       description: "User table containing current and historical users"
       schema: 'Bink'
       columns:
-        - name: 'ID'
+        - name: 'USER_ID'
           description: Primary Key of the table
           quote: true
           tests:
@@ -70,11 +70,9 @@ models:
           description: Transaction most recent status
           quote: true
           tests:
-            - unique
             - not_null
             - accepted_values:
                 values: ['placed', 'shipped', 'completed', 'returned']
-
         - name: 'USER_ID'
           description: Transaction most recent status
           quote: true
@@ -82,7 +80,7 @@ models:
             - not_null
             - relationships:
                 to: ref('dim_user')
-                field: ID
+                field: USER_ID
 
     - name: fact_user
       description: "Table containing events for user creation / deletion"
@@ -95,4 +93,63 @@ models:
             - not_null
             - accepted_values:
                 values: ['CREATED', 'DELETED']
+          # Need a primary key here
+
+    - name: fact_payment_account
+      description: "Table containing events for payment account creation / removal"
+      schema: 'Bink'
+      columns:
+        - name: 'EVENT_TYPE'
+          description: Created or removed
+          quote: true 
+          tests:
+            - not_null
+            - accepted_values:
+                values: ['ADDED', 'REMOVED']
+        - name: 'EXPIRY_MONTH'
+          description: Month of card expirary
+          quote: true 
+          tests:
+            - not_null
+            - is_month
+        - name: 'EXPIRY_YEAR'
+          description: Year of card expirary
+          quote: true 
+          tests:
+            - not_null
+            - is_year
+        - name: 'EXPIRY_YEAR_MONTH'
+          description: Year-Month, as in date table
+          quote: true 
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_date')
+                field: YEAR_MONTH
+          # Need a primary key here
+
+    - name: fact_payment_account_status_change
+      description: "Table containing events for payment account status change"
+      schema: 'Bink'
+      columns:
+        - name: 'EXPIRY_MONTH'
+          description: Month of card expirary
+          quote: true 
+          tests:
+            - not_null
+            - is_month
+        - name: 'EXPIRY_YEAR'
+          description: Year of card expirary
+          quote: true 
+          tests:
+            - not_null
+            - is_year
+        - name: 'EXPIRY_YEAR_MONTH'
+          description: Year-Month, as in date table
+          quote: true 
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_date')
+                field: YEAR_MONTH
           # Need a primary key here
