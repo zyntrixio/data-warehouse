@@ -5,7 +5,7 @@ models:
       description: "User table containing current and historical users"
       schema: 'Bink'
       columns:
-        - name: 'ID'
+        - name: 'USER_ID'
           description: Primary Key of the table
           quote: true
           tests:
@@ -80,7 +80,7 @@ models:
             - not_null
             - relationships:
                 to: ref('dim_user')
-                field: ID
+                field: USER_ID
 
     - name: fact_user
       description: "Table containing events for user creation / deletion"
