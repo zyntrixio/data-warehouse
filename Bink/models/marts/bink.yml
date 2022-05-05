@@ -121,3 +121,21 @@ models:
             - not_null
             - is_year
           # Need a primary key here
+
+    - name: fact_payment_account_status_change
+      description: "Table containing events for payment account status change"
+      schema: 'Bink'
+      columns:
+        - name: 'EXPIRARY_MONTH'
+          description: Month of card expirary
+          quote: true 
+          tests:
+            - not_null
+            - is_month
+        - name: 'EXPIRARY_YEAR'
+          description: Year of card expirary
+          quote: true 
+          tests:
+            - not_null
+            - is_year
+          # Need a primary key here
