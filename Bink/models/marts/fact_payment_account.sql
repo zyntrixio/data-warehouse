@@ -64,7 +64,7 @@ payment_events AS (
 		,TOKEN
 		,STATUS
 		,LOWER(EMAIL) AS EMAIL
-		,SPLIT_PART(EMAIL,'@',2) AS DOMAIN
+		,SPLIT_PART(EMAIL,'@',2) AS EMAIL_DOMAIN
 	FROM payment_events_unpack
 )
 

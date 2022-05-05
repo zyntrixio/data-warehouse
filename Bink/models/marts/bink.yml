@@ -70,11 +70,9 @@ models:
           description: Transaction most recent status
           quote: true
           tests:
-            - unique
             - not_null
             - accepted_values:
                 values: ['placed', 'shipped', 'completed', 'returned']
-
         - name: 'USER_ID'
           description: Transaction most recent status
           quote: true

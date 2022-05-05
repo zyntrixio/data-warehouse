@@ -18,6 +18,7 @@ run_full: clean
 	dbt compile
 	dbt deps
 	dbt run
+	dbt test
 
 test: compile deps
 	dbt test
