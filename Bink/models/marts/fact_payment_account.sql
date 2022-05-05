@@ -30,7 +30,7 @@ payment_events AS (
 		,JSON:internal_user_ref::varchar as USER_ID
 		,JSON:email::varchar as EMAIL
 		,JSON:payment_account_id::varchar as PAYMENT_ACCOUNT_ID
-		,JSON:expiry_date::varchar as EXPIRARY_DATE
+		,JSON:expiry_date::varchar as EXPIRY_DATE
 		,JSON:token::varchar as TOKEN
 		,JSON:status::integer as STATUS
 
@@ -48,7 +48,7 @@ payment_events AS (
 			END AS EVENT_TYPE
 		,EVENT_DATE_TIME
 		,CASE WHEN
-			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY USER_ID))
+			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY USER_ID)) // Need to think about simeultaneous events - rank by business logic
 			THEN TRUE
 			ELSE FALSE
 			END AS IS_MOST_RECENT
@@ -56,18 +56,18 @@ payment_events AS (
 		,CHANNEL
 		,USER_ID
 		,EXTERNAL_USER_REF
-		,SPLIT_PART(EXPIRARY_DATE,'/',1)::integer AS EXPIRARY_MONTH
-		,CASE WHEN SPLIT_PART(EXPIRARY_DATE,'/',2)::integer >= 2000
-			THEN SPLIT_PART(EXPIRARY_DATE,'/',2)::integer
-			ELSE SPLIT_PART(EXPIRARY_DATE,'/',2)::integer + 2000
-			END AS EXPIRARY_YEAR
+		,SPLIT_PART(EXPIRY_DATE,'/',1)::integer AS EXPIRY_MONTH
+		,CASE WHEN SPLIT_PART(EXPIRY_DATE,'/',2)::integer >= 2000
+			THEN SPLIT_PART(EXPIRY_DATE,'/',2)::integer
+			ELSE SPLIT_PART(EXPIRY_DATE,'/',2)::integer + 2000
+			END AS EXPIRY_YEAR
+		,CONCAT(EXPIRY_YEAR, '-', EXPIRY_MONTH) as EXPIRY_YEAR_MONTH
 		,TOKEN
 		,STATUS
 		,LOWER(EMAIL) AS EMAIL
 		,SPLIT_PART(EMAIL,'@',2) AS EMAIL_DOMAIN
 	FROM payment_events_unpack
 )
-
 
 
 SELECT

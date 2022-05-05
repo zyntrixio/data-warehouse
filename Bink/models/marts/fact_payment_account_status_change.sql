@@ -30,7 +30,7 @@ payment_events AS (
 		,JSON:internal_user_ref::varchar as USER_ID
 		,JSON:email::varchar as EMAIL
 		,JSON:payment_account_id::varchar as PAYMENT_ACCOUNT_ID
-		,JSON:expiry_date::varchar as EXPIRARY_DATE
+		,JSON:expiry_date::varchar as EXPIRY_DATE
 		,JSON:token::varchar as TOKEN
 		,JSON:from_status::integer as FROM_STATUS
 		,JSON:to_status::integer as TO_STATUS
@@ -51,11 +51,12 @@ payment_events AS (
 		,CHANNEL
 		,USER_ID
 		,EXTERNAL_USER_REF
-		,SPLIT_PART(EXPIRARY_DATE,'/',1)::integer AS EXPIRARY_MONTH
-		,CASE WHEN SPLIT_PART(EXPIRARY_DATE,'/',2)::integer >= 2000
-			THEN SPLIT_PART(EXPIRARY_DATE,'/',2)::integer
-			ELSE SPLIT_PART(EXPIRARY_DATE,'/',2)::integer + 2000
-			END AS EXPIRARY_YEAR
+		,SPLIT_PART(EXPIRY_DATE,'/',1)::integer AS EXPIRY_MONTH
+		,CASE WHEN SPLIT_PART(EXPIRY_DATE,'/',2)::integer >= 2000
+			THEN SPLIT_PART(EXPIRY_DATE,'/',2)::integer
+			ELSE SPLIT_PART(EXPIRY_DATE,'/',2)::integer + 2000
+			END AS EXPIRY_YEAR
+		,CONCAT(EXPIRY_YEAR, '-', EXPIRY_MONTH) as EXPIRY_YEAR_MONTH
 		,TOKEN
 		,FROM_STATUS
 		,TO_STATUS
