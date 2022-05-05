@@ -34,9 +34,9 @@ export_transactions AS (
 ,useful_trans_ids AS (
 	SELECT DISTINCT TRANSACTION_ID
 	FROM export_transactions
-	UNION
-	SELECT DISTINCT TRANSACTION_ID
-	FROM payment_transactions
+	// UNION
+	// SELECT DISTINCT TRANSACTION_ID
+	// FROM payment_transactions
 )
 
 ,join_payment_details AS (
