@@ -17,7 +17,7 @@ WITH
 payment_events AS (
 	SELECT *
 	FROM {{ ref('stg_hermes__EVENTS')}}
-	WHERE EVENT_TYPE IN ('payment.account.created', 'payment.account.removed')
+	WHERE EVENT_TYPE IN ('payment.account.added', 'payment.account.removed')
 )
 
 ,payment_events_unpack AS (
@@ -40,8 +40,8 @@ payment_events AS (
 ,payment_events_select AS (
 	SELECT
 		PAYMENT_ACCOUNT_ID
-		,CASE WHEN EVENT_TYPE = 'payment.account.created'
-			THEN 'CREATED'
+		,CASE WHEN EVENT_TYPE = 'payment.account.added'
+			THEN 'ADDED'
 			WHEN EVENT_TYPE = 'payment.account.removed'
 			THEN 'REMOVED'
 			ELSE NULL
@@ -56,13 +56,19 @@ payment_events AS (
 		,CHANNEL
 		,USER_ID
 		,EXTERNAL_USER_REF
-		,EXPIRARY_DATE
+		,SPLIT_PART(EXPIRARY_DATE,'/',1)::integer AS EXPIRARY_MONTH
+		,CASE WHEN SPLIT_PART(EXPIRARY_DATE,'/',2)::integer >= 2000
+			THEN SPLIT_PART(EXPIRARY_DATE,'/',2)::integer
+			ELSE SPLIT_PART(EXPIRARY_DATE,'/',2)::integer + 2000
+			END AS EXPIRARY_YEAR
 		,TOKEN
 		,STATUS
 		,LOWER(EMAIL) AS EMAIL
 		,SPLIT_PART(EMAIL,'@',2) AS DOMAIN
 	FROM payment_events_unpack
 )
+
+
 
 SELECT
 	*
