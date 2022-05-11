@@ -19,24 +19,23 @@ with source as (
 
 
 ,renaming as (
-    select 
-      DATE,
-          YEAR,
-          QUARTER,
-          MONTH,
-          MONTHNAME,
-          DAYOFMONTH,
-          DAYOFWEEK,
-          WEEKOFYEAR,
-          DAYOFYEAR,
-          DAYNAME,
-        WEEKPART,
-          DAYNUMBER,
-          YEARNUMBER,
-           QUARTERNUMBER,
-           monthNUMBER
-          , year_QUARTER
-          , year_month  
+SELECT  DATE(DATE) as DATE
+       ,YEAR
+       ,QUARTER
+       ,MONTH
+       ,MONTHNAME
+       ,DAYOFMONTH
+       ,DAYOFWEEK
+       ,WEEKOFYEAR
+       ,DAYOFYEAR
+       ,DAYNAME
+       ,WEEKPART
+       ,DAYNUMBER
+       ,YEARNUMBER
+       ,QUARTERNUMBER
+       ,monthNUMBER
+       ,year_QUARTER
+       ,year_month
           from source
 )
 
