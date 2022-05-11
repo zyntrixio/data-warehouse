@@ -29,6 +29,11 @@ With loyalty_card as (
     from {{ref('stg_hermes__SCHEME_CATEGORY')}}
 )
 
+, account_status as (
+    SELECT *
+    FROM {{ref('stg_lookup__ACCOUNT_STATUS')}}
+)
+
 , join_to_base as (
     select 
     -- BALANCES --is this a json field
@@ -37,6 +42,10 @@ With loyalty_card as (
        ,JOIN_DATE
        ,CARD_NUMBER
        ,UPDATED
+       ,lc.STATUS AS STATUS_ID
+       ,a.STATUS
+       ,a.STATUS_TYPE
+       ,a.STATUS_ROLLUP
        ,BARCODE
     --    ,VOUCHERS  --is this a json field
        ,CREATED
@@ -60,6 +69,8 @@ With loyalty_card as (
     on lc.LOYALTY_PLAN_ID = lp.LOYALTY_PLAN_ID
     left join loyalty_plan_category lpc
     on lp.LOYALTY_PLAN_CATEGORY_ID = lpc.LOYALTY_PLAN_CATEGORY_ID
+    left join account_status a
+    on lc.STATUS = a.CODE
 
 
 )

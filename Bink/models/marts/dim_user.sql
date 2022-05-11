@@ -15,7 +15,7 @@ WITH
 
 users AS (
 	SELECT *
-	FROM {{ref('stg_hermes__user')}}
+	FROM {{ref('stg_hermes__USER')}}
 )
 
 ,users_select AS (
@@ -23,7 +23,7 @@ users AS (
 		USER_ID
 		,UID
 		,EXTERNAL_ID				
-		,CLIENT_ID			
+		,CHANNEL_ID			
 		,DATE_JOINED
 		,DELETE_TOKEN		
 		,EMAIL					
@@ -49,7 +49,7 @@ users AS (
 		'NOT_APPLICABLE' AS USER_ID
 		,NULL AS UID
 		,NULL AS EXTERNAL_ID				
-		,NULL AS CLIENT_ID			
+		,NULL AS CHANNEL_ID			
 		,NULL AS DATE_JOINED
 		,NULL AS DELETE_TOKEN		
 		,NULL AS EMAIL					

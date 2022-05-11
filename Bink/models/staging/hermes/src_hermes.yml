@@ -4,7 +4,7 @@ sources:
   - name: Hermes
     description: Heremes schema
     database: RAW
-    schema: HERMES
+    schema: DEV_HERMES
     tags: ['source']
 
     tables:
@@ -152,8 +152,8 @@ sources:
             - elementary.table_anomalies
             - elementary.schema_changes
         columns:
-          - name: 'ID'
-            description: Primary key of scheme category table
+          - name: 'CHANNEL_ID'
+            description: Primary key of client_application table
             tests:
               - unique
               - not_null
