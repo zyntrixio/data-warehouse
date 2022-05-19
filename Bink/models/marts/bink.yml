@@ -179,3 +179,16 @@ models:
             - accepted_values:
                 values: ['REQUEST', 'FAILED', 'SUCCESS']
           # Need a primary key here
+
+    - name: fact_loyalty_card_register
+      description: "Table containing events for loyalty card register"
+      schema: 'Bink'
+      columns:
+        - name: 'EVENT_TYPE'
+          description: Request / Success / Failure
+          quote: true 
+          tests:
+            - not_null
+            - accepted_values:
+                values: ['REQUEST', 'FAILED', 'SUCCESS']
+          # Need a primary key here
