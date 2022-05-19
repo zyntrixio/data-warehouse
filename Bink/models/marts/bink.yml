@@ -153,3 +153,16 @@ models:
                 to: ref('dim_date')
                 field: YEAR_MONTH
           # Need a primary key here
+
+    - name: fact_loyalty_card_add_auth
+      description: "Table containing events for loyalty card addition and authorisation"
+      schema: 'Bink'
+      columns:
+        - name: 'EVENT_TYPE'
+          description: Request / Success / Failure
+          quote: true 
+          tests:
+            - not_null
+            - accepted_values:
+                values: ['REQUEST', 'FAILED', 'SUCCESS']
+          # Need a primary key here
