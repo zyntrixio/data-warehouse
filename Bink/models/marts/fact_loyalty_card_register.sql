@@ -5,7 +5,7 @@ Last modified by:
 Last modified date: 
 
 Description:
-    Fact table for loyalty join request / fail / success
+    Fact table for loyalty card register request / fail / success
 
 Parameters:
     ref_object      - stg_hermes__events
@@ -13,11 +13,10 @@ Parameters:
 
 
 WITH
-
 join_events AS (
 	SELECT *
 	FROM {{ ref('stg_hermes__EVENTS')}}
-	WHERE EVENT_TYPE like 'lc.join%'
+	WHERE EVENT_TYPE like 'lc.register%'
 )
 
 ,join_events_unpack AS (
@@ -40,11 +39,11 @@ join_events AS (
 	SELECT
 		LOYALTY_CARD_ID
 		,LOYALTY_PLAN
-		,CASE WHEN EVENT_TYPE = 'lc.join.request'
+		,CASE WHEN EVENT_TYPE = 'lc.register.request'
 			THEN 'REQUEST'
-			WHEN EVENT_TYPE = 'lc.join.success'
+			WHEN EVENT_TYPE = 'lc.register.success'
 			THEN 'SUCCESS'
-			WHEN EVENT_TYPE = 'lc.join.failed'
+			WHEN EVENT_TYPE = 'lc.register.failed'
 			THEN 'FAILED'
 			ELSE NULL
 			END AS EVENT_TYPE
