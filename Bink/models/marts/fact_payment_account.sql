@@ -17,7 +17,7 @@ WITH
 payment_events AS (
 	SELECT *
 	FROM {{ ref('stg_hermes__EVENTS')}}
-	WHERE EVENT_TYPE IN ('payment.account.added', 'payment.account.removed')
+	WHERE EVENT_TYPE LIKE 'payment.account%'
 )
 
 ,payment_events_unpack AS (

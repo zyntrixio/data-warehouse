@@ -17,7 +17,7 @@ WITH
 user_events AS (
 	SELECT *
 	FROM {{ ref('stg_hermes__EVENTS')}}
-	WHERE EVENT_TYPE IN ('user.created', 'user.deleted')
+	WHERE EVENT_TYPE LIKE 'user%'
 )
 
 ,user_events_unpack AS (

@@ -17,7 +17,7 @@ WITH
 payment_events AS (
 	SELECT *
 	FROM {{ ref('stg_hermes__EVENTS')}}
-	WHERE EVENT_TYPE IN ('payment.account.status.change')
+	WHERE EVENT_TYPE = 'payment.account.status.change'
 )
 
 ,payment_events_unpack AS (
