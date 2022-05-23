@@ -152,11 +152,6 @@ sources:
             - elementary.table_anomalies
             - elementary.schema_changes
         columns:
-          - name: 'CHANNEL_ID'
-            description: Primary key of client_application table
-            tests:
-              - unique
-              - not_null
           - name: 'CLIENT_ID'
             description: Business primary key of scheme category table
             tests:
