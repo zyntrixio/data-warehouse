@@ -25,7 +25,8 @@ add_auth_events AS (
 
 ,add_auth_events_unpack AS (
 	SELECT
-		EVENT_TYPE
+		EVENT_ID
+		,EVENT_TYPE
 		,EVENT_DATE_TIME
 		,JSON:origin::varchar as ORIGIN
 		,JSON:channel::varchar as CHANNEL
@@ -40,8 +41,8 @@ add_auth_events AS (
 
 ,add_auth_events_select AS (
 	SELECT
-		LOYALTY_CARD_ID
-		,LOYALTY_PLAN
+		EVENT_ID
+		,EVENT_DATE_TIME
 		,CASE WHEN EVENT_TYPE = 'lc.addandauth.request'
 			THEN 'REQUEST'
 			WHEN EVENT_TYPE = 'lc.addandauth.success'
@@ -50,7 +51,8 @@ add_auth_events AS (
 			THEN 'FAILED'
 			ELSE NULL
 			END AS EVENT_TYPE
-		,EVENT_DATE_TIME
+		,LOYALTY_CARD_ID
+		,LOYALTY_PLAN
 		,CASE WHEN
 			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY MAIN_ANSWER)) // Need to think about simeultaneous events - rank by business logic
 			THEN TRUE

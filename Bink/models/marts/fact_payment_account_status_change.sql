@@ -25,7 +25,8 @@ payment_events AS (
 
 ,payment_events_unpack AS (
 	SELECT
-		EVENT_TYPE
+		EVENT_ID
+		,EVENT_TYPE
 		,EVENT_DATE_TIME
 		,JSON:origin::varchar as ORIGIN
 		,JSON:channel::varchar as CHANNEL
@@ -43,8 +44,9 @@ payment_events AS (
 
 ,payment_events_select AS (
 	SELECT
-		PAYMENT_ACCOUNT_ID
+		EVENT_ID
 		,EVENT_DATE_TIME
+		,PAYMENT_ACCOUNT_ID
 		,CASE WHEN
 			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY USER_ID))
 			THEN TRUE

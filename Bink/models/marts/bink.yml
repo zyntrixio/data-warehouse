@@ -56,36 +56,42 @@ models:
             - unique
             - not_null
 
-    - name: fact_transactions
-      description: "Table containing historical transactions"
-      schema: 'Bink'
-      columns:
-        - name: 'TRANSACTION_ID'
-          description: Primary Key of the table
-          quote: true
-          tests:
-            - unique
-            - not_null
-        - name: 'STATUS'
-          description: Transaction most recent status
-          quote: true
-          tests:
-            - not_null
-            - accepted_values:
-                values: ['placed', 'shipped', 'completed', 'returned']
-        - name: 'USER_ID'
-          description: Transaction most recent status
-          quote: true
-          tests:
-            - not_null
-            - relationships:
-                to: ref('dim_user')
-                field: USER_ID
+    # - name: fact_transactions
+    #   description: "Table containing historical transactions"
+    #   schema: 'Bink'
+    #   columns:
+    #     - name: 'TRANSACTION_ID'
+    #       description: Primary Key of the table
+    #       quote: true
+    #       tests:
+    #         - unique
+    #         - not_null
+    #     - name: 'STATUS'
+    #       description: Transaction most recent status
+    #       quote: true
+    #       tests:
+    #         - not_null
+    #         - accepted_values:
+    #             values: ['placed', 'shipped', 'completed', 'returned']
+    #     - name: 'USER_ID'
+    #       description: Transaction most recent status
+    #       quote: true
+    #       tests:
+    #         - not_null
+    #         - relationships:
+    #             to: ref('dim_user')
+    #             field: USER_ID
 
     - name: fact_user
       description: "Table containing events for user creation / deletion"
       schema: 'Bink'
       columns:
+        - name: EVENT_ID
+          description: unique event ID
+          quote: true
+          tests:
+            - unique
+            - not_null
         - name: 'EVENT_TYPE'
           description: Created or deleted
           quote: true 
@@ -93,12 +99,17 @@ models:
             - not_null
             - accepted_values:
                 values: ['CREATED', 'DELETED']
-          # Need a primary key here
 
     - name: fact_payment_account
       description: "Table containing events for payment account creation / removal"
       schema: 'Bink'
       columns:
+        - name: EVENT_ID
+          description: unique event ID
+          quote: true
+          tests:
+            - unique
+            - not_null
         - name: 'EVENT_TYPE'
           description: Created or removed
           quote: true 
@@ -126,12 +137,17 @@ models:
             - relationships:
                 to: ref('dim_date')
                 field: YEAR_MONTH
-          # Need a primary key here
 
     - name: fact_payment_account_status_change
       description: "Table containing events for payment account status change"
       schema: 'Bink'
       columns:
+        - name: EVENT_ID
+          description: unique event ID
+          quote: true
+          tests:
+            - unique
+            - not_null
         - name: 'EXPIRY_MONTH'
           description: Month of card expirary
           quote: true 
@@ -152,49 +168,9 @@ models:
             - relationships:
                 to: ref('dim_date')
                 field: YEAR_MONTH
-          # Need a primary key here
 
     - name: fact_loyalty_card_add_auth
       description: "Table containing events for loyalty card addition and authorisation"
-      schema: 'Bink'
-      columns:
-        - name: 'EVENT_TYPE'
-          description: Request / Success / Failure
-          quote: true 
-          tests:
-            - not_null
-            - accepted_values:
-                values: ['REQUEST', 'FAILED', 'SUCCESS']
-          # Need a primary key here
-
-    - name: fact_loyalty_card_join
-      description: "Table containing events for loyalty card join"
-      schema: 'Bink'
-      columns:
-        - name: 'EVENT_TYPE'
-          description: Request / Success / Failure
-          quote: true 
-          tests:
-            - not_null
-            - accepted_values:
-                values: ['REQUEST', 'FAILED', 'SUCCESS']
-          # Need a primary key here
-
-    - name: fact_loyalty_card_register
-      description: "Table containing events for loyalty card register"
-      schema: 'Bink'
-      columns:
-        - name: 'EVENT_TYPE'
-          description: Request / Success / Failure
-          quote: true 
-          tests:
-            - not_null
-            - accepted_values:
-                values: ['REQUEST', 'FAILED', 'SUCCESS']
-          # Need a primary key here
-
-    - name: fact_loyalty_card_removed
-      description: "Table containing events for loyalty card being removed from wallet"
       schema: 'Bink'
       columns:
         - name: EVENT_ID
@@ -210,4 +186,50 @@ models:
             - not_null
             - accepted_values:
                 values: ['REQUEST', 'FAILED', 'SUCCESS']
-          # Need a primary key here
+
+    - name: fact_loyalty_card_join
+      description: "Table containing events for loyalty card join"
+      schema: 'Bink'
+      columns:
+        - name: EVENT_ID
+          description: unique event ID
+          quote: true
+          tests:
+            - unique
+            - not_null
+        - name: 'EVENT_TYPE'
+          description: Request / Success / Failure
+          quote: true 
+          tests:
+            - not_null
+            - accepted_values:
+                values: ['REQUEST', 'FAILED', 'SUCCESS']
+
+    - name: fact_loyalty_card_register
+      description: "Table containing events for loyalty card register"
+      schema: 'Bink'
+      columns:
+        - name: EVENT_ID
+          description: unique event ID
+          quote: true
+          tests:
+            - unique
+            - not_null
+        - name: 'EVENT_TYPE'
+          description: Request / Success / Failure
+          quote: true 
+          tests:
+            - not_null
+            - accepted_values:
+                values: ['REQUEST', 'FAILED', 'SUCCESS']
+
+    - name: fact_loyalty_card_removed
+      description: "Table containing events for loyalty card being removed from wallet"
+      schema: 'Bink'
+      columns:
+        - name: EVENT_ID
+          description: unique event ID
+          quote: true
+          tests:
+            - unique
+            - not_null

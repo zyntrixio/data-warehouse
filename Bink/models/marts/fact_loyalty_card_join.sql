@@ -25,7 +25,8 @@ join_events AS (
 
 ,join_events_unpack AS (
 	SELECT
-		EVENT_TYPE
+		EVENT_ID
+		,EVENT_TYPE
 		,EVENT_DATE_TIME
 		,JSON:origin::varchar as ORIGIN
 		,JSON:channel::varchar as CHANNEL
@@ -41,7 +42,9 @@ join_events AS (
 
 ,join_events_select AS (
 	SELECT
-		LOYALTY_CARD_ID
+		EVENT_ID
+		,EVENT_DATE_TIME
+		,LOYALTY_CARD_ID
 		,LOYALTY_PLAN
 		,CASE WHEN EVENT_TYPE = 'lc.join.request'
 			THEN 'REQUEST'
@@ -51,7 +54,6 @@ join_events AS (
 			THEN 'FAILED'
 			ELSE NULL
 			END AS EVENT_TYPE
-		,EVENT_DATE_TIME
 		,CASE WHEN
 			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY LOYALTY_CARD_ID)) // Need to think about simeultaneous events - rank by business logic
 			THEN TRUE

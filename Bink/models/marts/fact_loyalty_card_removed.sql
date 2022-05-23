@@ -49,9 +49,9 @@ join_events AS (
 ,join_events_select AS (
 	SELECT
 		EVENT_ID
+		,EVENT_DATE_TIME
 		,LOYALTY_CARD_ID
 		,LOYALTY_PLAN
-		,EVENT_DATE_TIME
 		// ,CASE WHEN
 		// 	(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY LOYALTY_CARD_ID)) // Need to think about simeultaneous events - rank by business logic
 		// 	THEN TRUE
