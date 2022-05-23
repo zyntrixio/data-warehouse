@@ -17,6 +17,9 @@ join_events AS (
 	SELECT *
 	FROM {{ ref('stg_hermes__EVENTS')}}
 	WHERE EVENT_TYPE like 'lc.register%'
+	{% if is_incremental() %}
+  	AND _AIRBYTE_NORMALIZED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
+	{% endif %}
 )
 
 ,join_events_unpack AS (
@@ -64,6 +67,7 @@ join_events AS (
 		,EXTERNAL_USER_REF
 		,LOWER(EMAIL) AS EMAIL
 		,SPLIT_PART(EMAIL,'@',2) AS EMAIL_DOMAIN
+		,CURRENT_TIMESTAMP() AS INSERTED_DATE_TIME
 	FROM join_events_unpack
 	ORDER BY EVENT_DATE_TIME DESC
 )
