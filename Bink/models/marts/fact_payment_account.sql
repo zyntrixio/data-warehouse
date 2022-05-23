@@ -18,6 +18,9 @@ payment_events AS (
 	SELECT *
 	FROM {{ ref('stg_hermes__EVENTS')}}
 	WHERE EVENT_TYPE LIKE 'payment.account%'
+	{% if is_incremental() %}
+  	AND _AIRBYTE_NORMALIZED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
+	{% endif %}
 )
 
 ,payment_events_unpack AS (
@@ -66,6 +69,7 @@ payment_events AS (
 		,STATUS
 		,LOWER(EMAIL) AS EMAIL
 		,SPLIT_PART(EMAIL,'@',2) AS EMAIL_DOMAIN
+		,CURRENT_TIMESTAMP() AS INSERTED_DATE_TIME
 	FROM payment_events_unpack
 )
 
