@@ -19,14 +19,9 @@ sources:
         tests:
             - elementary.table_anomalies
             - elementary.schema_changes
-        # columns:
-        #   - name: 'ID'
-        #     description: Primary key of user table
-        #     tests:
-        #       - unique
-        #       - not_null
-        #   - name: 'UID'
-        #     description: userID of user table
-        #     tests:
-        #       - unique
-        #       - not_null
+        columns:
+          - name: 'ID'
+            description: Primary key of user table
+            tests:
+              - unique
+              - not_null

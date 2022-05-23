@@ -197,6 +197,12 @@ models:
       description: "Table containing events for loyalty card being removed from wallet"
       schema: 'Bink'
       columns:
+        - name: EVENT_ID
+          description: unique event ID
+          quote: true
+          tests:
+            - unique
+            - not_null
         - name: 'EVENT_TYPE'
           description: Request / Success / Failure
           quote: true 

@@ -11,18 +11,29 @@ Parameters:
     ref_object      - stg_hermes__events
 */
 
+{{
+    config(
+        materialized='incremental'
+		,unique_key='EVENT_ID'
+    )
+}}
+
 
 WITH
 join_events AS (
 	SELECT *
 	FROM {{ ref('stg_hermes__EVENTS')}}
 	WHERE EVENT_TYPE = 'lc.removed'
+	{% if is_incremental() %}
+  	AND _AIRBYTE_NORMALIZED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
+	{% endif %}
 )
 
 ,join_events_unpack AS (
 	SELECT
 		EVENT_TYPE
 		,EVENT_DATE_TIME
+		,EVENT_ID
 		,JSON:origin::varchar as ORIGIN
 		,JSON:channel::varchar as CHANNEL
 		,JSON:external_user_ref::varchar as EXTERNAL_USER_REF
@@ -37,7 +48,8 @@ join_events AS (
 
 ,join_events_select AS (
 	SELECT
-		LOYALTY_CARD_ID
+		EVENT_ID
+		,LOYALTY_CARD_ID
 		,LOYALTY_PLAN
 		,EVENT_DATE_TIME
 		// ,CASE WHEN
@@ -56,6 +68,7 @@ join_events AS (
 		,EXTERNAL_USER_REF
 		,LOWER(EMAIL) AS EMAIL
 		,SPLIT_PART(EMAIL,'@',2) AS EMAIL_DOMAIN
+		,CURRENT_TIMESTAMP() AS INSERTED_DATE_TIME
 	FROM join_events_unpack
 	ORDER BY EVENT_DATE_TIME DESC
 )

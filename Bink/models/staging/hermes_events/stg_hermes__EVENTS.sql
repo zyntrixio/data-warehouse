@@ -11,12 +11,23 @@ Parameters:
     source_object      - HERMES_EVENTS.EVENTS
 */
 
+{{
+    config(
+        materialized='incremental'
+		,unique_key='EVENT_ID'
+    )
+}}
+
 WITH
 all_events as (
 	SELECT
 		*
 	FROM
 		{{ source('hermes_events', 'events') }}
+	{% if is_incremental() %}
+  	WHERE _AIRBYTE_NORMALIZED_AT >= (SELECT MAX(_AIRBYTE_NORMALIZED_AT) from {{ this }})
+	{% endif %}
+	
 )
 
 ,all_events_select as (
@@ -24,6 +35,12 @@ all_events as (
 		PARSE_JSON(JSON) AS JSON
 		,EVENT_TYPE
 		,EVENT_DATE_TIME::TIMESTAMP AS EVENT_DATE_TIME
+		,_AIRBYTE_AB_ID
+		,_AIRBYTE_EMITTED_AT
+		,_AIRBYTE_NORMALIZED_AT
+		,_AIRBYTE_EVENTS_HASHID
+		,_AIRBYTE_UNIQUE_KEY
+		,ID AS EVENT_ID
 	FROM
 		all_events
 )
