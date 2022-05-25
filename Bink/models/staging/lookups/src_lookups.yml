@@ -18,12 +18,23 @@ sources:
             tests:
               - unique
               - not_null
+
       - name: ACCOUNT_STATUS
         identifier: ACCOUNT_STATUS
         description: Enrichment data for loyalty card
         columns:
           - name: 'CODE'
             description: Business Primary key of the ACCOUNT_STATUS table
+            tests:
+              - unique
+              - not_null
+
+      - name: PAYMENT_STATUS
+        identifier: PAYMENT_ACCOUNT_STATUS_MAPPING
+        description: Mapping for status id for payment account dimension
+        columns:
+          - name: 'ID'
+            description: ID for PAYMENT_ACCOUNT_STATUS_MAPPING table
             tests:
               - unique
               - not_null

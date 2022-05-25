@@ -117,6 +117,11 @@ models:
             - not_null
             - accepted_values:
                 values: ['ADDED', 'REMOVED']
+        - name: 'STATUS'
+          description: Mapping from payment account status mapping
+          quote: true 
+          tests:
+            - not_null
         - name: 'EXPIRY_MONTH'
           description: Month of card expirary
           quote: true 
