@@ -57,7 +57,7 @@ With loyalty_card as (
     --    ,FORMATTED_IMAGES --is this a json field
        ,IS_DELETED
        ,lc.LOYALTY_PLAN_ID
-       ,lp.Loylaty_plan_COMPANY
+       ,lp.LOYALTY_PLAN_COMPANY
        ,lp.LOYALTY_PLAN_SLUG
        ,lp.LOYALTY_PLAN_TIER
        ,lp.LOYALTY_PLAN_NAME_CARD
