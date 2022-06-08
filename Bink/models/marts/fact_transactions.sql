@@ -1,49 +1,72 @@
 /*
 Created by:         Sam Pibworth
 Created date:       2022-04-19
-Last modified by:   
-Last modified date: 
+Last modified by:   Sam Pibworth
+Last modified date: 2022-06-08
 
 Description:
-    Transaction table from the transformation layer, with nulls removed
+    Transaction table from the the hermes events.
 
 Parameters:
     ref_object      - transformed_transactions
 */
 
 WITH
-transformed_transactions as (
-    SELECT *
-    FROM {{ ref('transformed_transactions')}}
+transaction_events AS (
+	SELECT *
+	FROM {{ ref('stg_hermes__EVENTS')}}
+	WHERE EVENT_TYPE = 'transaction.exported'
+	{% if is_incremental() %}
+  	AND _AIRBYTE_NORMALIZED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
+	{% endif %}
+)
+
+,loyalty_plan AS (
+	SELECT *
+	FROM {{ ref('stg_hermes__SCHEME_SCHEME')}}
+)
+
+,transaction_events_unpack AS (
+	SELECT
+		EVENT_ID
+		,EVENT_TYPE
+		,EVENT_DATE_TIME
+		,JSON:internal_user_ref :: VARCHAR AS USER_ID
+		,JSON:transaction_id :: VARCHAR AS TRANSACTION_ID
+		,JSON:provider_slug :: VARCHAR AS PROVIDER_SLUG
+		,JSON:transaction_date :: DATETIME AS TRANSACTION_DATE
+		,JSON:spend_amount :: NUMBER(12,2) AS SPEND_AMOUNT
+		,JSON:spend_currency :: VARCHAR AS SPEND_CURRENCY
+		,JSON:loyalty_id :: VARCHAR AS LOYALTY_ID
+		// ,JSON:mid :: VARCHAR AS MID // Joins to Harmonia merchant data
+		,JSON:scheme_account_id :: VARCHAR AS LOYALTY_CARD_ID
+		// ,JSON:location_id :: VARCHAR AS LOCATION_ID
+		// ,JSON:merchant_internal_id :: VARCHAR AS MERCHANT_INTERNAL_ID
+		,JSON:payment_card_account_id :: VARCHAR AS PAYMENT_ACCOUNT_ID
+		,JSON:settlement_key :: VARCHAR AS SETTLEMENT_KEY
+	FROM transaction_events
 )
 
 ,select_transactions as (
 	SELECT
-		TRANSACTION_ID
-		,STATUS
-		,COALESCE(USER_ID, 'NOT_APPLICABLE') AS USER_ID
-		,TRANSACTION_DATE
-		,HAS_TIME	
-		,AUTH_CODE	
-		,FIRST_SIX	
-		,LAST_FOUR	
-		,CARD_TOKEN	
-		,CREATED_AT	
-		,UPDATED_AT
-		,MATCH_GROUP
-		,EXTRA_FIELDS
-		,SPEND_AMOUNT
+		EVENT_ID
+		,EVENT_DATE_TIME
+		,USER_ID
+		,TRANSACTION_ID
 		,PROVIDER_SLUG
-		,SETTLEMENT_KEY
+		,lp.LOYALTY_PLAN_NAME
+		,TRANSACTION_DATE
+		,SPEND_AMOUNT
 		,SPEND_CURRENCY
-		,COALESCE(BRAND_ID, 'NOT_APPLICABLE') AS BRAND_ID
-		,COALESCE(STORE_ID, 'NOT_APPLICABLE') AS STORE_ID
-		,FEED_TYPE
-		,COALESCE(SCHEME_TRANSACTION_ID, 'NOT APPLICABLE') AS SCHEME_TRANSACTION_ID
-		,COALESCE(MERCHANT_IDENTIFIER_ID, 'NOT APPLICABLE') AS MERCHANT_IDENTIFIER_ID
-		,COALESCE(PAYMENT_TRANSACTION_ID, 'NOT APPLICABLE') AS PAYMENT_TRANSACTION_ID
+		,LOYALTY_ID
+		,LOYALTY_CARD_ID
+		,PAYMENT_ACCOUNT_ID
+		,SETTLEMENT_KEY
+		,SYSDATE() AS INSERTED_DATE_TIME
 	FROM
-		transformed_transactions
+		transaction_events_unpack t
+	LEFT JOIN
+		loyalty_plan lp ON lp.LOYALTY_PLAN_SLUG = t.PROVIDER_SLUG
 )
 
 SELECT

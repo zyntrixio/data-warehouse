@@ -56,31 +56,40 @@ models:
             - unique
             - not_null
 
-    # - name: fact_transactions
-    #   description: "Table containing historical transactions"
-    #   schema: 'Bink'
-    #   columns:
-    #     - name: 'TRANSACTION_ID'
-    #       description: Primary Key of the table
-    #       quote: true
-    #       tests:
-    #         - unique
-    #         - not_null
-    #     - name: 'STATUS'
-    #       description: Transaction most recent status
-    #       quote: true
-    #       tests:
-    #         - not_null
-    #         - accepted_values:
-    #             values: ['placed', 'shipped', 'completed', 'returned']
-    #     - name: 'USER_ID'
-    #       description: Transaction most recent status
-    #       quote: true
-    #       tests:
-    #         - not_null
-    #         - relationships:
-    #             to: ref('dim_user')
-    #             field: USER_ID
+    - name: fact_transactions
+      description: "Table containing transaction events"
+      schema: 'Bink'
+      columns:
+        - name: 'TRANSACTION_ID'
+          description: Primary Key of the table
+          quote: true
+          tests:
+            - unique
+            - not_null
+        - name: 'USER_ID'
+          description: Transaction User
+          quote: true
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_user')
+                field: USER_ID
+        - name: 'PAYMENT_ACCOUNT_ID'
+          description: Transaction payment account
+          quote: true
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_payment_account')
+                field: PAYMENT_ACCOUNT_ID
+        - name: 'LOYALTY_CARD_ID'
+          description: Transaction loyalty card account
+          quote: true
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_loyalty_card')
+                field: LOYALTY_CARD_ID
 
     - name: fact_user
       description: "Table containing events for user creation / deletion"
