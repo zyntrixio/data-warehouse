@@ -12,7 +12,7 @@ models:
             - unique
             - not_null
     
-    - name: dim_payment_accounts
+    - name: dim_payment_account
       description: "Table containing payment accounts"
       schema: 'Bink'
       columns:
@@ -56,7 +56,7 @@ models:
             - unique
             - not_null
 
-    - name: fact_transactions
+    - name: fact_transaction
       description: "Table containing transaction events"
       schema: 'Bink'
       columns:
