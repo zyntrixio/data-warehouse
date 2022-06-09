@@ -60,11 +60,16 @@ models:
       description: "Table containing transaction events"
       schema: 'Bink'
       columns:
-        - name: 'TRANSACTION_ID'
+        - name: 'EVENT_ID'
           description: Primary Key of the table
           quote: true
           tests:
             - unique
+            - not_null
+        - name: 'TRANSACTION_ID'
+          description: Busineess PK of the table
+          quote: true
+          tests:
             - not_null
         - name: 'USER_ID'
           description: Transaction User
