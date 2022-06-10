@@ -79,7 +79,7 @@ payment_events AS (
 			ELSE NULL
 			END AS EVENT_TYPE
 		,CASE WHEN
-			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY USER_ID)) // Need to think about simeultaneous events - rank by business logic
+			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY PAYMENT_ACCOUNT_ID)) // Need to think about simeultaneous events - rank by business logic
 			THEN TRUE
 			ELSE FALSE
 			END AS IS_MOST_RECENT
