@@ -206,6 +206,24 @@ models:
             - accepted_values:
                 values: ['REQUEST', 'FAILED', 'SUCCESS']
 
+    - name: fact_loyalty_card_auth
+      description: "Table containing events for loyalty card authorisation"
+      schema: 'Bink'
+      columns:
+        - name: EVENT_ID
+          description: unique event ID
+          quote: true
+          tests:
+            - unique
+            - not_null
+        - name: 'EVENT_TYPE'
+          description: Request / Success / Failure
+          quote: true 
+          tests:
+            - not_null
+            - accepted_values:
+                values: ['REQUEST', 'FAILED', 'SUCCESS']
+
     - name: fact_loyalty_card_join
       description: "Table containing events for loyalty card join"
       schema: 'Bink'
