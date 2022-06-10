@@ -4,21 +4,28 @@ with events_src as (
 )
 
  ,fact_tables as (
-    {%- for item in [
-        ref('fact_loyalty_card_add_auth')
-        ,ref('fact_loyalty_card_auth')
-        ,ref('fact_loyalty_card_join')
-        ,ref('fact_loyalty_card_register')
-        ,ref('fact_loyalty_card_removed')
-        ,ref('fact_loyalty_card_status_change')
-        ,ref('fact_payment_account_status_change')
-        ,ref('fact_payment_account')
-        ,ref('fact_transaction')
-        ,ref('fact_user')
-        ]
+    {% set get_tables  %}
+    SELECT TABLE_NAME
+    FROM {{target.database}}.INFORMATION_SCHEMA.TABLES
+    WHERE TABLE_SCHEMA = '{{target.schema}}'
+    AND TABLE_NAME LIKE 'FACT%'
+    {% endset %}
+
+    {# Get column list #}
+    {% set results = run_query(get_tables) %}
+
+    {% if execute %}
+    {# Return the first column as a list #}
+    {% set results_list = results.columns[0].values() %}
+    {% else %}
+    {% set results_list = [] %}
+    {% endif %}
+
+
+    {%- for item in results_list
     -%}
     {%- if not loop.first %} UNION ALL {% endif %}
-    SELECT event_id FROM {{ item }}
+    SELECT event_id FROM {{target.database}}.{{target.schema}}.{{ item }}
     {%- endfor -%}
 )
 
