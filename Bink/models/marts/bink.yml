@@ -270,3 +270,14 @@ models:
           tests:
             - unique
             - not_null
+
+    - name: fact_loyalty_card_status_change
+      description: "Table containing events for loyalty card status change"
+      schema: 'Bink'
+      columns:
+        - name: EVENT_ID
+          description: unique event ID
+          quote: true
+          tests:
+            - unique
+            - not_null
