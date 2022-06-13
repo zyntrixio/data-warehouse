@@ -38,10 +38,10 @@ transaction_events AS (
 		,JSON:spend_amount :: NUMBER(12,2) AS SPEND_AMOUNT
 		,JSON:spend_currency :: VARCHAR AS SPEND_CURRENCY
 		,JSON:loyalty_id :: VARCHAR AS LOYALTY_ID
-		// ,JSON:mid :: VARCHAR AS MID // Joins to Harmonia merchant data
 		,JSON:scheme_account_id :: VARCHAR AS LOYALTY_CARD_ID
-		// ,JSON:location_id :: VARCHAR AS LOCATION_ID
-		// ,JSON:merchant_internal_id :: VARCHAR AS MERCHANT_INTERNAL_ID
+		,JSON:mid :: VARCHAR AS MERCHANT_ID 
+		// ,JSON:location_id :: VARCHAR AS LOCATION_ID // Joins to Harmonia merchant data
+		// ,JSON:merchant_internal_id :: VARCHAR AS MERCHANT_INTERNAL_ID // Joins to Harmonia merchant data
 		,JSON:payment_card_account_id :: VARCHAR AS PAYMENT_ACCOUNT_ID
 		,JSON:settlement_key :: VARCHAR AS SETTLEMENT_KEY
 	FROM transaction_events
@@ -60,6 +60,7 @@ transaction_events AS (
 		,SPEND_CURRENCY
 		,LOYALTY_ID
 		,LOYALTY_CARD_ID
+		,MERCHANT_ID
 		,PAYMENT_ACCOUNT_ID
 		,SETTLEMENT_KEY
 		,SYSDATE() AS INSERTED_DATE_TIME
