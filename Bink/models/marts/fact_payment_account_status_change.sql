@@ -65,9 +65,9 @@ payment_events AS (
 	FROM
 		payment_events_unpack
 	LEFT JOIN payment_account_status_lookup s_from
-		ON FROM_STATUS_ID = s_from.ID
+		ON FROM_STATUS_ID = s_from.PAYMENT_STATUS_ID
 	LEFT JOIN payment_account_status_lookup s_to
-		ON TO_STATUS_ID = s_to.ID
+		ON TO_STATUS_ID = s_to.PAYMENT_STATUS_ID
 )
 
 ,payment_events_select AS (

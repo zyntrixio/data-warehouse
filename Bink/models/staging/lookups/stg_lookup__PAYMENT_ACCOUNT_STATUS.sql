@@ -6,7 +6,7 @@ WITH payment_status AS (
 ,payment_status_select AS (
     SELECT
         STATUS
-        ,ID
+        ,ID AS PAYMENT_STATUS_ID
     FROM payment_status
 )
 

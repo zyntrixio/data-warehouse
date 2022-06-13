@@ -64,7 +64,7 @@ payment_events AS (
 	FROM
 		payment_events_unpack
 	LEFT JOIN payment_account_status_lookup s
-		ON STATUS_ID = s.ID
+		ON STATUS_ID = s.PAYMENT_STATUS_ID
 )
 
 ,payment_events_select AS (
