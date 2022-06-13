@@ -18,9 +18,14 @@ users AS (
 	FROM {{ref('stg_hermes__USER')}}
 )
 
+,user_details AS (
+	SELECT *
+	FROM {{ref('stg_hermes__USER_DETAILS')}}
+)
+
 ,users_select AS (
     SELECT
-		USER_ID
+		u.USER_ID
 		,UID
 		,EXTERNAL_ID				
 		,CHANNEL_ID			
@@ -40,8 +45,24 @@ users AS (
 		,FACEBOOK						
 		,TWITTER									
 		,MAGIC_LINK_VERIFIED -- Not sure what this is
+		,ud.CITY
+		,ud.PHONE
+		,ud.GENDER
+		,ud.REGION
+		,ud.COUNTRY
+		,ud.CURRENCY
+		,ud.POSTCODE
+		,ud.LAST_NAME
+		,ud.PASS_CODE
+		,ud.FIRST_NAME
+		,ud.DATE_OF_BIRTH
+		,ud.NOTIFICATIONS
+		,ud.ADDRESS_LINE_1
+		,ud.ADDRESS_LINE_2
     FROM
-		users
+		users u
+	LEFT JOIN user_details ud
+		ON ud.USER_ID = u.USER_ID
 )
 
 ,users_na_unions AS (
@@ -66,6 +87,20 @@ users AS (
 		,NULL AS FACEBOOK						
 		,NULL AS TWITTER									
 		,NULL AS MAGIC_LINK_VERIFIED
+		,NULL AS CITY
+		,NULL AS PHONE
+		,NULL AS GENDER
+		,NULL AS REGION
+		,NULL AS COUNTRY
+		,NULL AS CURRENCY
+		,NULL AS POSTCODE
+		,NULL AS LAST_NAME
+		,NULL AS PASS_CODE
+		,NULL AS FIRST_NAME
+		,NULL AS DATE_OF_BIRTH
+		,NULL AS NOTIFICATIONS
+		,NULL AS ADDRESS_LINE_1
+		,NULL AS ADDRESS_LINE_2
 	UNION ALL
 	SELECT *
 	FROM users_select
