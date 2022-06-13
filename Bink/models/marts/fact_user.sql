@@ -17,14 +17,18 @@ WITH
 user_events AS (
 	SELECT *
 	FROM {{ ref('stg_hermes__EVENTS')}}
-	WHERE EVENT_TYPE IN ('user.created', 'user.deleted')
+	WHERE EVENT_TYPE LIKE 'user%'
+	{% if is_incremental() %}
+  	AND _AIRBYTE_NORMALIZED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
+	{% endif %}	
 )
 
 ,user_events_unpack AS (
 	SELECT
-		JSON:internal_user_ref::varchar as USER_ID
+		EVENT_ID
 		,EVENT_TYPE
 		,EVENT_DATE_TIME
+		,JSON:internal_user_ref::varchar as USER_ID
 		,JSON:origin::varchar as ORIGIN
 		,JSON:channel::varchar as CHANNEL
 		,JSON:external_user_ref::varchar as EXTERNAL_USER_REF
@@ -34,14 +38,15 @@ user_events AS (
 
 ,user_events_select AS (
 	SELECT
-		USER_ID
+		EVENT_ID
+		,EVENT_DATE_TIME
+		,USER_ID
 		,CASE WHEN EVENT_TYPE = 'user.created'
 			THEN 'CREATED'
 			WHEN EVENT_TYPE = 'user.deleted'
 			THEN 'DELETED'
 			ELSE NULL
 			END AS EVENT_TYPE
-		,EVENT_DATE_TIME
 		,CASE WHEN
 			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY USER_ID))
 			THEN TRUE
@@ -52,6 +57,7 @@ user_events AS (
 		,EXTERNAL_USER_REF
 		,LOWER(EMAIL) AS EMAIL
 		,SPLIT_PART(EMAIL,'@',2) AS DOMAIN
+		,SYSDATE() AS INSERTED_DATE_TIME
 	FROM user_events_unpack
 
 )

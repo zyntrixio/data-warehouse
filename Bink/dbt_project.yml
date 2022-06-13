@@ -30,3 +30,10 @@ models:
     +schema: 'BINK_MONITORING'
     +materialized: table
     +transient: false
+
+vars:
+ dbt_artifacts_database: 'DEV'
+ dbt_artifacts_schema: 'BINK_MONITORING'
+
+on-run-end:
+ - "{{ elementary.upload_dbt_artifacts(results) }}"

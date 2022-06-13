@@ -17,7 +17,7 @@ run_table:
 run_full: clean
 	dbt compile
 	dbt deps
-	dbt run
+	dbt run --full-refresh
 	dbt test
 
 test: compile deps
