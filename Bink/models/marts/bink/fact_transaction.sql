@@ -11,6 +11,13 @@ Parameters:
     ref_object      - transformed_transactions
 */
 
+{{
+    config(
+        materialized='incremental'
+		,unique_key='EVENT_ID'
+    )
+}}
+
 WITH
 transaction_events AS (
 	SELECT *

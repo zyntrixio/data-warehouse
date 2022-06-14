@@ -11,7 +11,13 @@ Parameters:
     ref_object      - stg_hermes__events
 */
 
-{{ config(alias='fact_loyalty_card_register') }}
+{{
+    config(
+		alias='fact_loyalty_card_register'
+        ,materialized='incremental'
+		,unique_key='EVENT_ID'
+    )
+}}
 
 WITH
 join_events AS (

@@ -11,9 +11,14 @@ Parameters:
     ref_object      - stg_hermes__events
 */
 
+{{
+    config(
+        materialized='incremental'
+		,unique_key='EVENT_ID'
+    )
+}}
 
 WITH
-
 user_events AS (
 	SELECT *
 	FROM {{ ref('stg_hermes__EVENTS')}}
