@@ -13,11 +13,11 @@ Parameters:
 
 {{
     config(
-        materialized='incremental'
+		alias='fact_loyalty_card_removed'
+        ,materialized='incremental'
 		,unique_key='EVENT_ID'
     )
 }}
-
 
 WITH
 join_events AS (

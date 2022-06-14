@@ -11,8 +11,9 @@ Parameters:
     ref_object      - stg_hermes__user
 */
 
-WITH
+{{ config(alias='dim_user') }}
 
+WITH
 users AS (
 	SELECT *
 	FROM {{ref('stg_hermes__USER')}}

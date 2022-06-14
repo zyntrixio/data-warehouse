@@ -11,6 +11,7 @@ Parameters:
     ref_object      - stg_hermes__events
 */
 
+{{ config(alias='fact_payment_account') }}
 
 WITH
 

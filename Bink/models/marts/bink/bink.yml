@@ -1,0 +1,83 @@
+version: 2
+
+models:
+
+    - name: fact_transaction
+      description: "Table containing transaction events"
+      schema: 'Bink'
+      columns:
+        - name: 'EVENT_ID'
+          description: Primary Key of the table
+          quote: true
+          tests:
+            - unique
+            - not_null
+        - name: 'TRANSACTION_ID'
+          description: Busineess PK of the table
+          quote: true
+          tests:
+            - not_null
+        - name: 'USER_ID'
+          description: Transaction User
+          quote: true
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_user')
+                field: USER_ID
+        - name: 'PAYMENT_ACCOUNT_ID'
+          description: Transaction payment account
+          quote: true
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_payment_account')
+                field: PAYMENT_ACCOUNT_ID
+        - name: 'LOYALTY_CARD_ID'
+          description: Transaction loyalty card account
+          quote: true
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_loyalty_card')
+                field: LOYALTY_CARD_ID
+
+    - name: dim_date
+      description: "A dimension table For dates / calendars"
+      schema: 'Bink'
+      columns:
+        - name: 'DATE'
+          description: Primary Key of the table
+          quote: true
+          tests:
+            - unique
+            - not_null
+
+    - name: dim_channel
+      description: "A dimension table containing client data, realting to the channel field in events"
+      schema: 'Bink'
+      columns:
+        - name: 'CHANNEL_ID'
+          description: Primary Key of the table
+          quote: true
+          tests:
+            - unique
+            - not_null
+
+    - name: fact_user
+      description: "Table containing events for user creation / deletion"
+      schema: 'Bink'
+      columns:
+        - name: EVENT_ID
+          description: unique event ID
+          quote: true
+          tests:
+            - unique
+            - not_null
+        - name: 'EVENT_TYPE'
+          description: Created or deleted
+          quote: true 
+          tests:
+            - not_null
+            - accepted_values:
+                values: ['CREATED', 'DELETED']

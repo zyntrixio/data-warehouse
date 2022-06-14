@@ -1,7 +1,7 @@
 version: 2
 
 models:
-    - name: dim_user
+    - name: dim_user_secure
       description: "User table containing current and historical users"
       schema: 'Bink'
       columns:
@@ -12,7 +12,7 @@ models:
             - unique
             - not_null
     
-    - name: dim_payment_account
+    - name: dim_payment_account_secure
       description: "Table containing payment accounts"
       schema: 'Bink'
       columns:
@@ -23,7 +23,7 @@ models:
             - unique
             - not_null
     
-    - name: dim_loyalty_card
+    - name: dim_loyalty_card_secure
       description: "This is a dimension table containing loyalty card information "
       schema: 'Bink'
       columns:
@@ -34,87 +34,7 @@ models:
             - unique
             - not_null
 
-    - name: dim_channel
-      description: "A dimension table containing client data, realting to the channel field in events"
-      schema: 'Bink'
-      columns:
-        - name: 'CHANNEL_ID'
-          description: Primary Key of the table
-          quote: true
-          tests:
-            - unique
-            - not_null
-
-    - name: dim_date
-      description: "A dimension table For dates / calendars"
-      schema: 'Bink'
-      columns:
-        - name: 'DATE'
-          description: Primary Key of the table
-          quote: true
-          tests:
-            - unique
-            - not_null
-
-    - name: fact_transaction
-      description: "Table containing transaction events"
-      schema: 'Bink'
-      columns:
-        - name: 'EVENT_ID'
-          description: Primary Key of the table
-          quote: true
-          tests:
-            - unique
-            - not_null
-        - name: 'TRANSACTION_ID'
-          description: Busineess PK of the table
-          quote: true
-          tests:
-            - not_null
-        - name: 'USER_ID'
-          description: Transaction User
-          quote: true
-          tests:
-            - not_null
-            - relationships:
-                to: ref('dim_user')
-                field: USER_ID
-        - name: 'PAYMENT_ACCOUNT_ID'
-          description: Transaction payment account
-          quote: true
-          tests:
-            - not_null
-            - relationships:
-                to: ref('dim_payment_account')
-                field: PAYMENT_ACCOUNT_ID
-        - name: 'LOYALTY_CARD_ID'
-          description: Transaction loyalty card account
-          quote: true
-          tests:
-            - not_null
-            - relationships:
-                to: ref('dim_loyalty_card')
-                field: LOYALTY_CARD_ID
-
-    - name: fact_user
-      description: "Table containing events for user creation / deletion"
-      schema: 'Bink'
-      columns:
-        - name: EVENT_ID
-          description: unique event ID
-          quote: true
-          tests:
-            - unique
-            - not_null
-        - name: 'EVENT_TYPE'
-          description: Created or deleted
-          quote: true 
-          tests:
-            - not_null
-            - accepted_values:
-                values: ['CREATED', 'DELETED']
-
-    - name: fact_payment_account
+    - name: fact_payment_account_secure
       description: "Table containing events for payment account creation / removal"
       schema: 'Bink'
       columns:
@@ -157,7 +77,7 @@ models:
                 to: ref('dim_date')
                 field: YEAR_MONTH
 
-    - name: fact_payment_account_status_change
+    - name: fact_payment_account_status_change_secure
       description: "Table containing events for payment account status change"
       schema: 'Bink'
       columns:
@@ -188,7 +108,7 @@ models:
                 to: ref('dim_date')
                 field: YEAR_MONTH
 
-    - name: fact_loyalty_card_add_auth
+    - name: fact_loyalty_card_add_auth_secure
       description: "Table containing events for loyalty card addition and authorisation"
       schema: 'Bink'
       columns:
@@ -206,7 +126,7 @@ models:
             - accepted_values:
                 values: ['REQUEST', 'FAILED', 'SUCCESS']
 
-    - name: fact_loyalty_card_auth
+    - name: fact_loyalty_card_auth_secure
       description: "Table containing events for loyalty card authorisation"
       schema: 'Bink'
       columns:
@@ -224,7 +144,7 @@ models:
             - accepted_values:
                 values: ['REQUEST', 'FAILED', 'SUCCESS']
 
-    - name: fact_loyalty_card_join
+    - name: fact_loyalty_card_join_secure
       description: "Table containing events for loyalty card join"
       schema: 'Bink'
       columns:
@@ -242,7 +162,7 @@ models:
             - accepted_values:
                 values: ['REQUEST', 'FAILED', 'SUCCESS']
 
-    - name: fact_loyalty_card_register
+    - name: fact_loyalty_card_register_secure
       description: "Table containing events for loyalty card register"
       schema: 'Bink'
       columns:
@@ -260,7 +180,7 @@ models:
             - accepted_values:
                 values: ['REQUEST', 'FAILED', 'SUCCESS']
 
-    - name: fact_loyalty_card_removed
+    - name: fact_loyalty_card_removed_secure
       description: "Table containing events for loyalty card being removed from wallet"
       schema: 'Bink'
       columns:
@@ -271,7 +191,7 @@ models:
             - unique
             - not_null
 
-    - name: fact_loyalty_card_status_change
+    - name: fact_loyalty_card_status_change_secure
       description: "Table containing events for loyalty card status change"
       schema: 'Bink'
       columns:

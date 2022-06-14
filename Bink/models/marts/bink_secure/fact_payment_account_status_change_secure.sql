@@ -12,9 +12,9 @@ Parameters:
 */
 
 
-WITH
+{{ config(alias='fact_payment_account_status_change') }}
 
-payment_events AS (
+WITH payment_events AS (
 	SELECT *
 	FROM {{ ref('stg_hermes__EVENTS')}}
 	WHERE EVENT_TYPE = 'payment.account.status.change'

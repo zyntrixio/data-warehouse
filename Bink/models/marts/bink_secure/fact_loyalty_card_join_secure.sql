@@ -5,18 +5,20 @@ Last modified by:
 Last modified date: 
 
 Description:
-    Fact table for loyalty card register request / fail / success
+    Fact table for loyalty join request / fail / success
 
 Parameters:
     ref_object      - stg_hermes__events
 */
 
+{{ config(alias='fact_loyalty_card_join') }}
 
 WITH
+
 join_events AS (
 	SELECT *
 	FROM {{ ref('stg_hermes__EVENTS')}}
-	WHERE EVENT_TYPE like 'lc.register%'
+	WHERE EVENT_TYPE like 'lc.join%'
 	{% if is_incremental() %}
   	AND _AIRBYTE_NORMALIZED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
 	{% endif %}
@@ -45,11 +47,11 @@ join_events AS (
 		,EVENT_DATE_TIME
 		,LOYALTY_CARD_ID
 		,LOYALTY_PLAN
-		,CASE WHEN EVENT_TYPE = 'lc.register.request'
+		,CASE WHEN EVENT_TYPE = 'lc.join.request'
 			THEN 'REQUEST'
-			WHEN EVENT_TYPE = 'lc.register.success'
+			WHEN EVENT_TYPE = 'lc.join.success'
 			THEN 'SUCCESS'
-			WHEN EVENT_TYPE = 'lc.register.failed'
+			WHEN EVENT_TYPE = 'lc.join.failed'
 			THEN 'FAILED'
 			ELSE NULL
 			END AS EVENT_TYPE

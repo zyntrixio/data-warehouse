@@ -11,9 +11,10 @@ Parameters:
     ref_object      - stg_hermes__events
 */
 
+{{ config(alias='fact_loyalty_card_auth') }}
+
 
 WITH
-
 add_auth_events AS (
 	SELECT *
 	FROM {{ ref('stg_hermes__EVENTS')}}
