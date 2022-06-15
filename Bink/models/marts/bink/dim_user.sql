@@ -23,7 +23,7 @@ user AS (
 		// ,EXTERNAL_ID				
 		,CHANNEL_ID			
 		,DATE_JOINED
-		,DELETE_TOKEN		
+		// ,DELETE_TOKEN		
 		// ,EMAIL					
 		,IS_ACTIVE			
 		,IS_STAFF			
