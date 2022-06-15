@@ -11,10 +11,20 @@ Parameters:
     ref_object      - fact_payment_account_status_change_secure
 */
 
+{{
+    config(
+        materialized='incremental'
+		,unique_key='EVENT_ID'
+    )
+}}
+
 WITH
 pa AS (
     SELECT * 
     FROM {{ref('fact_payment_account_status_change_secure')}}
+	{% if is_incremental() %}
+  	WHERE INSERTED_DATE_TIME >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
+	{% endif %}
 )
 
 ,pa_select AS (
@@ -32,6 +42,7 @@ pa AS (
 		,FROM_STATUS
 		,TO_STATUS_ID
 		,TO_STATUS
+		,INSERTED_DATE_TIME
 		// ,EMAIL
     FROM
         pa

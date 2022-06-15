@@ -11,10 +11,20 @@ Parameters:
     ref_object      - fact_loyalty_card_removed_secure
 */
 
+{{
+    config(
+        materialized='incremental'
+		,unique_key='EVENT_ID'
+    )
+}}
+
 WITH
 lc AS (
     SELECT * 
     FROM {{ref('fact_loyalty_card_removed_secure')}}
+	{% if is_incremental() %}
+  	WHERE INSERTED_DATE_TIME >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
+	{% endif %}
 )
 
 ,lc_select AS (
