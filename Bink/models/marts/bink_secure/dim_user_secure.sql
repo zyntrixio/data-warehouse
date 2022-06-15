@@ -27,7 +27,7 @@ users AS (
 ,users_select AS (
     SELECT
 		u.USER_ID
-		,UID
+		// ,UID
 		,EXTERNAL_ID				
 		,CHANNEL_ID			
 		,DATE_JOINED
@@ -69,7 +69,6 @@ users AS (
 ,users_na_unions AS (
 	SELECT
 		'NOT_APPLICABLE' AS USER_ID
-		,NULL AS UID
 		,NULL AS EXTERNAL_ID				
 		,NULL AS CHANNEL_ID			
 		,NULL AS DATE_JOINED
