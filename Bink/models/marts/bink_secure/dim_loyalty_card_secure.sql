@@ -13,8 +13,10 @@ Parameters:
     ref_object      - stg_hermes__SCHEME_CATEGORY
 */
 
+{{ config(alias='dim_loyalty_card') }}
 
-With loyalty_card AS (
+WITH
+loyalty_card AS (
     SELECT * 
     FROM {{ref('stg_hermes__SCHEME_SCHEMEACCOUNT')}}
 )
@@ -36,19 +38,19 @@ With loyalty_card AS (
 
 ,lc_add_auth AS (
     SELECT *
-    FROM {{ref('fact_loyalty_card_add_auth')}}
+    FROM {{ref('fact_loyalty_card_add_auth_secure')}}
     WHERE IS_MOST_RECENT = TRUE
 )
 
 , lc_join AS (
     SELECT *
-    FROM {{ref('fact_loyalty_card_join')}}
+    FROM {{ref('fact_loyalty_card_join_secure')}}
     WHERE IS_MOST_RECENT = TRUE
 )
 
 , lc_register AS (
     SELECT *
-    FROM {{ref('fact_loyalty_card_register')}}
+    FROM {{ref('fact_loyalty_card_register_secure')}}
     WHERE IS_MOST_RECENT = TRUE
 )
 

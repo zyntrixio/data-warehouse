@@ -11,6 +11,13 @@ Parameters:
     ref_object      - stg_hermes__events
 */
 
+{{
+    config(
+		alias='fact_payment_account'
+        ,materialized='incremental'
+		,unique_key='EVENT_ID'
+    )
+}}
 
 WITH
 

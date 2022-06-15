@@ -11,10 +11,15 @@ Parameters:
     ref_object      - stg_hermes__events
 */
 
+{{
+    config(
+		alias='fact_payment_account_status_change'
+        ,materialized='incremental'
+		,unique_key='EVENT_ID'
+    )
+}}
 
-WITH
-
-payment_events AS (
+WITH payment_events AS (
 	SELECT *
 	FROM {{ ref('stg_hermes__EVENTS')}}
 	WHERE EVENT_TYPE = 'payment.account.status.change'

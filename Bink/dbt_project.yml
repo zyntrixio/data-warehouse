@@ -24,8 +24,12 @@ models:
       +schema: "BINK_TRANSFORMED"
       materialized: view
     marts:
-      +schema: "BINK"
-      materialized: table
+        bink:
+          +schema: "BINK"
+          materialized: table
+        bink_secure:
+          +schema: "BINK_SECURE"
+          materialized: table
   elementary:
     +schema: 'BINK_MONITORING'
     +materialized: table

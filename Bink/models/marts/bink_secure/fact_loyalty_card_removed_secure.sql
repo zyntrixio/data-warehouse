@@ -11,12 +11,19 @@ Parameters:
     ref_object      - stg_hermes__events
 */
 
+{{
+    config(
+		alias='fact_loyalty_card_removed'
+        ,materialized='incremental'
+		,unique_key='EVENT_ID'
+    )
+}}
 
 WITH
 join_events AS (
 	SELECT *
 	FROM {{ ref('stg_hermes__EVENTS')}}
-	WHERE EVENT_TYPE like 'lc.register%'
+	WHERE EVENT_TYPE = 'lc.removed'
 	{% if is_incremental() %}
   	AND _AIRBYTE_NORMALIZED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
 	{% endif %}
@@ -24,9 +31,9 @@ join_events AS (
 
 ,join_events_unpack AS (
 	SELECT
-		EVENT_ID
-		,EVENT_TYPE
+		EVENT_TYPE
 		,EVENT_DATE_TIME
+		,EVENT_ID
 		,JSON:origin::varchar as ORIGIN
 		,JSON:channel::varchar as CHANNEL
 		,JSON:external_user_ref::varchar as EXTERNAL_USER_REF
@@ -45,19 +52,11 @@ join_events AS (
 		,EVENT_DATE_TIME
 		,LOYALTY_CARD_ID
 		,LOYALTY_PLAN
-		,CASE WHEN EVENT_TYPE = 'lc.register.request'
-			THEN 'REQUEST'
-			WHEN EVENT_TYPE = 'lc.register.success'
-			THEN 'SUCCESS'
-			WHEN EVENT_TYPE = 'lc.register.failed'
-			THEN 'FAILED'
-			ELSE NULL
-			END AS EVENT_TYPE
-		,CASE WHEN
-			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY LOYALTY_CARD_ID)) // Need to think about simeultaneous events - rank by business logic
-			THEN TRUE
-			ELSE FALSE
-			END AS IS_MOST_RECENT
+		// ,CASE WHEN
+		// 	(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY LOYALTY_CARD_ID)) // Need to think about simeultaneous events - rank by business logic
+		// 	THEN TRUE
+		// 	ELSE FALSE
+		// 	END AS IS_MOST_RECENT
 		,CASE WHEN MAIN_ANSWER = '' // Unique identifier for schema account record - this is empty???
 			THEN NULL
 			ELSE MAIN_ANSWER

@@ -13,7 +13,8 @@ Parameters:
 
 {{
     config(
-        materialized='incremental'
+		alias='fact_loyalty_card_status_change'
+        ,materialized='incremental'
 		,unique_key='EVENT_ID'
     )
 }}

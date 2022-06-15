@@ -11,6 +11,8 @@ Parameters:
     ref_object      - transformed_payment_accounts
 */
 
+{{ config(alias='dim_payment_account') }}
+
 WITH
 payment_accounts AS (
     SELECT *
