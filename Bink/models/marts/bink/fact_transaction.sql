@@ -42,7 +42,7 @@ transaction_events AS (
 		,JSON:transaction_id :: VARCHAR AS TRANSACTION_ID
 		,JSON:provider_slug :: VARCHAR AS PROVIDER_SLUG
 		,JSON:transaction_date :: DATETIME AS TRANSACTION_DATE
-		,JSON:spend_amount :: NUMBER(12,2) AS SPEND_AMOUNT
+		,JSON:spend_amount / 100 :: NUMBER(12,2) AS SPEND_AMOUNT
 		,JSON:spend_currency :: VARCHAR AS SPEND_CURRENCY
 		,JSON:loyalty_id :: VARCHAR AS LOYALTY_ID
 		,JSON:scheme_account_id :: VARCHAR AS LOYALTY_CARD_ID
