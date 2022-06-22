@@ -4,6 +4,9 @@ models:
     - name: fact_transaction
       description: "Table containing transaction events"
       schema: 'Bink'
+      config:
+        elementary:
+          timestamp_column: inserted_date_time
       columns:
         - name: 'EVENT_ID'
           description: Primary Key of the table
@@ -40,6 +43,10 @@ models:
             - relationships:
                 to: ref('dim_loyalty_card')
                 field: LOYALTY_CARD_ID
+        - name: 'SPEND_AMOUNT'
+          tests:
+            - not_null
+            - elementary.column_anomalies
 
     - name: dim_date
       description: "A dimension table For dates / calendars"
@@ -68,7 +75,7 @@ models:
       schema: 'Bink'
       columns:
         - name: EVENT_ID
-          description: unique event ID
+          description: Unique event ID
           quote: true
           tests:
             - unique
@@ -80,6 +87,14 @@ models:
             - not_null
             - accepted_values:
                 values: ['CREATED', 'DELETED']
+        - name: USER_ID
+          description: Business PK
+          quote: true
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_user')
+                field: USER_ID
 
     - name: dim_user
       description: "User table containing current and historical users"
