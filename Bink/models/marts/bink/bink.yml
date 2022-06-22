@@ -69,6 +69,12 @@ models:
           tests:
             - unique
             - not_null
+        - name: 'CHANNEL_NAME'
+          description: Channel name
+          quote: true
+          tests:
+            - unique
+            - not_null
 
     - name: fact_user
       description: "Table containing events for user creation / deletion"

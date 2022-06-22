@@ -27,7 +27,7 @@ client AS (
     SELECT
 		c.CHANNEL_ID
 		,c.CHANNEL_NAME
-		,c.SECRET
+		// ,c.SECRET
 		,c.ORGANISATION_ID
 		,o.ORGANISATION_NAME
     FROM
