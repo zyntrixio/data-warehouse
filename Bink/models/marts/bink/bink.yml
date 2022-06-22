@@ -136,26 +136,6 @@ models:
           quote: true 
           tests:
             - not_null
-        - name: 'EXPIRY_MONTH'
-          description: Month of card expirary
-          quote: true 
-          tests:
-            - not_null
-            - is_month
-        - name: 'EXPIRY_YEAR'
-          description: Year of card expirary
-          quote: true 
-          tests:
-            - not_null
-            - is_year
-        - name: 'EXPIRY_YEAR_MONTH'
-          description: Year-Month, as in date table
-          quote: true 
-          tests:
-            - not_null
-            - relationships:
-                to: ref('dim_date')
-                field: YEAR_MONTH
 
     - name: fact_payment_account_status_change
       description: "Table containing events for payment account status change"
@@ -167,26 +147,6 @@ models:
           tests:
             - unique
             - not_null
-        - name: 'EXPIRY_MONTH'
-          description: Month of card expirary
-          quote: true 
-          tests:
-            - not_null
-            - is_month
-        - name: 'EXPIRY_YEAR'
-          description: Year of card expirary
-          quote: true 
-          tests:
-            - not_null
-            - is_year
-        - name: 'EXPIRY_YEAR_MONTH'
-          description: Year-Month, as in date table
-          quote: true 
-          tests:
-            - not_null
-            - relationships:
-                to: ref('dim_date')
-                field: YEAR_MONTH
 
     - name: fact_loyalty_card_add_auth
       description: "Table containing events for loyalty card addition and authorisation"
