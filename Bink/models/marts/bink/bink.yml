@@ -157,6 +157,14 @@ models:
           quote: true 
           tests:
             - not_null
+        - name: 'PAYMENT_ACCOUNT_ID'
+          description: Payment account id
+          quote: true 
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_payment_account')
+                field: PAYMENT_ACCOUNT_ID
 
     - name: fact_payment_account_status_change
       description: "Table containing events for payment account status change"
@@ -167,6 +175,19 @@ models:
           quote: true
           tests:
             - unique
+            - not_null
+        - name: 'PAYMENT_ACCOUNT_ID'
+          description: Payment account id
+          quote: true 
+          tests:
+            - not_null
+            - relationships:
+                to: ref('fact_payment_account')
+                field: PAYMENT_ACCOUNT_ID
+        - name: 'TO_STATUS'
+          description: Mapping from payment account status mapping
+          quote: true 
+          tests:
             - not_null
 
     - name: fact_loyalty_card_add_auth
