@@ -69,12 +69,6 @@ models:
           tests:
             - unique
             - not_null
-        - name: 'CHANNEL_NAME'
-          description: Channel name
-          quote: true
-          tests:
-            - unique
-            - not_null
 
     - name: fact_user
       description: "Table containing events for user creation / deletion"
@@ -207,6 +201,14 @@ models:
             - not_null
             - accepted_values:
                 values: ['REQUEST', 'FAILED', 'SUCCESS']
+        - name: 'LOYALTY_CARD_ID'
+          description: loyalty card id
+          quote: true 
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_loyalty_card')
+                field: LOYALTY_CARD_ID
 
     - name: fact_loyalty_card_auth
       description: "Table containing events for loyalty card authorisation"
@@ -225,24 +227,40 @@ models:
             - not_null
             - accepted_values:
                 values: ['REQUEST', 'FAILED', 'SUCCESS']
+        - name: 'LOYALTY_CARD_ID'
+          description: loyalty card id blah
+          quote: true 
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_loyalty_card')
+                field: LOYALTY_CARD_ID
 
-        - name: fact_loyalty_card_join_secure
-          description: "Table containing events for loyalty card join"
-          schema: 'Bink'
-          columns:
-            - name: EVENT_ID
-              description: unique event ID
-              quote: true
-              tests:
-                - unique
-                - not_null
-            - name: 'EVENT_TYPE'
-              description: Request / Success / Failure
-              quote: true 
-              tests:
-                - not_null
-                - accepted_values:
-                    values: ['REQUEST', 'FAILED', 'SUCCESS']
+    - name: fact_loyalty_card_join
+      description: "Table containing events for loyalty card join"
+      schema: 'Bink'
+      columns:
+        - name: EVENT_ID
+          description: unique event ID
+          quote: true
+          tests:
+            - unique
+            - not_null
+        - name: 'EVENT_TYPE'
+          description: Request / Success / Failure
+          quote: true 
+          tests:
+            - not_null
+            - accepted_values:
+                values: ['REQUEST', 'FAILED', 'SUCCESS']
+        - name: 'LOYALTY_CARD_ID'
+          description: loyalty card id blah
+          quote: true 
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_loyalty_card')
+                field: LOYALTY_CARD_ID
 
     - name: fact_loyalty_card_register
       description: "Table containing events for loyalty card register"
@@ -261,6 +279,14 @@ models:
             - not_null
             - accepted_values:
                 values: ['REQUEST', 'FAILED', 'SUCCESS']
+        - name: 'LOYALTY_CARD_ID'
+          description: loyalty card id
+          quote: true 
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_loyalty_card')
+                field: LOYALTY_CARD_ID
 
     - name: fact_loyalty_card_removed
       description: "Table containing events for loyalty card being removed from wallet"
@@ -272,6 +298,14 @@ models:
           tests:
             - unique
             - not_null
+        - name: 'LOYALTY_CARD_ID'
+          description: loyalty card id
+          quote: true 
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_loyalty_card')
+                field: LOYALTY_CARD_ID
 
     - name: fact_loyalty_card_status_change
       description: "Table containing events for loyalty card status change"
@@ -283,4 +317,12 @@ models:
           tests:
             - unique
             - not_null
+        - name: 'LOYALTY_CARD_ID'
+          description: loyalty card id
+          quote: true 
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_loyalty_card')
+                field: LOYALTY_CARD_ID
 
