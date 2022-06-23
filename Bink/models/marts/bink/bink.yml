@@ -326,3 +326,13 @@ models:
                 to: ref('dim_loyalty_card')
                 field: LOYALTY_CARD_ID
 
+    - name: join_loyalty_card_payment_account
+      description: Joins the loyalty_card and payment cards with PLL links
+      schema: 'Bink'
+      columns:
+        - name: 'PLL_LINK_ID'
+          description: Primary Key of the table
+          quote: true
+          tests:
+            - unique
+            - not_null
