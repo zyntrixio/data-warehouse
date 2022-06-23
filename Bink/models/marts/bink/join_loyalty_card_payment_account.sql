@@ -5,7 +5,7 @@
  Last modified date: 
  
  Description:
- Joining table, 
+ Joining table, containing laid pll links from the scheme table and payment account table
  
  Parameters:
  ref_object      	- stg_hermes__SCHEME_SCHEMEACCOUNT
