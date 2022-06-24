@@ -1,4 +1,4 @@
-from prefect import Flow, task
+from prefect import Flow, task, Parameter
 from prefect.tasks.dbt import DbtShellTask
 from prefect.tasks.airbyte.airbyte import AirbyteConnectionTask
 from prefect.run_configs import DockerRun
@@ -6,12 +6,10 @@ from prefect.storage import Docker
 from prefect.schedules import Schedule, clocks
 import os
 
-# run_airbyte = AirbyteConnectionTask(
-#     connection_id='0e3e8d90-15c5-4a23-a218-a0e5e5ddd1d8'
-# )
-
 DBT_DIRECTORY = 'Bink'
 DBT_PROFILE = 'Bink'
+
+param_run_tests = os.getenv('run_tests')
 
 def make_dbt_task(command, name):
     return DbtShellTask(
@@ -25,9 +23,10 @@ def make_dbt_task(command, name):
         ,log_stderr=True
     )
 
-dbt_run_task = make_dbt_task('dbt run', 'Run')
-
-dbt_test_task = make_dbt_task('dbt test', 'Test')
+dbt_deps_task = make_dbt_task('dbt deps', 'DBT Dependencies')
+dbt_run_task = make_dbt_task('dbt run', 'DBT Run')
+dbt_src_test_task = make_dbt_task('dbt test --select tag:source', 'DBT Source Tests')
+dbt_outp_test_task = make_dbt_task('dbt test --exclude tag:source', 'DBT Output Tests')
 
 docker_storage = Docker(
     image_name="box_elt_flow_image"
@@ -38,21 +37,32 @@ docker_storage = Docker(
     ,python_dependencies=['dbt-snowflake'] ## List all pip packages here
     )
 
-# schedule = Schedule(clocks=[clocks.CronClock("0 7 * * *")]) ## Runs at 7:00 every day
+schedule = Schedule(clocks=[clocks.CronClock("0 7 * * *")]) ## Runs at 7:00 every day
 
 with Flow(
         name="Bink ELT"
         ,run_config=DockerRun()
         ,storage=docker_storage
-        ,schedule=schedule
+        # ,schedule=schedule
         ) as flow:
 
-        dbt_deps = make_dbt_task('dbt deps', 'Dependencies')
+        run_airbyte = AirbyteConnectionTask(
+            airbyte_server_host='51.132.44.255'
+            ,connection_id='62d2288c-11b2-4a5c-bbc1-4f0db35a9a93'
+        )
 
-        dbt_run = dbt_run_task(
+        dbt_deps = dbt_deps_task(
+            upstream_tasks=[run_airbyte]
+        )
+
+        dbt_src_test = dbt_src_test_task(
             upstream_tasks=[dbt_deps]
         )
 
-        dbt_test = dbt_test_task(
+        dbt_run = dbt_run_task(
+            upstream_tasks=[dbt_src_test]
+        )
+
+        dbt_outp_test = dbt_outp_test_task(
             upstream_tasks=[dbt_run]
         )
