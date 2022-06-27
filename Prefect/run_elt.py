@@ -8,8 +8,18 @@ import os
 
 DBT_DIRECTORY = 'Bink'
 DBT_PROFILE = 'Bink'
+AIRBYTE_EVENTS_CONNECTION_ID='62d2288c-11b2-4a5c-bbc1-4f0db35a9a93'
+AIRBYTE_HERMES_CONNECTION_ID='aa27ccee-6641-4de6-982a-37daf0700c16'
 
 param_run_tests = os.getenv('run_tests')
+
+def make_airbyte_task(name, connection_id):
+    return AirbyteConnectionTask(
+            airbyte_server_host='51.132.44.255'
+            ,connection_id=connection_id
+            ,name=name
+        )
+
 
 def make_dbt_task(command, name):
     return DbtShellTask(
@@ -43,16 +53,15 @@ with Flow(
         name="Bink ELT"
         ,run_config=DockerRun()
         ,storage=docker_storage
-        # ,schedule=schedule
+        ,schedule=schedule
         ) as flow:
 
-        run_airbyte = AirbyteConnectionTask(
-            airbyte_server_host='51.132.44.255'
-            ,connection_id='62d2288c-11b2-4a5c-bbc1-4f0db35a9a93'
-        )
+        airbyte_sync_events = make_airbyte_task('Sync Events',AIRBYTE_EVENTS_CONNECTION_ID)
+
+        airbyte_sync_hermes = make_airbyte_task('Sync Hermes',AIRBYTE_HERMES_CONNECTION_ID)
 
         dbt_deps = dbt_deps_task(
-            upstream_tasks=[run_airbyte]
+            upstream_tasks=[airbyte_sync_events, airbyte_sync_hermes]
         )
 
         dbt_src_test = dbt_src_test_task(
