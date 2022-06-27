@@ -53,7 +53,7 @@ scheme AS (
 	FROM scheme_plls
 	INTERSECT
 	SELECT PLL_LINK_ID
-	FROM scheme_plls
+	FROM payment_account_plls
 )
 
 ,joined_links as (
