@@ -11,8 +11,6 @@ DBT_PROFILE = 'Bink'
 AIRBYTE_EVENTS_CONNECTION_ID='62d2288c-11b2-4a5c-bbc1-4f0db35a9a93'
 AIRBYTE_HERMES_CONNECTION_ID='aa27ccee-6641-4de6-982a-37daf0700c16'
 
-param_run_tests = os.getenv('run_tests')
-
 def make_airbyte_task(name, connection_id):
     return AirbyteConnectionTask(
             airbyte_server_host='51.132.44.255'
