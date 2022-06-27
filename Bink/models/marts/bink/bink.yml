@@ -4,6 +4,9 @@ models:
     - name: fact_transaction
       description: "Table containing transaction events"
       schema: 'Bink'
+      config:
+        elementary:
+          timestamp_column: inserted_date_time
       columns:
         - name: 'EVENT_ID'
           description: Primary Key of the table
@@ -40,6 +43,10 @@ models:
             - relationships:
                 to: ref('dim_loyalty_card')
                 field: LOYALTY_CARD_ID
+        - name: 'SPEND_AMOUNT'
+          tests:
+            - not_null
+            - elementary.column_anomalies
 
     - name: dim_date
       description: "A dimension table For dates / calendars"
@@ -68,7 +75,7 @@ models:
       schema: 'Bink'
       columns:
         - name: EVENT_ID
-          description: unique event ID
+          description: Unique event ID
           quote: true
           tests:
             - unique
@@ -80,6 +87,14 @@ models:
             - not_null
             - accepted_values:
                 values: ['CREATED', 'DELETED']
+        - name: USER_ID
+          description: Business PK
+          quote: true
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_user')
+                field: USER_ID
 
     - name: dim_user
       description: "User table containing current and historical users"
@@ -136,26 +151,14 @@ models:
           quote: true 
           tests:
             - not_null
-        - name: 'EXPIRY_MONTH'
-          description: Month of card expirary
-          quote: true 
-          tests:
-            - not_null
-            - is_month
-        - name: 'EXPIRY_YEAR'
-          description: Year of card expirary
-          quote: true 
-          tests:
-            - not_null
-            - is_year
-        - name: 'EXPIRY_YEAR_MONTH'
-          description: Year-Month, as in date table
+        - name: 'PAYMENT_ACCOUNT_ID'
+          description: Payment account id
           quote: true 
           tests:
             - not_null
             - relationships:
-                to: ref('dim_date')
-                field: YEAR_MONTH
+                to: ref('dim_payment_account')
+                field: PAYMENT_ACCOUNT_ID
 
     - name: fact_payment_account_status_change
       description: "Table containing events for payment account status change"
@@ -167,26 +170,19 @@ models:
           tests:
             - unique
             - not_null
-        - name: 'EXPIRY_MONTH'
-          description: Month of card expirary
-          quote: true 
-          tests:
-            - not_null
-            - is_month
-        - name: 'EXPIRY_YEAR'
-          description: Year of card expirary
-          quote: true 
-          tests:
-            - not_null
-            - is_year
-        - name: 'EXPIRY_YEAR_MONTH'
-          description: Year-Month, as in date table
+        - name: 'PAYMENT_ACCOUNT_ID'
+          description: Payment account id
           quote: true 
           tests:
             - not_null
             - relationships:
-                to: ref('dim_date')
-                field: YEAR_MONTH
+                to: ref('fact_payment_account')
+                field: PAYMENT_ACCOUNT_ID
+        - name: 'TO_STATUS'
+          description: Mapping from payment account status mapping
+          quote: true 
+          tests:
+            - not_null
 
     - name: fact_loyalty_card_add_auth
       description: "Table containing events for loyalty card addition and authorisation"
@@ -205,6 +201,14 @@ models:
             - not_null
             - accepted_values:
                 values: ['REQUEST', 'FAILED', 'SUCCESS']
+        - name: 'LOYALTY_CARD_ID'
+          description: loyalty card id
+          quote: true 
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_loyalty_card')
+                field: LOYALTY_CARD_ID
 
     - name: fact_loyalty_card_auth
       description: "Table containing events for loyalty card authorisation"
@@ -223,24 +227,40 @@ models:
             - not_null
             - accepted_values:
                 values: ['REQUEST', 'FAILED', 'SUCCESS']
+        - name: 'LOYALTY_CARD_ID'
+          description: loyalty card id blah
+          quote: true 
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_loyalty_card')
+                field: LOYALTY_CARD_ID
 
-        - name: fact_loyalty_card_join_secure
-          description: "Table containing events for loyalty card join"
-          schema: 'Bink'
-          columns:
-            - name: EVENT_ID
-              description: unique event ID
-              quote: true
-              tests:
-                - unique
-                - not_null
-            - name: 'EVENT_TYPE'
-              description: Request / Success / Failure
-              quote: true 
-              tests:
-                - not_null
-                - accepted_values:
-                    values: ['REQUEST', 'FAILED', 'SUCCESS']
+    - name: fact_loyalty_card_join
+      description: "Table containing events for loyalty card join"
+      schema: 'Bink'
+      columns:
+        - name: EVENT_ID
+          description: unique event ID
+          quote: true
+          tests:
+            - unique
+            - not_null
+        - name: 'EVENT_TYPE'
+          description: Request / Success / Failure
+          quote: true 
+          tests:
+            - not_null
+            - accepted_values:
+                values: ['REQUEST', 'FAILED', 'SUCCESS']
+        - name: 'LOYALTY_CARD_ID'
+          description: loyalty card id blah
+          quote: true 
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_loyalty_card')
+                field: LOYALTY_CARD_ID
 
     - name: fact_loyalty_card_register
       description: "Table containing events for loyalty card register"
@@ -259,6 +279,14 @@ models:
             - not_null
             - accepted_values:
                 values: ['REQUEST', 'FAILED', 'SUCCESS']
+        - name: 'LOYALTY_CARD_ID'
+          description: loyalty card id
+          quote: true 
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_loyalty_card')
+                field: LOYALTY_CARD_ID
 
     - name: fact_loyalty_card_removed
       description: "Table containing events for loyalty card being removed from wallet"
@@ -270,6 +298,14 @@ models:
           tests:
             - unique
             - not_null
+        - name: 'LOYALTY_CARD_ID'
+          description: loyalty card id
+          quote: true 
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_loyalty_card')
+                field: LOYALTY_CARD_ID
 
     - name: fact_loyalty_card_status_change
       description: "Table containing events for loyalty card status change"
@@ -281,4 +317,22 @@ models:
           tests:
             - unique
             - not_null
+        - name: 'LOYALTY_CARD_ID'
+          description: loyalty card id
+          quote: true 
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_loyalty_card')
+                field: LOYALTY_CARD_ID
 
+    - name: join_loyalty_card_payment_account
+      description: Joins the loyalty_card and payment cards with PLL links
+      schema: 'Bink'
+      columns:
+        - name: 'PLL_LINK_ID'
+          description: Primary Key of the table
+          quote: true
+          tests:
+            - unique
+            - not_null

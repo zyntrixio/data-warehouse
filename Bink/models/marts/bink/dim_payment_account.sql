@@ -20,8 +20,8 @@ payment_account AS (
 , payment_account_select AS (
     SELECT
         PAYMENT_ACCOUNT_ID
-        ,HASH
-        ,TOKEN
+        // ,HASH
+        // ,TOKEN
         ,STATUS
         ,PROVIDER_ID
         ,PROVIDER_STATUS_CODE
@@ -36,15 +36,15 @@ payment_account AS (
         ,ISSUER_ID
         ,PAN_START
         ,PLL_LINK_ID
-        ,PSP_TOKEN
-        ,CARD_UID
+        // ,PSP_TOKEN
+        // ,CARD_UID
         ,IS_DELETED
-        ,START_YEAR
-        // ,EXPIRY_YEAR
-        ,FINGERPRINT
-        ,ISSUER_NAME
         ,START_MONTH
+        ,START_YEAR
         // ,EXPIRY_MONTH
+        // ,EXPIRY_YEAR
+        // ,FINGERPRINT
+        ,ISSUER_NAME
         // ,NAME_ON_CARD
         ,CARD_NICKNAME
         ,CURRENCY_CODE
