@@ -11,7 +11,23 @@ DBT_DIRECTORY = 'Bink'
 DBT_PROFILE = 'Bink'
 AIRBYTE_EVENTS_CONNECTION_ID='62d2288c-11b2-4a5c-bbc1-4f0db35a9a93'
 AIRBYTE_HERMES_CONNECTION_ID='aa27ccee-6641-4de6-982a-37daf0700c16'
-AIRBYTE_IP=Secret("Bink_airbyte_ip").get()
+AIRBYTE_IP=Secret("bink_airbyte_ip").get()
+SNOWFLAKE_ACCOUNT=Secret("bink_snowflake_account").get()
+SNOWFLAKE_PASSWORD=Secret("bink_snowflake_password").get()
+
+@task(name='Snowflake connection')
+def snowflake_connection():
+    filein = 'profiles_temp.yml'
+    fileout = '/dbt/profiles.yml'
+
+    with open(filein,'r') as f:
+        filedata = f.read()
+
+    newdata = filedata.replace("p_snowflake_account",SNOWFLAKE_ACCOUNT).replace('p_snowflake_password', SNOWFLAKE_PASSWORD)
+
+    with open(fileout,'w') as f:
+        f.write(newdata)
+    
 
 def make_airbyte_task(name, connection_id):
     return AirbyteConnectionTask(
@@ -42,7 +58,7 @@ docker_storage = Docker(
     image_name="box_elt_flow_image"
     ,files={ ## dictionary of local-path:docker-image-path items
         f'{os.getcwd()}/../{DBT_DIRECTORY}':'/dbt'
-        ,f'{os.getcwd()}/profiles.yml':'/dbt/profiles.yml'
+        ,f'{os.getcwd()}/profiles_temp.yml':'./profiles_temp.yml'
     }
     ,python_dependencies=['dbt-snowflake'] ## List all pip packages here
     )
@@ -56,12 +72,18 @@ with Flow(
         ,schedule=schedule
         ) as flow:
 
+        compile_profiles_temp = snowflake_connection()
+
         airbyte_sync_events = make_airbyte_task('Sync Events',AIRBYTE_EVENTS_CONNECTION_ID)
 
         airbyte_sync_hermes = make_airbyte_task('Sync Hermes',AIRBYTE_HERMES_CONNECTION_ID)
 
         dbt_deps = dbt_deps_task(
-            upstream_tasks=[airbyte_sync_events, airbyte_sync_hermes]
+            upstream_tasks=[
+                airbyte_sync_events
+                ,airbyte_sync_hermes
+                ,compile_profiles_temp
+                ]
         )
 
         dbt_src_test = dbt_src_test_task(

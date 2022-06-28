@@ -1,9 +1,9 @@
 Bink:
   outputs:
     dev:
-      account: xb90214.eu-west-2.aws
+      account: p_snowflake_account
       database: DEV
-      password: ubv.yhj4jgp@nwp8MDE 
+      password: p_snowflake_password
       role: TRANSFORM_ROLE
       schema: BINK
       threads: 16
