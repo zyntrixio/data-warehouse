@@ -1,0 +1,23 @@
+Bink:
+  outputs:
+    dev:
+      account: p_snowflake_account
+      database: DEV
+      password: p_snowflake_password
+      role: TRANSFORM_ROLE
+      schema: BINK
+      threads: 16
+      type: snowflake
+      user: transform
+      warehouse: ENGINEERING
+    prod:
+      account: xb90214.eu-west-2.aws
+      database: BINK
+      password: ubv.yhj4jgp@nwp8MDE 
+      role: TRANSFORM_ROLE
+      schema: WAREHOUSE
+      threads: 16
+      type: snowflake
+      user: transform
+      warehouse: ENGINEERING
+  target: dev
