@@ -1,0 +1,38 @@
+version: 2
+
+sources:
+ 
+  - name: HARMONIA
+    description: Bink lookup tables schema
+    database: RAW
+    schema: HARMONIA
+    tags: ['source']
+
+    tables:
+      - name: MERCHANT_IDENTIFIER
+        identifier: MERCHANT_IDENTIFIER
+        description: This the basis for the merchant dim table
+        columns:
+          - name: 'ID'
+            description: PK
+            tests:
+              - unique
+              - not_null
+      - name: LOYALTY_SCHEME
+        identifier: LOYALTY_SCHEME
+        description: Enrichment for the merchant dim table
+        columns:
+          - name: 'ID'
+            description: PK
+            tests:
+              - unique
+              - not_null
+      - name: PAYMENT_PROVIDER
+        identifier: PAYMENT_PROVIDER
+        description: Enrichment for the merchant dim table
+        columns:
+          - name: 'ID'
+            description: PK
+            tests:
+              - unique
+              - not_null
