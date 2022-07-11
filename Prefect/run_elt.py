@@ -9,11 +9,13 @@ import os
 
 DBT_DIRECTORY = 'Bink'
 DBT_PROFILE = 'Bink'
+DBT_ENV = os.getenv('dbt_environment')
 AIRBYTE_EVENTS_CONNECTION_ID='62d2288c-11b2-4a5c-bbc1-4f0db35a9a93'
 AIRBYTE_HERMES_CONNECTION_ID='aa27ccee-6641-4de6-982a-37daf0700c16'
 AIRBYTE_IP=Secret("bink_airbyte_ip").get()
 SNOWFLAKE_ACCOUNT=Secret("bink_snowflake_account").get()
 SNOWFLAKE_PASSWORD=Secret("bink_snowflake_password").get()
+
 
 @task(name='Snowflake connection')
 def snowflake_connection():
@@ -43,7 +45,7 @@ def make_dbt_task(command, name):
         ,name=name
         ,profiles_dir='.'
         ,profile_name=DBT_PROFILE
-        ,environment='dev'
+        ,environment=DBT_ENV
         ,helper_script='cd dbt' ##  refers to the dbt dir within the docker image
         ,return_all=True
         ,log_stderr=True
@@ -76,12 +78,12 @@ with Flow(
 
         airbyte_sync_events = make_airbyte_task('Sync Events',AIRBYTE_EVENTS_CONNECTION_ID)
 
-        airbyte_sync_hermes = make_airbyte_task('Sync Hermes',AIRBYTE_HERMES_CONNECTION_ID)
+        # airbyte_sync_hermes = make_airbyte_task('Sync Hermes',AIRBYTE_HERMES_CONNECTION_ID)
 
         dbt_deps = dbt_deps_task(
             upstream_tasks=[
                 airbyte_sync_events
-                ,airbyte_sync_hermes
+                # ,airbyte_sync_hermes
                 ,compile_profiles_temp
                 ]
         )
