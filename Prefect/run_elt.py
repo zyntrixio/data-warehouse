@@ -8,12 +8,14 @@ from prefect.client.secrets import Secret
 import os
 
 DBT_DIRECTORY = 'Bink'
+DBT_ENV = os.getenv('dbt_environment')
 DBT_PROFILE = 'Bink'
 AIRBYTE_EVENTS_CONNECTION_ID='62d2288c-11b2-4a5c-bbc1-4f0db35a9a93'
 AIRBYTE_HERMES_CONNECTION_ID='aa27ccee-6641-4de6-982a-37daf0700c16'
 AIRBYTE_IP=Secret("bink_airbyte_ip").get()
 SNOWFLAKE_ACCOUNT=Secret("bink_snowflake_account").get()
 SNOWFLAKE_PASSWORD=Secret("bink_snowflake_password").get()
+
 
 @task(name='Snowflake connection')
 def snowflake_connection():
@@ -43,16 +45,16 @@ def make_dbt_task(command, name):
         ,name=name
         ,profiles_dir='.'
         ,profile_name=DBT_PROFILE
-        ,environment='dev'
+        ,environment=DBT_ENV
         ,helper_script='cd dbt' ##  refers to the dbt dir within the docker image
         ,return_all=True
         ,log_stderr=True
     )
 
 dbt_deps_task = make_dbt_task('dbt deps', 'DBT Dependencies')
-dbt_run_task = make_dbt_task('dbt run', 'DBT Run')
-dbt_src_test_task = make_dbt_task('dbt test --select tag:source', 'DBT Source Tests')
-dbt_outp_test_task = make_dbt_task('dbt test --exclude tag:source', 'DBT Output Tests')
+dbt_run_task = make_dbt_task(f'dbt run -t {DBT_ENV}', 'DBT Run')
+dbt_src_test_task = make_dbt_task(f'dbt test --select tag:source -t {DBT_ENV}', 'DBT Source Tests')
+dbt_outp_test_task = make_dbt_task(f'dbt test --exclude tag:source  -t {DBT_ENV}', 'DBT Output Tests')
 
 docker_storage = Docker(
     image_name="box_elt_flow_image"
