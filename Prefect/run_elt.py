@@ -8,8 +8,8 @@ from prefect.client.secrets import Secret
 import os
 
 DBT_DIRECTORY = 'Bink'
-DBT_PROFILE = 'Bink'
 DBT_ENV = os.getenv('dbt_environment')
+DBT_PROFILE = f'Bink_{DBT_ENV}'
 AIRBYTE_EVENTS_CONNECTION_ID='62d2288c-11b2-4a5c-bbc1-4f0db35a9a93'
 AIRBYTE_HERMES_CONNECTION_ID='aa27ccee-6641-4de6-982a-37daf0700c16'
 AIRBYTE_IP=Secret("bink_airbyte_ip").get()
@@ -45,14 +45,13 @@ def make_dbt_task(command, name):
         ,name=name
         ,profiles_dir='.'
         ,profile_name=DBT_PROFILE
-        ,environment=DBT_ENV
         ,helper_script='cd dbt' ##  refers to the dbt dir within the docker image
         ,return_all=True
         ,log_stderr=True
     )
 
 dbt_deps_task = make_dbt_task('dbt deps', 'DBT Dependencies')
-dbt_run_task = make_dbt_task(f'dbt run --target: {DBT_ENV}', 'DBT Run')
+dbt_run_task = make_dbt_task(f'dbt run', 'DBT Run')
 dbt_src_test_task = make_dbt_task('dbt test --select tag:source', 'DBT Source Tests')
 dbt_outp_test_task = make_dbt_task('dbt test --exclude tag:source', 'DBT Output Tests')
 
@@ -73,7 +72,7 @@ with Flow(
         ,storage=docker_storage
         ,schedule=schedule
         ) as flow:
-        raise Exception(f'dbt env {DBT_ENV}')
+        
 
         compile_profiles_temp = snowflake_connection()
 

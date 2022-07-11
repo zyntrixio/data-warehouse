@@ -1,4 +1,4 @@
-Bink:
+Bink_dev:
   outputs:
     dev:
       account: p_snowflake_account
@@ -10,6 +10,10 @@ Bink:
       type: snowflake
       user: transform
       warehouse: ENGINEERING
+  target: dev
+
+Bink_prod:
+  outputs:
     prod:
       account: p_snowflake_account
       database: BINK
@@ -20,4 +24,5 @@ Bink:
       type: snowflake
       user: transform
       warehouse: ENGINEERING
-  target: dev
+  target: prod
+
