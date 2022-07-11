@@ -43,6 +43,14 @@ models:
             - relationships:
                 to: ref('dim_loyalty_card')
                 field: LOYALTY_CARD_ID
+        - name: 'MERCHANT_ID'
+          description: Links to merchant dim
+          quote: true
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_merchant')
+                field: MERCHANT_ID
         - name: 'SPEND_AMOUNT'
           tests:
             - not_null
@@ -123,6 +131,17 @@ models:
       schema: 'Bink'
       columns:
         - name: 'LOYALTY_CARD_ID'
+          description: Primary Key of the table
+          quote: true
+          tests:
+            - unique
+            - not_null
+
+    - name: dim_merchant
+      description: "This is a dimension table containing merchant information "
+      schema: 'Bink'
+      columns:
+        - name: 'MERCHANT_ID'
           description: Primary Key of the table
           quote: true
           tests:

@@ -15,7 +15,7 @@ Parameters:
 WITH source AS (
     SELECT
         ID
-        ,SLUG
+        ,SLUG::VARCHAR AS SLUG
         ,CREATED_AT
         ,UPDATED_AT
     FROM {{source('HARMONIA','LOYALTY_SCHEME')}}

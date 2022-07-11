@@ -15,11 +15,11 @@ Parameters:
 WITH source AS (
     SELECT
         ID
-        ,MID
+        ,MID AS MERCHANT_ID
         ,LOCATION
         ,POSTCODE
-        ,CREATED_AT
-        ,UPDATED_AT
+        ,CREATED_AT::DATETIME AS CREATED_AT
+        ,UPDATED_AT::DATETIME AS UPDATED_AT
         ,LOCATION_ID
         ,LOYALTY_SCHEME_ID
         ,PAYMENT_PROVIDER_ID
