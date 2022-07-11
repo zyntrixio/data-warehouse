@@ -7,4 +7,4 @@ register-prod:
 	prefect register --project Bink -l prod -p run_elt.py
 
 docker-agent-start:
-	prefect agent docker start -n azure-docker-agent -l azurerunner
+	prefect agent docker start -n test-docker-agent -l dev
