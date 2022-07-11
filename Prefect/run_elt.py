@@ -45,7 +45,7 @@ def make_dbt_task(command, name):
         ,name=name
         ,profiles_dir='.'
         ,profile_name=DBT_PROFILE
-        ,env=DBT_ENV
+        ,environment=DBT_ENV
         ,helper_script='cd dbt' ##  refers to the dbt dir within the docker image
         ,return_all=True
         ,log_stderr=True
