@@ -20,3 +20,5 @@ Bink:
       type: snowflake
       user: transform
       warehouse: ENGINEERING
+  target: dev
+
