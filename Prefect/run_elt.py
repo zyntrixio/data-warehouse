@@ -73,6 +73,7 @@ with Flow(
         ,storage=docker_storage
         ,schedule=schedule
         ) as flow:
+        raise Exception(f'dbt env {DBT_ENV}')
 
         compile_profiles_temp = snowflake_connection()
 
