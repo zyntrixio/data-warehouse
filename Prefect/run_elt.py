@@ -72,7 +72,6 @@ with Flow(
         ,storage=docker_storage
         ,schedule=schedule
         ) as flow:
-        
 
         compile_profiles_temp = snowflake_connection()
 
