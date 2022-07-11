@@ -9,7 +9,7 @@ import os
 
 DBT_DIRECTORY = 'Bink'
 DBT_ENV = os.getenv('dbt_environment')
-DBT_PROFILE = f'Bink'
+DBT_PROFILE = 'Bink'
 AIRBYTE_EVENTS_CONNECTION_ID='62d2288c-11b2-4a5c-bbc1-4f0db35a9a93'
 AIRBYTE_HERMES_CONNECTION_ID='aa27ccee-6641-4de6-982a-37daf0700c16'
 AIRBYTE_IP=Secret("bink_airbyte_ip").get()
@@ -52,9 +52,9 @@ def make_dbt_task(command, name):
     )
 
 dbt_deps_task = make_dbt_task('dbt deps', 'DBT Dependencies')
-dbt_run_task = make_dbt_task(f'dbt run', 'DBT Run')
+dbt_run_task = make_dbt_task(f'dbt run -t {DBT_ENV}', 'DBT Run')
 dbt_src_test_task = make_dbt_task(f'dbt test --select tag:source -t {DBT_ENV}', 'DBT Source Tests')
-dbt_outp_test_task = make_dbt_task('dbt test --exclude tag:source', 'DBT Output Tests')
+dbt_outp_test_task = make_dbt_task(f'dbt test --exclude tag:source  -t {DBT_ENV}', 'DBT Output Tests')
 
 docker_storage = Docker(
     image_name="box_elt_flow_image"
@@ -78,12 +78,12 @@ with Flow(
 
         airbyte_sync_events = make_airbyte_task('Sync Events',AIRBYTE_EVENTS_CONNECTION_ID)
 
-        # airbyte_sync_hermes = make_airbyte_task('Sync Hermes',AIRBYTE_HERMES_CONNECTION_ID)
+        airbyte_sync_hermes = make_airbyte_task('Sync Hermes',AIRBYTE_HERMES_CONNECTION_ID)
 
         dbt_deps = dbt_deps_task(
             upstream_tasks=[
                 airbyte_sync_events
-                # ,airbyte_sync_hermes
+                ,airbyte_sync_hermes
                 ,compile_profiles_temp
                 ]
         )
