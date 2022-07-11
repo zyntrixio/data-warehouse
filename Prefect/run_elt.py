@@ -52,7 +52,7 @@ def make_dbt_task(command, name):
     )
 
 dbt_deps_task = make_dbt_task('dbt deps', 'DBT Dependencies')
-dbt_run_task = make_dbt_task('dbt run', 'DBT Run')
+dbt_run_task = make_dbt_task(f'dbt run --target: {DBT_ENV}', 'DBT Run')
 dbt_src_test_task = make_dbt_task('dbt test --select tag:source', 'DBT Source Tests')
 dbt_outp_test_task = make_dbt_task('dbt test --exclude tag:source', 'DBT Output Tests')
 
