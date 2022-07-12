@@ -14,7 +14,7 @@ WITH event_vals AS (
             ELSE -1
             END AS event_val
         ,external_user_ref
-        ,inserted_date_time
+        ,event_date_time
     FROM {{ref('fact_user_secure')}}
     WHERE external_user_ref IS NOT null
 )
@@ -23,7 +23,7 @@ WITH event_vals AS (
     SELECT
         external_user_ref,
         SUM(event_val) s,
-        MAX(inserted_date_time) max_time
+        MAX(event_date_time) max_time
     FROM
         event_vals
     GROUP BY

@@ -95,6 +95,16 @@ models:
             - not_null
             - accepted_values:
                 values: ['CREATED', 'DELETED']
+            - sd_daily_spike:
+                val: 'CREATED'
+                datetime_col: EVENT_DATE_TIME
+                unique_id_col: EVENT_ID
+                max_sd: 2
+            - sd_daily_spike:
+                val: 'DELETED'
+                datetime_col: EVENT_DATE_TIME
+                unique_id_col: EVENT_ID
+                max_sd: 2
         - name: USER_ID
           description: Business PK
           quote: true
