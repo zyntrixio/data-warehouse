@@ -3,7 +3,7 @@ version: 2
 models:
     - name: dim_user_secure
       description: "User table containing current and historical users"
-      schema: 'Bink'
+      schema: 'BINK_SECURE'
       columns:
         - name: 'USER_ID'
           description: Primary Key of the table
@@ -14,7 +14,7 @@ models:
     
     - name: dim_payment_account_secure
       description: "Table containing payment accounts"
-      schema: 'Bink'
+      schema: 'BINK_SECURE'
       columns:
         - name: 'PAYMENT_ACCOUNT_ID'
           description: Primary Key of the table
@@ -25,7 +25,7 @@ models:
     
     - name: dim_loyalty_card_secure
       description: "This is a dimension table containing loyalty card information "
-      schema: 'Bink'
+      schema: 'BINK_SECURE'
       columns:
         - name: 'LOYALTY_CARD_ID'
           description: Primary Key of the table
@@ -36,7 +36,7 @@ models:
 
     - name: fact_payment_account_secure
       description: "Table containing events for payment account creation / removal"
-      schema: 'Bink'
+      schema: 'BINK_SECURE'
       columns:
         - name: EVENT_ID
           description: unique event ID
@@ -79,7 +79,7 @@ models:
 
     - name: fact_payment_account_status_change_secure
       description: "Table containing events for payment account status change"
-      schema: 'Bink'
+      schema: 'BINK_SECURE'
       columns:
         - name: EVENT_ID
           description: unique event ID
@@ -110,7 +110,7 @@ models:
 
     - name: fact_loyalty_card_add_auth_secure
       description: "Table containing events for loyalty card addition and authorisation"
-      schema: 'Bink'
+      schema: 'BINK_SECURE'
       columns:
         - name: EVENT_ID
           description: unique event ID
@@ -128,7 +128,7 @@ models:
 
     - name: fact_loyalty_card_auth_secure
       description: "Table containing events for loyalty card authorisation"
-      schema: 'Bink'
+      schema: 'BINK_SECURE'
       columns:
         - name: EVENT_ID
           description: unique event ID
@@ -146,7 +146,7 @@ models:
 
     - name: fact_loyalty_card_join_secure
       description: "Table containing events for loyalty card join"
-      schema: 'Bink'
+      schema: 'BINK_SECURE'
       columns:
         - name: EVENT_ID
           description: unique event ID
@@ -164,7 +164,7 @@ models:
 
     - name: fact_loyalty_card_register_secure
       description: "Table containing events for loyalty card register"
-      schema: 'Bink'
+      schema: 'BINK_SECURE'
       columns:
         - name: EVENT_ID
           description: unique event ID
@@ -182,7 +182,7 @@ models:
 
     - name: fact_loyalty_card_removed_secure
       description: "Table containing events for loyalty card being removed from wallet"
-      schema: 'Bink'
+      schema: 'BINK_SECURE'
       columns:
         - name: EVENT_ID
           description: unique event ID
@@ -193,11 +193,27 @@ models:
 
     - name: fact_loyalty_card_status_change_secure
       description: "Table containing events for loyalty card status change"
-      schema: 'Bink'
+      schema: 'BINK_SECURE'
       columns:
         - name: EVENT_ID
           description: unique event ID
           quote: true
           tests:
             - unique
+            - not_null
+
+    - name: fact_user_secure
+      description: "Secure fact user, with external user id"
+      schema: 'BINK_SECURE'
+      columns:
+        - name: EVENT_ID
+          description: unique event ID
+          quote: true
+          tests:
+            - unique
+            - not_null
+        - name: EXTERNAL_USER_REF
+          description: external id
+          quote: true
+          tests:
             - not_null
