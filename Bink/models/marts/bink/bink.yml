@@ -98,14 +98,14 @@ models:
             - consecutive_events:
                 created_val: 'CREATED'
                 datetime_col: EVENT_DATE_TIME
-                group_col: USER_ID
+                group_cols: [USER_ID]
             - sd_daily_spike:
-                val: 'CREATED'
+                vals: ['CREATED']
                 datetime_col: EVENT_DATE_TIME
                 unique_id_col: EVENT_ID
                 max_sd: 2
             - sd_daily_spike:
-                val: 'DELETED'
+                vals: ['DELETED']
                 datetime_col: EVENT_DATE_TIME
                 unique_id_col: EVENT_ID
                 max_sd: 2
@@ -234,6 +234,10 @@ models:
             - not_null
             - accepted_values:
                 values: ['REQUEST', 'FAILED', 'SUCCESS']
+            # - consecutive_events_group:
+            #     created_val: 'SUCCESS'
+            #     datetime_col: EVENT_DATE_TIME
+            #     group_cols: [USER_ID, MERCHANT_ID]
         - name: 'LOYALTY_CARD_ID'
           description: loyalty card id
           quote: true 
@@ -358,6 +362,17 @@ models:
             - relationships:
                 to: ref('dim_loyalty_card')
                 field: LOYALTY_CARD_ID
+        - name: 'TO_STATUS'
+          description: status description
+          quote: true 
+          tests:
+            - not_null
+            - sd_daily_spike:
+                vals: ['Invalid credentials', 'Cannot connect, too many retries', 'Account already exists']
+                datetime_col: EVENT_DATE_TIME
+                unique_id_col: EVENT_ID
+                max_sd: 2
+
 
     - name: join_loyalty_card_payment_account
       description: Joins the loyalty_card and payment cards with PLL links

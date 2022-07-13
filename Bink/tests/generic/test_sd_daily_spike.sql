@@ -5,12 +5,12 @@ Created By:     SP
 Created Date:   2022/07/12
 */
 
-{% test sd_daily_spike(model, column_name, val, datetime_col, unique_id_col, max_sd) %}
+{% test sd_daily_spike(model, column_name, vals, datetime_col, unique_id_col, max_sd) %}
     {{ config(tags = ['business']) }}
     WITH count_new_vals AS (
         SELECT COUNT(*) c
         FROM {{ model }}
-        WHERE {{ column_name }} = {{ "'" + val + "'"}}
+        WHERE {{ column_name }} IN ( {%- for item in vals-%} {%- if not loop.first %} , {% endif %} {{ "'" + item + "' "}}  {%- endfor -%} )
         AND TO_DATE({{ datetime_col }}) = dateadd(day, -1, current_date())
     )
     , past_days AS (
