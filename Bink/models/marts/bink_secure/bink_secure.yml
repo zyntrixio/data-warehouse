@@ -217,3 +217,13 @@ models:
           quote: true
           tests:
             - not_null
+        - name: EVENT_TYPE
+          description: external id
+          quote: true
+          tests:
+            - not_null
+            - more_created_deleted:
+                created_val: 'CREATED'
+                deleted_val: 'DELETED'
+                datetime_col: EVENT_DATE_TIME
+                group_col: EXTERNAL_USER_REF
