@@ -55,6 +55,16 @@ models:
           tests:
             - not_null
             - elementary.column_anomalies
+        - name: 'SPEND_CURRENCY'
+          description: GBP
+          quote: true
+          tests:
+            - sd_daily_spike:
+                vals: ['GBP']
+                datetime_col: EVENT_DATE_TIME
+                unique_id_col: EVENT_ID
+                max_sd: 2
+
 
     - name: dim_date
       description: "A dimension table For dates / calendars"
