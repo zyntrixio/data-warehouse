@@ -10,16 +10,16 @@
 
 SELECT
     *
-FROM "DEV"."BINK"."FACT_LOYALTY_CARD_JOIN"
+FROM {{ref('fact_loyalty_card_join')}}
 WHERE loyalty_card_id NOT IN (
         SELECT loyalty_card_id
-        FROM "DEV"."BINK"."JOIN_LOYALTY_CARD_PAYMENT_ACCOUNT"
+        FROM {{ref('join_loyalty_card_payment_account')}}
     )
     AND EVENT_TYPE = 'SUCCESS'
     AND IS_MOST_RECENT = true
     AND CHANNEL LIKE '%barclays%'
     AND TIMEDIFF(hour, EVENT_DATE_TIME, (
             select max(EVENT_DATE_TIME)
-            from "DEV"."BINK"."FACT_LOYALTY_CARD_JOIN"
+            from {{ref('fact_loyalty_card_join')}}
         )
     ) < 24
