@@ -12,15 +12,16 @@ with lc_errors as (
     SELECT
         LOYALTY_CARD_ID
     FROM {{ref('fact_loyalty_card_status_change')}}
-    WHERE IS_MOST_RECENT = true
+    WHERE
+        IS_MOST_RECENT = true
         AND TO_STATUS_ID not in (0,1)
         AND TIMEDIFF(
                 hour, EVENT_DATE_TIME, (
-                    ELECT max(EVENT_DATE_TIME)
+                    SELECT max(EVENT_DATE_TIME)
                     FROM {{ref('fact_loyalty_card_status_change')}}
                     )
                 ) < 24
-  )
+    )
   
 ,previously_valid as (
     SELECT
