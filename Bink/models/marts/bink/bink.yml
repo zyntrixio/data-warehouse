@@ -189,6 +189,16 @@ models:
             - not_null
             - accepted_values:
                 values: ['ADDED', 'REMOVED']
+            - sd_daily_spike:
+                vals: ['ADDED']
+                datetime_col: EVENT_DATE_TIME
+                unique_id_col: EVENT_ID
+                max_sd: 2
+            - sd_daily_spike:
+                vals: ['REMOVED']
+                datetime_col: EVENT_DATE_TIME
+                unique_id_col: EVENT_ID
+                max_sd: 2
         - name: 'STATUS'
           description: Mapping from payment account status mapping
           quote: true 
