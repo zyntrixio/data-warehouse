@@ -10,7 +10,7 @@ Created Date:   2022/07/12
 WITH all_events AS (
     SELECT USER_ID,"EVENT_TYPE"
         ,LEAD("EVENT_TYPE") OVER
-            (PARTITION BY USER_ID, EVENT_ID ORDER BY EVENT_DATE_TIME)
+            (PARTITION BY USER_ID ORDER BY EVENT_DATE_TIME, EVENT_ID)
             AS NEXT_EVENT
     FROM {{ref('fact_user')}}
     WHERE "EVENT_TYPE" = 'CREATED'

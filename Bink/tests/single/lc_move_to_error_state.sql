@@ -29,8 +29,8 @@ with lc_errors as (
     FROM
         {{ref('fact_loyalty_card_status_change')}}
     WHERE
-        LOYALTY_CARD_ID IN (SELECT LOYALTY_CARD_ID FROM LC_ERRORS)
-        AND TO_STATUS_ID IN (1)
+        LOYALTY_CARD_ID IN (SELECT LOYALTY_CARD_ID FROM lc_errors)
+        AND TO_STATUS_ID IN (0,1)
     GROUP BY
         LOYALTY_CARD_ID
 
