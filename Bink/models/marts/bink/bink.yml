@@ -105,10 +105,6 @@ models:
             - not_null
             - accepted_values:
                 values: ['CREATED', 'DELETED']
-            - consecutive_events:
-                created_val: 'CREATED'
-                datetime_col: EVENT_DATE_TIME
-                group_cols: [USER_ID]
             - sd_daily_spike:
                 vals: ['CREATED']
                 datetime_col: EVENT_DATE_TIME
