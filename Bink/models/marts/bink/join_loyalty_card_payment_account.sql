@@ -58,9 +58,10 @@ scheme AS (
 
 ,joined_links as (
 	SELECT
-		i.PLL_LINK_ID,
+		CONCAT(LOYALTY_CARD_ID,'-',PAYMENT_ACCOUNT_ID) AS PLL_LINK_PK,
 		s.LOYALTY_CARD_ID::varchar AS LOYALTY_CARD_ID,
 		p.PAYMENT_ACCOUNT_ID::varchar AS PAYMENT_ACCOUNT_ID,
+		i.PLL_LINK_ID,
 		CASE WHEN s.active_link AND p.active_link
 			THEN TRUE
 			ELSE FALSE

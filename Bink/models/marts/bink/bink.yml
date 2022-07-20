@@ -394,8 +394,8 @@ models:
       description: Joins the loyalty_card and payment cards with PLL links
       schema: 'Bink'
       columns:
-        - name: 'PLL_LINK_ID'
-          description: Primary Key of the table
+        - name: 'PLL_LINK_PK'
+          description: Primary Key of the table created as an aggregate
           quote: true
           tests:
             - unique
