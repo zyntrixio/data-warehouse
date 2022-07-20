@@ -215,8 +215,8 @@ models:
         - name: EXTERNAL_USER_REF
           description: external id
           quote: true
-          tests:
-            - not_null
+          # tests:
+          #   - not_null
         - name: EVENT_TYPE
           description: external id
           quote: true
