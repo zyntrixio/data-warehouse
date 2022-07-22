@@ -12,10 +12,10 @@ DBT_ENV = os.getenv('dbt_environment')
 DBT_PROFILE = 'Bink'
 AIRBYTE_EVENTS_CONNECTION_ID='62d2288c-11b2-4a5c-bbc1-4f0db35a9a93'
 AIRBYTE_HERMES_CONNECTION_ID='aa27ccee-6641-4de6-982a-37daf0700c16'
+AIRBYTE_HARMONIA_CONNECTION_ID='7ac4d8ba-f1f0-47d1-90fc-95c14634a6e9'
 AIRBYTE_IP=Secret("bink_airbyte_ip").get()
 SNOWFLAKE_ACCOUNT=Secret("bink_snowflake_account").get()
 SNOWFLAKE_PASSWORD=Secret("bink_snowflake_password").get()
-
 
 @task(name='Snowflake connection')
 def snowflake_connection():
@@ -38,6 +38,8 @@ def make_airbyte_task(name, connection_id):
             ,name=name
         )
 
+airbyte_sync_hermes_task = make_airbyte_task('Sync Hermes',AIRBYTE_HERMES_CONNECTION_ID)
+airbyte_sync_harmonia_task = make_airbyte_task('Sync Harmonia',AIRBYTE_HARMONIA_CONNECTION_ID)
 
 def make_dbt_task(command, name):
     return DbtShellTask(
@@ -57,7 +59,7 @@ dbt_src_test_task = make_dbt_task(f'dbt test --select tag:source -t {DBT_ENV}', 
 dbt_outp_test_task = make_dbt_task(f'dbt test --exclude tag:source  -t {DBT_ENV}', 'DBT Output Tests')
 
 docker_storage = Docker(
-    image_name="box_elt_flow_image"
+    image_name="bink_elt_flow_image"
     ,files={ ## dictionary of local-path:docker-image-path items
         f'{os.getcwd()}/../{DBT_DIRECTORY}':'/dbt'
         ,f'{os.getcwd()}/profiles_temp.yml':'./profiles_temp.yml'
@@ -78,11 +80,17 @@ with Flow(
 
         airbyte_sync_events = make_airbyte_task('Sync Events',AIRBYTE_EVENTS_CONNECTION_ID)
 
-        airbyte_sync_hermes = make_airbyte_task('Sync Hermes',AIRBYTE_HERMES_CONNECTION_ID)
+        airbyte_sync_hermes = airbyte_sync_hermes_task(
+            upstream_tasks=[airbyte_sync_events]
+        )
+
+        airbyte_sync_harmonia = airbyte_sync_harmonia_task(
+            upstream_tasks=[airbyte_sync_events]
+        )
 
         dbt_deps = dbt_deps_task(
             upstream_tasks=[
-                airbyte_sync_events
+                airbyte_sync_harmonia
                 ,airbyte_sync_hermes
                 ,compile_profiles_temp
                 ]
