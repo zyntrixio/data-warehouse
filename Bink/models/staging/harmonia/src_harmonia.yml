@@ -16,7 +16,9 @@ sources:
           - name: 'ID'
             description: PK
             tests:
-              - unique
+              - unique:
+                  config:
+                    severity: warn
               - not_null
       - name: LOYALTY_SCHEME
         identifier: LOYALTY_SCHEME
@@ -25,7 +27,9 @@ sources:
           - name: 'ID'
             description: PK
             tests:
-              - unique
+              - unique:
+                  config:
+                    severity: warn
               - not_null
       - name: PAYMENT_PROVIDER
         identifier: PAYMENT_PROVIDER
@@ -34,5 +38,7 @@ sources:
           - name: 'ID'
             description: PK
             tests:
-              - unique
+              - unique:
+                  config:
+                    severity: warn
               - not_null
