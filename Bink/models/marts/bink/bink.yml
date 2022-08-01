@@ -382,7 +382,7 @@ models:
           description: status description
           quote: true 
           tests:
-            - not_null
+            # - not_null
             - sd_daily_spike:
                 vals: ['Invalid credentials', 'Cannot connect, too many retries', 'Account already exists']
                 datetime_col: EVENT_DATE_TIME
@@ -398,5 +398,5 @@ models:
           description: Primary Key of the table created as an aggregate
           quote: true
           tests:
-            - unique
+            # - unique
             - not_null
