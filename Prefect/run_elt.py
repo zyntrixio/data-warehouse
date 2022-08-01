@@ -57,7 +57,7 @@ dbt_deps_task = make_dbt_task('dbt deps', 'DBT Dependencies')
 dbt_run_task = make_dbt_task(f'dbt run -t {DBT_ENV}', 'DBT Run')
 dbt_src_test_task = make_dbt_task(f'dbt test --select tag:"source" -t {DBT_ENV}', 'DBT Source Tests')
 dbt_outp_test_task = make_dbt_task(f'dbt test --exclude tag:"source" tag:"business"  -t {DBT_ENV}', 'DBT Output Tests')
-dbt_business_test_task = make_dbt_task(f'dbt test --select tag:"business"  -t {DBT_ENV}', 'DBT Output Tests')
+dbt_business_test_task = make_dbt_task(f'dbt test --select tag:"business"  -t {DBT_ENV}', 'DBT Business Tests')
 
 docker_storage = Docker(
     image_name="bink_elt_flow_image"
