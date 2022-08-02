@@ -6,7 +6,13 @@
  */
 
 
-{{ config(tags = ['business']) }}
+{{
+    config(
+        tags = ['business']
+        ,error_if = '>1000'
+        ,warn_if = '>100'
+    ) 
+}}
 
 WITH new_pa AS (
     SELECT *
