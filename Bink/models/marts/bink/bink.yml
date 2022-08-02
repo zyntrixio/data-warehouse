@@ -55,6 +55,16 @@ models:
           tests:
             - not_null
             - elementary.column_anomalies
+        - name: 'SPEND_CURRENCY'
+          description: GBP
+          quote: true
+          tests:
+            - sd_daily_spike:
+                vals: ['GBP']
+                datetime_col: EVENT_DATE_TIME
+                unique_id_col: EVENT_ID
+                max_sd: 2
+
 
     - name: dim_date
       description: "A dimension table For dates / calendars"
@@ -95,14 +105,24 @@ models:
             - not_null
             - accepted_values:
                 values: ['CREATED', 'DELETED']
+            - sd_daily_spike:
+                vals: ['CREATED']
+                datetime_col: EVENT_DATE_TIME
+                unique_id_col: EVENT_ID
+                max_sd: 2
+            - sd_daily_spike:
+                vals: ['DELETED']
+                datetime_col: EVENT_DATE_TIME
+                unique_id_col: EVENT_ID
+                max_sd: 2
         - name: USER_ID
           description: Business PK
           quote: true
           tests:
             - not_null
-            - relationships:
-                to: ref('dim_user')
-                field: USER_ID
+            # - relationships:
+            #     to: ref('dim_user')
+            #     field: USER_ID
 
     - name: dim_user
       description: "User table containing current and historical users"
@@ -165,6 +185,16 @@ models:
             - not_null
             - accepted_values:
                 values: ['ADDED', 'REMOVED']
+            - sd_daily_spike:
+                vals: ['ADDED']
+                datetime_col: EVENT_DATE_TIME
+                unique_id_col: EVENT_ID
+                max_sd: 2
+            - sd_daily_spike:
+                vals: ['REMOVED']
+                datetime_col: EVENT_DATE_TIME
+                unique_id_col: EVENT_ID
+                max_sd: 2
         - name: 'STATUS'
           description: Mapping from payment account status mapping
           quote: true 
@@ -194,9 +224,9 @@ models:
           quote: true 
           tests:
             - not_null
-            - relationships:
-                to: ref('fact_payment_account')
-                field: PAYMENT_ACCOUNT_ID
+            # - relationships:
+            #     to: ref('fact_payment_account')
+            #     field: PAYMENT_ACCOUNT_ID
         - name: 'TO_STATUS'
           description: Mapping from payment account status mapping
           quote: true 
@@ -220,6 +250,10 @@ models:
             - not_null
             - accepted_values:
                 values: ['REQUEST', 'FAILED', 'SUCCESS']
+            # - consecutive_events_group:
+            #     created_val: 'SUCCESS'
+            #     datetime_col: EVENT_DATE_TIME
+            #     group_cols: [USER_ID, MERCHANT_ID]
         - name: 'LOYALTY_CARD_ID'
           description: loyalty card id
           quote: true 
@@ -344,14 +378,25 @@ models:
             - relationships:
                 to: ref('dim_loyalty_card')
                 field: LOYALTY_CARD_ID
+        - name: 'TO_STATUS'
+          description: status description
+          quote: true 
+          tests:
+            # - not_null
+            - sd_daily_spike:
+                vals: ['Invalid credentials', 'Cannot connect, too many retries', 'Account already exists']
+                datetime_col: EVENT_DATE_TIME
+                unique_id_col: EVENT_ID
+                max_sd: 2
+
 
     - name: join_loyalty_card_payment_account
       description: Joins the loyalty_card and payment cards with PLL links
       schema: 'Bink'
       columns:
-        - name: 'PLL_LINK_ID'
-          description: Primary Key of the table
+        - name: 'PLL_LINK_PK'
+          description: Primary Key of the table created as an aggregate
           quote: true
           tests:
-            - unique
+            # - unique
             - not_null

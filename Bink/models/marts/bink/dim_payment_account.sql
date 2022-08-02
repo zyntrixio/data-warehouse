@@ -35,7 +35,6 @@ payment_account AS (
         ,CONSENTS_LATITUDE
         ,ISSUER_ID
         ,PAN_START
-        ,PLL_LINK_ID
         // ,PSP_TOKEN
         // ,CARD_UID
         ,IS_DELETED

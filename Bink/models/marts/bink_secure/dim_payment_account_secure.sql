@@ -50,10 +50,6 @@ payment_accounts AS (
             END AS CONSENTS_LATITUDE
         ,ISSUER_ID
 		,PAN_START
-		,CASE WHEN PLL_LINKS = '[]'
-            THEN NULL
-            ELSE PARSE_JSON(PLL_LINKS)[0]:id :: VARCHAR
-            END AS PLL_LINK_ID -- Need to check multiple pll links don't exist. If they do we need another table
 		,PSP_TOKEN
 		,CASE WHEN AGENT_DATA = '{}'
             THEN NULL
@@ -94,7 +90,6 @@ add_na_value AS (
 		,NULL AS CONSENTS_LATITUDE
 		,NULL AS ISSUER_ID
 		,NULL AS PAN_START
-		,NULL AS PLL_LINK_ID
 		,NULL AS PSP_TOKEN
 		,NULL AS CARD_UID
 		,NULL AS IS_DELETED
