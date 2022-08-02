@@ -51,7 +51,7 @@ docker_storage = Docker(
     ,python_dependencies=['dbt-snowflake'] ## List all pip packages here
     )
 
-schedule = Schedule(clocks=[clocks.CronClock("0 0 5 ? * 1#1 *")]) ## Runs at 5:00 first Sunday of the month
+schedule = Schedule(clocks=[clocks.CronClock("0 5 * * sun#1")]) ## Runs at 5:00 first Sunday of the month
 
 with Flow(
         name="Bink ELT Monthly Full Load"

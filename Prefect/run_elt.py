@@ -71,7 +71,7 @@ docker_storage = Docker(
 schedule = Schedule(clocks=[clocks.CronClock("0 4 * * *")]) ## Runs at 4:00 every day
 
 with Flow(
-        name="BinkELT"
+        name="Bink ELT"
         ,run_config=DockerRun()
         ,storage=docker_storage
         ,schedule=schedule
