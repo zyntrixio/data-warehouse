@@ -14,6 +14,12 @@ WITH all_events AS (
             AS NEXT_EVENT
     FROM {{ref('fact_user')}}
     WHERE "EVENT_TYPE" = 'CREATED'
+    AND TIMEDIFF(
+                hour, EVENT_DATE_TIME, (
+                    SELECT max(EVENT_DATE_TIME)
+                    FROM {{ref('fact_user')}}
+                    )
+                ) < 24
 )
 
 ,consecutive_creates AS (

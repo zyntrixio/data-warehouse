@@ -6,7 +6,14 @@
  */
 
 
-{{ config(tags = ['business']) }}
+{{
+    config(
+        tags = ['business']
+        ,error_if = '>100'
+        ,warn_if = '>100'
+    ) 
+}}
+
 
 with lc_errors as (
     SELECT

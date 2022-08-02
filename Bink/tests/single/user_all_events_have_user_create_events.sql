@@ -6,8 +6,12 @@ Created Date:   2022/07/12
 */
 
 -- depends_on: {{ ref('fact_user') }}
-
-{{ config(tags = ['business']) }}
+{{
+    config(
+        tags = ['business']
+        ,error_if = '>2000'
+    ) 
+}}
 
 WITH all_users_from_events as (
     {% set get_tables  %}
