@@ -1,5 +1,5 @@
 /*
- Test to ensure all lc create event shave a corresponding create user event
+ Test to ensure all barclays lc create events have a PLL link
  
  Created By:     SP
  Created Date:   2022/07/13

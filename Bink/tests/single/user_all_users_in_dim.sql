@@ -1,5 +1,5 @@
 /*
-Test to ensure no create user events are followed by another create user event
+Test to ensure all create user events have a matching user in dim_user
 
 Created By:     SP
 Created Date:   2022/07/12

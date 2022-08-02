@@ -1,9 +1,9 @@
 /*
- Test to ensure no duplicate transaction ids that are not net zero spends - i.e refunds
+ Test to monitor long delays whilst the payment account is in pending
  
  Created By:     SP
  Created Date:   2022/07/19
- */
+*/
 
 
 {{

@@ -1,5 +1,5 @@
 /*
- Test to ensure no duplicate transaction ids that are not net zero spends - i.e refunds
+ Test to ensure no duplicate fingerprints for a payment account
  
  Created By:     SP
  Created Date:   2022/07/19

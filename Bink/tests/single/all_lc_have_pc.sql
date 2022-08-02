@@ -1,5 +1,5 @@
 /*
- Test to ensure no duplicate transaction ids that are not net zero spends - i.e refunds
+ Test to ensure every active barclays loyalty card is matched with a payment card
  
  Created By:     SP
  Created Date:   2022/07/19
