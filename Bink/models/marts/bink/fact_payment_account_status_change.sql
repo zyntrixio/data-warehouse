@@ -15,6 +15,7 @@ Parameters:
     config(
         materialized='incremental'
 		,unique_key='EVENT_ID'
+		,merge_update_columns = ['IS_MOST_RECENT', 'UPDATED_DATE_TIME']
     )
 }}
 
@@ -23,7 +24,7 @@ pa AS (
     SELECT * 
     FROM {{ref('fact_payment_account_status_change_secure')}}
 	{% if is_incremental() %}
-  	WHERE INSERTED_DATE_TIME >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
+  	WHERE UPDATED_DATE_TIME>= (SELECT MAX(UPDATED_DATE_TIME) from {{ this }})
 	{% endif %}
 )
 
@@ -43,8 +44,8 @@ pa AS (
 		,TO_STATUS_ID
 		,TO_STATUS
 		,INSERTED_DATE_TIME
-		// ,EMAIL
-    FROM
+		,UPDATED_DATE_TIME
+	FROM
         pa
 )
 

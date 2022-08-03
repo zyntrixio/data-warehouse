@@ -71,6 +71,7 @@ transaction_events AS (
 		,PAYMENT_ACCOUNT_ID
 		,SETTLEMENT_KEY
 		,SYSDATE() AS INSERTED_DATE_TIME
+		,SYSDATE() AS UPDATED_DATE_TIME
 	FROM
 		transaction_events_unpack t
 	LEFT JOIN
