@@ -15,7 +15,7 @@ Bink:
       database: BINK
       password: p_snowflake_password
       role: TRANSFORM_ROLE
-      schema: WAREHOUSE
+      schema: BINK
       threads: 16
       type: snowflake
       user: transform
