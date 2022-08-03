@@ -5,7 +5,8 @@ Last modified by:
 Last modified date: 
 
 Description:
-    Fact table for loyalty card add & auth events
+    Fact table for loyalty card add & auth events.
+	Loads 
 
 Parameters:
     ref_object      - stg_hermes__events
@@ -26,7 +27,7 @@ add_auth_events AS (
 	FROM {{ ref('stg_hermes__EVENTS')}}
 	WHERE EVENT_TYPE like 'lc.addandauth%'
 	{% if is_incremental() %}
-  	AND _AIRBYTE_NORMALIZED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
+  	AND _AIRBYTE_NORMALIZED_AT>= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
 	{% endif %}
 )
 
@@ -92,9 +93,9 @@ add_auth_events AS (
 	SELECT
 		EVENT_ID
 		,EVENT_DATE_TIME
+		,EVENT_TYPE
 		,LOYALTY_CARD_ID
 		,LOYALTY_PLAN
-		,EVENT_TYPE
 		,CASE WHEN
 			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY LOYALTY_CARD_ID))
 			THEN TRUE
