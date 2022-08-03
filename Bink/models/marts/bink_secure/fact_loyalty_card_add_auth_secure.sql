@@ -60,7 +60,7 @@ add_auth_events AS (
 			END AS EVENT_TYPE
 		,LOYALTY_CARD_ID
 		,LOYALTY_PLAN
-		,FALSE AS IS_MOST_RECENT
+		,NULL AS IS_MOST_RECENT
 		,MAIN_ANSWER // Unique identifier for schema account record
 		,CHANNEL
 		,ORIGIN
@@ -69,6 +69,7 @@ add_auth_events AS (
 		,LOWER(EMAIL) AS EMAIL
 		,SPLIT_PART(EMAIL,'@',2) AS EMAIL_DOMAIN
 		,SYSDATE() AS INSERTED_DATE_TIME
+		,NULL AS UPDATED_DATE_TIME
 	FROM add_auth_events_unpack
 	ORDER BY EVENT_DATE_TIME DESC
 )

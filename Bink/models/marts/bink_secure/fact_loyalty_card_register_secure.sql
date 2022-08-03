@@ -61,7 +61,7 @@ register_events AS (
 			THEN 'FAILED'
 			ELSE NULL
 			END AS EVENT_TYPE
-		,FALSE AS IS_MOST_RECENT
+		,NULL AS IS_MOST_RECENT
 		,CASE WHEN MAIN_ANSWER = '' // Unique identifier for schema account record - this is empty???
 			THEN NULL
 			ELSE MAIN_ANSWER
@@ -74,6 +74,7 @@ register_events AS (
 		,LOWER(EMAIL) AS EMAIL
 		,SPLIT_PART(EMAIL,'@',2) AS EMAIL_DOMAIN
 		,SYSDATE() AS INSERTED_DATE_TIME
+		,NULL AS UPDATED_DATE_TIME
 	FROM register_events_unpack
 	ORDER BY EVENT_DATE_TIME DESC
 )

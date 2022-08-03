@@ -86,7 +86,7 @@ status_change_events AS (
 		,asl_from.STATUS AS FROM_STATUS
 		,TO_STATUS_ID
 		,asl_to.STATUS AS TO_STATUS
-		,FALSE AS IS_MOST_RECENT
+		,NULL AS IS_MOST_RECENT
 		,NULLIF(MAIN_ANSWER,'') AS MAIN_ANSWER
 		,ORIGIN
 		,CHANNEL
@@ -95,6 +95,7 @@ status_change_events AS (
 		,LOWER(EMAIL) AS EMAIL
 		,SPLIT_PART(EMAIL,'@',2) AS EMAIL_DOMAIN
 		,SYSDATE() AS INSERTED_DATE_TIME
+		,NULL AS UPDATED_DATE_TIME
 	FROM status_change_events_add_from_status sce
 	LEFT JOIN loyalty_plan lp
 		ON sce.LOYALTY_PLAN_ID = lp.LOYALTY_PLAN_ID
