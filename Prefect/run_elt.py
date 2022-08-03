@@ -60,7 +60,7 @@ dbt_outp_test_task = make_dbt_task(f'dbt test --exclude tag:"source" tag:"busine
 dbt_business_test_task = make_dbt_task(f'dbt test --select tag:"business"  -t {DBT_ENV}', 'DBT Business Tests')
 
 docker_storage = Docker(
-    image_name=f"bink_elt_flow_image_{DBT_ENV}"
+    image_name="bink_elt_flow_image"
     ,files={ ## dictionary of local-path:docker-image-path items
         f'{os.getcwd()}/../{DBT_DIRECTORY}':'/dbt'
         ,f'{os.getcwd()}/profiles_temp.yml':'./profiles_temp.yml'
