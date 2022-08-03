@@ -16,7 +16,7 @@ Parameters:
 		alias='fact_loyalty_card_removed'
         ,materialized='incremental'
 		,unique_key='EVENT_ID'
-		,merge_update_columns = ['IS_MOST_RECENT']
+		,merge_update_columns = ['IS_MOST_RECENT', 'UPDATED_DATE_TIME']
     )
 }}
 
@@ -98,9 +98,10 @@ removed_events AS (
 		,ORIGIN
 		,USER_ID
 		,EXTERNAL_USER_REF
-		,LOWER(EMAIL) AS EMAIL
-		,SPLIT_PART(EMAIL,'@',2) AS EMAIL_DOMAIN
-		,SYSDATE() AS INSERTED_DATE_TIME
+		,EMAIL
+		,EMAIL_DOMAIN
+		,INSERTED_DATE_TIME
+		,SYSDATE() AS UPDATED_DATE_TIME
 	FROM
 		union_old_lc_records
 )

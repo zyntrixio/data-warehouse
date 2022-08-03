@@ -16,7 +16,7 @@ Parameters:
 		alias='fact_payment_account_status_change'
         ,materialized='incremental'
 		,unique_key='EVENT_ID'
-		,merge_update_columns = ['IS_MOST_RECENT']
+		,merge_update_columns = ['IS_MOST_RECENT', 'UPDATED_DATE_TIME']
     )
 }}
 
@@ -146,6 +146,7 @@ WITH payment_events AS (
 		,EMAIL
 		,EMAIL_DOMAIN
 		,INSERTED_DATE_TIME
+		,SYSDATE() AS UPDATED_DATE_TIME
 	FROM
 		union_old_pa_records
 )

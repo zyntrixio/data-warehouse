@@ -16,7 +16,7 @@ Parameters:
 		alias='fact_user'
         ,materialized='incremental'
 		,unique_key='EVENT_ID'
-		,merge_update_columns = ['IS_MOST_RECENT']
+		,merge_update_columns = ['IS_MOST_RECENT', 'UPDATED_DATE_TIME']
     )
 }}
 
@@ -99,6 +99,7 @@ user_events AS (
 		,EMAIL
 		,DOMAIN
 		,INSERTED_DATE_TIME
+		,SYSDATE() AS UPDATED_DATE_TIME
 	FROM
 		union_old_user_records
 )

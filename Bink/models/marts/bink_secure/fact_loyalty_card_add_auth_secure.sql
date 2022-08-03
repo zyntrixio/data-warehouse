@@ -16,7 +16,7 @@ Parameters:
 		alias='fact_loyalty_card_add_auth'
         ,materialized='incremental'
 		,unique_key='EVENT_ID'
-		,merge_update_columns = ['IS_MOST_RECENT']
+		,merge_update_columns = ['IS_MOST_RECENT', 'UPDATED_DATE_TIME']
     )
 }}
 
@@ -107,6 +107,7 @@ add_auth_events AS (
 		,EMAIL
 		,EMAIL_DOMAIN
 		,INSERTED_DATE_TIME
+		,SYSDATE() AS UPDATED_DATE_TIME
 	FROM
 		union_old_lc_records
 )
