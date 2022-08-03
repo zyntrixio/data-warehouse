@@ -16,6 +16,7 @@ Parameters:
 		alias='fact_loyalty_card_status_change'
         ,materialized='incremental'
 		,unique_key='EVENT_ID'
+		,merge_update_columns = ['IS_MOST_RECENT']
     )
 }}
 
@@ -85,11 +86,7 @@ status_change_events AS (
 		,asl_from.STATUS AS FROM_STATUS
 		,TO_STATUS_ID
 		,asl_to.STATUS AS TO_STATUS
-		,CASE WHEN
-			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY LOYALTY_CARD_ID))
-			THEN TRUE
-			ELSE FALSE
-			END AS IS_MOST_RECENT
+		,FALSE AS IS_MOST_RECENT
 		,NULLIF(MAIN_ANSWER,'') AS MAIN_ANSWER
 		,ORIGIN
 		,CHANNEL
@@ -108,9 +105,49 @@ status_change_events AS (
 
 )
 
+,union_old_lc_records AS (
+	SELECT *
+	FROM status_change_events_select
+	{% if is_incremental() %}
+	UNION
+	SELECT *
+	FROM {{ this }}
+	WHERE LOYALTY_CARD_ID IN (
+		SELECT LOYALTY_CARD_ID
+		FROM status_change_events_select
+	)
+	{% endif %}
+)
+
+,alter_is_most_recent_flag AS (
+	SELECT
+		EVENT_ID
+		,EVENT_DATE_TIME
+		,LOYALTY_CARD_ID
+		,LOYALTY_PLAN_ID
+		,LOYALTY_PLAN_NAME
+		,FROM_STATUS_ID
+		,FROM_STATUS
+		,TO_STATUS_ID
+		,TO_STATUS
+		,CASE WHEN
+			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY LOYALTY_CARD_ID))
+			THEN TRUE
+			ELSE FALSE
+			END AS IS_MOST_RECENT
+		,MAIN_ANSWER
+		,ORIGIN
+		,CHANNEL
+		,USER_ID
+		,EXTERNAL_USER_REF
+		,EMAIL
+		,EMAIL_DOMAIN
+		,INSERTED_DATE_TIME
+	FROM
+		union_old_lc_records
+)
 
 SELECT
 	*
 FROM
-	status_change_events_select
-	
+	alter_is_most_recent_flag

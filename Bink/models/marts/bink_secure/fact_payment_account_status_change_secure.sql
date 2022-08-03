@@ -16,6 +16,7 @@ Parameters:
 		alias='fact_payment_account_status_change'
         ,materialized='incremental'
 		,unique_key='EVENT_ID'
+		,merge_update_columns = ['IS_MOST_RECENT']
     )
 }}
 
@@ -106,8 +107,51 @@ WITH payment_events AS (
 	FROM payment_events_join_status
 )
 
+,union_old_pa_records AS (
+	SELECT *
+	FROM payment_events_select
+	{% if is_incremental() %}
+	UNION
+	SELECT *
+	FROM {{ this }}
+	WHERE PAYMENT_ACCOUNT_ID IN (
+		SELECT PAYMENT_ACCOUNT_ID
+		FROM payment_events_select
+	)
+	{% endif %}
+)
+
+,alter_is_most_recent_flag AS (
+	SELECT
+		EVENT_ID
+		,EVENT_DATE_TIME
+		,PAYMENT_ACCOUNT_ID
+		,CASE WHEN
+			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY PAYMENT_ACCOUNT_ID))
+			THEN TRUE
+			ELSE FALSE
+			END AS IS_MOST_RECENT
+		,FROM_STATUS_ID
+		,FROM_STATUS
+		,TO_STATUS_ID
+		,TO_STATUS
+		,ORIGIN
+		,CHANNEL
+		,USER_ID
+		,EXTERNAL_USER_REF
+		,EXPIRY_MONTH
+		,EXPIRY_YEAR
+		,EXPIRY_YEAR_MONTH
+		,TOKEN
+		,EMAIL
+		,EMAIL_DOMAIN
+		,INSERTED_DATE_TIME
+	FROM
+		union_old_pa_records
+)
+
 SELECT
 	*
 FROM
-	payment_events_select
+	alter_is_most_recent_flag
 	

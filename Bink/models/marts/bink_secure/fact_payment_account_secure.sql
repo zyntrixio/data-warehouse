@@ -16,6 +16,7 @@ Parameters:
 		alias='fact_payment_account'
         ,materialized='incremental'
 		,unique_key='EVENT_ID'
+		,merge_update_columns = ['IS_MOST_RECENT']
     )
 }}
 
@@ -85,11 +86,7 @@ payment_events AS (
 			THEN 'REMOVED'
 			ELSE NULL
 			END AS EVENT_TYPE
-		,CASE WHEN
-			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY PAYMENT_ACCOUNT_ID)) // Need to think about simeultaneous events - rank by business logic
-			THEN TRUE
-			ELSE FALSE
-			END AS IS_MOST_RECENT
+		,FALSE AS IS_MOST_RECENT
 		,STATUS_ID
 		,STATUS
 		,ORIGIN
@@ -110,8 +107,49 @@ payment_events AS (
 )
 
 
+,union_old_pa_records AS (
+	SELECT *
+	FROM payment_events_select
+	{% if is_incremental() %}
+	UNION
+	SELECT *
+	FROM {{ this }}
+	WHERE PAYMENT_ACCOUNT_ID IN (
+		SELECT PAYMENT_ACCOUNT_ID
+		FROM payment_events_select
+	)
+	{% endif %}
+)
+
+,alter_is_most_recent_flag AS (
+	SELECT
+		EVENT_ID
+		,EVENT_DATE_TIME
+		,PAYMENT_ACCOUNT_ID
+		,EVENT_TYPE
+		,CASE WHEN
+			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY PAYMENT_ACCOUNT_ID))
+			THEN TRUE
+			ELSE FALSE
+			END AS IS_MOST_RECENT
+		,STATUS_ID
+		,STATUS
+		,ORIGIN
+		,CHANNEL
+		,USER_ID
+		,EXTERNAL_USER_REF
+		,EXPIRY_MONTH
+		,EXPIRY_YEAR
+		,EXPIRY_YEAR_MONTH
+		,TOKEN
+		,EMAIL
+		,EMAIL_DOMAIN
+		,INSERTED_DATE_TIME
+	FROM
+		union_old_pa_records
+)
+
 SELECT
 	*
 FROM
-	payment_events_select
-	
+	alter_is_most_recent_flag

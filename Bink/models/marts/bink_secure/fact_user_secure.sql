@@ -16,6 +16,7 @@ Parameters:
 		alias='fact_user'
         ,materialized='incremental'
 		,unique_key='EVENT_ID'
+		,merge_update_columns = ['IS_MOST_RECENT']
     )
 }}
 
@@ -61,16 +62,49 @@ user_events AS (
 		,ORIGIN
 		,CHANNEL
 		,NULLIF(EXTERNAL_USER_REF,'') AS EXTERNAL_USER_REF
-		// ,LOWER(EMAIL) AS EMAIL
+		,LOWER(EMAIL) AS EMAIL
 		,SPLIT_PART(EMAIL,'@',2) AS DOMAIN
 		,SYSDATE() AS INSERTED_DATE_TIME
 	FROM user_events_unpack
-
 )
 
+,union_old_user_records AS (
+	SELECT *
+	FROM user_events_select
+	{% if is_incremental() %}
+	UNION
+	SELECT *
+	FROM {{ this }}
+	WHERE USER_ID IN (
+		SELECT USER_ID
+		FROM user_events_select
+	)
+	{% endif %}
+)
+
+,alter_is_most_recent_flag AS (
+	SELECT
+		EVENT_ID
+		,EVENT_DATE_TIME
+		,USER_ID
+		,EVENT_TYPE
+		,CASE WHEN
+			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY USER_ID))
+			THEN TRUE
+			ELSE FALSE
+			END AS IS_MOST_RECENT
+		,ORIGIN
+		,CHANNEL
+		,EXTERNAL_USER_REF
+		,EMAIL
+		,DOMAIN
+		,INSERTED_DATE_TIME
+	FROM
+		union_old_user_records
+)
 
 SELECT
 	*
 FROM
-	user_events_select
+	alter_is_most_recent_flag
 	

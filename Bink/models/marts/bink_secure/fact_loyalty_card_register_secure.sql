@@ -16,11 +16,12 @@ Parameters:
 		alias='fact_loyalty_card_register'
         ,materialized='incremental'
 		,unique_key='EVENT_ID'
+		,merge_update_columns = ['IS_MOST_RECENT']
     )
 }}
 
 WITH
-join_events AS (
+register_events AS (
 	SELECT *
 	FROM {{ ref('stg_hermes__EVENTS')}}
 	WHERE EVENT_TYPE like 'lc.register%'
@@ -29,7 +30,7 @@ join_events AS (
 	{% endif %}
 )
 
-,join_events_unpack AS (
+,register_events_unpack AS (
 	SELECT
 		EVENT_ID
 		,EVENT_TYPE
@@ -43,10 +44,10 @@ join_events AS (
 		,JSON:loyalty_plan::varchar as LOYALTY_PLAN
 		,JSON:main_answer::varchar as MAIN_ANSWER
 		,JSON:status::int as STATUS
-	FROM join_events
+	FROM register_events
 )
 
-,join_events_select AS (
+,register_events_select AS (
 	SELECT
 		EVENT_ID
 		,EVENT_DATE_TIME
@@ -60,11 +61,7 @@ join_events AS (
 			THEN 'FAILED'
 			ELSE NULL
 			END AS EVENT_TYPE
-		,CASE WHEN
-			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY LOYALTY_CARD_ID)) // Need to think about simeultaneous events - rank by business logic
-			THEN TRUE
-			ELSE FALSE
-			END AS IS_MOST_RECENT
+		,FALSE AS IS_MOST_RECENT
 		,CASE WHEN MAIN_ANSWER = '' // Unique identifier for schema account record - this is empty???
 			THEN NULL
 			ELSE MAIN_ANSWER
@@ -77,13 +74,51 @@ join_events AS (
 		,LOWER(EMAIL) AS EMAIL
 		,SPLIT_PART(EMAIL,'@',2) AS EMAIL_DOMAIN
 		,SYSDATE() AS INSERTED_DATE_TIME
-	FROM join_events_unpack
+	FROM register_events_unpack
 	ORDER BY EVENT_DATE_TIME DESC
 )
 
+,union_old_lc_records AS (
+	SELECT *
+	FROM register_events_select
+	{% if is_incremental() %}
+	UNION
+	SELECT *
+	FROM {{ this }}
+	WHERE LOYALTY_CARD_ID IN (
+		SELECT LOYALTY_CARD_ID
+		FROM register_events_select
+	)
+	{% endif %}
+)
+
+,alter_is_most_recent_flag AS (
+	SELECT
+		EVENT_ID
+		,EVENT_DATE_TIME
+		,LOYALTY_CARD_ID
+		,LOYALTY_PLAN
+		,EVENT_TYPE
+		,CASE WHEN
+			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY LOYALTY_CARD_ID))
+			THEN TRUE
+			ELSE FALSE
+			END AS IS_MOST_RECENT
+		,MAIN_ANSWER
+		,STATUS
+		,CHANNEL
+		,ORIGIN
+		,USER_ID
+		,EXTERNAL_USER_REF
+		,EMAIL
+		,EMAIL_DOMAIN
+		,INSERTED_DATE_TIME
+	FROM
+		union_old_lc_records
+)
 
 SELECT
 	*
 FROM
-	join_events_select
+	alter_is_most_recent_flag
 	
