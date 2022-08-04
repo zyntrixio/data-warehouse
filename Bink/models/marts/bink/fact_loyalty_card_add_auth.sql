@@ -24,7 +24,7 @@ lc AS (
     SELECT * 
     FROM {{ref('fact_loyalty_card_add_auth_secure')}}
 	{% if is_incremental() %}
-  	WHERE UPDATED_DATE_TIME>= (SELECT MAX(UPDATED_DATE_TIME) from {{ this }})
+  	WHERE UPDATED_DATE_TIME >= (SELECT MAX(UPDATED_DATE_TIME) from {{ this }})
 	{% endif %}
 )
 

@@ -27,7 +27,7 @@ add_auth_events AS (
 	FROM {{ ref('stg_hermes__EVENTS')}}
 	WHERE EVENT_TYPE like 'lc.addandauth%'
 	{% if is_incremental() %}
-  	AND _AIRBYTE_NORMALIZED_AT>= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
+  	AND _AIRBYTE_EMITTED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
 	{% endif %}
 )
 

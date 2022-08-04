@@ -28,7 +28,7 @@ payment_events AS (
 	WHERE EVENT_TYPE LIKE 'payment.account%'
 	AND EVENT_TYPE != 'payment.account.status.change'
 	{% if is_incremental() %}
-  	AND _AIRBYTE_NORMALIZED_AT>= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
+  	AND _AIRBYTE_EMITTED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
 	{% endif %}
 )
 
