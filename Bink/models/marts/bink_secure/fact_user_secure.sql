@@ -5,7 +5,10 @@ Last modified by:
 Last modified date: 
 
 Description:
-    extracts user created and user deleted from the events table and 
+    Loads user created and user deleted from the events table 
+	Incremental strategy: loads all newly inserted records, transforms, then loads
+	all user events which require updating, finally calculating is_most_recent flag,
+	and merging based on the event id
 
 Parameters:
     ref_object      - stg_hermes__events

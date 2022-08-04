@@ -6,6 +6,9 @@ Last modified date:
 
 Description:
     Fact table for loyalty card register request / fail / success
+	Incremental strategy: loads all newly inserted records, transforms, then loads
+	all loyalty card events which require updating, finally calculating is_most_recent
+	flag, and merging based on the event id
 
 Parameters:
     ref_object      - stg_hermes__events

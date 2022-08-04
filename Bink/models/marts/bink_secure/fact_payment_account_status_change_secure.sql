@@ -6,6 +6,9 @@ Last modified date:
 
 Description:
     Extracts payment_account_status_change from the events table
+	Incremental strategy: loads all newly inserted records, transforms, then loads
+	all payment account events which require updating, finally calculating is_most_recent
+	flag, and merging based on the event id
 
 Parameters:
     ref_object      - stg_hermes__events
