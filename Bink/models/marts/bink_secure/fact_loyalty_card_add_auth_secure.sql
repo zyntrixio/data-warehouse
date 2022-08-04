@@ -5,8 +5,11 @@ Last modified by:
 Last modified date: 
 
 Description:
-    Fact table for loyalty card add & auth events
-
+    Fact table for loyalty card add & auth events.
+	Incremental strategy: loads all newly inserted records, transforms, then loads
+	all loyalty card events which require updating, finally calculating is_most_recent
+	flag, and merging based on the event id
+	
 Parameters:
     ref_object      - stg_hermes__events
 */
@@ -16,6 +19,7 @@ Parameters:
 		alias='fact_loyalty_card_add_auth'
         ,materialized='incremental'
 		,unique_key='EVENT_ID'
+		,merge_update_columns = ['IS_MOST_RECENT', 'UPDATED_DATE_TIME']
     )
 }}
 
@@ -25,7 +29,7 @@ add_auth_events AS (
 	FROM {{ ref('stg_hermes__EVENTS')}}
 	WHERE EVENT_TYPE like 'lc.addandauth%'
 	{% if is_incremental() %}
-  	AND _AIRBYTE_NORMALIZED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
+  	AND _AIRBYTE_EMITTED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
 	{% endif %}
 )
 
@@ -59,11 +63,7 @@ add_auth_events AS (
 			END AS EVENT_TYPE
 		,LOYALTY_CARD_ID
 		,LOYALTY_PLAN
-		,CASE WHEN
-			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY LOYALTY_CARD_ID)) // Need to think about simeultaneous events - rank by business logic
-			THEN TRUE
-			ELSE FALSE
-			END AS IS_MOST_RECENT
+		,NULL AS IS_MOST_RECENT
 		,MAIN_ANSWER // Unique identifier for schema account record
 		,CHANNEL
 		,ORIGIN
@@ -72,13 +72,51 @@ add_auth_events AS (
 		,LOWER(EMAIL) AS EMAIL
 		,SPLIT_PART(EMAIL,'@',2) AS EMAIL_DOMAIN
 		,SYSDATE() AS INSERTED_DATE_TIME
+		,NULL AS UPDATED_DATE_TIME
 	FROM add_auth_events_unpack
 	ORDER BY EVENT_DATE_TIME DESC
 )
 
+,union_old_lc_records AS (
+	SELECT *
+	FROM add_auth_events_select
+	{% if is_incremental() %}
+	UNION
+	SELECT *
+	FROM {{ this }}
+	WHERE LOYALTY_CARD_ID IN (
+		SELECT LOYALTY_CARD_ID
+		FROM add_auth_events_select
+	)
+	{% endif %}
+)
+
+,alter_is_most_recent_flag AS (
+	SELECT
+		EVENT_ID
+		,EVENT_DATE_TIME
+		,EVENT_TYPE
+		,LOYALTY_CARD_ID
+		,LOYALTY_PLAN
+		,CASE WHEN
+			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY LOYALTY_CARD_ID))
+			THEN TRUE
+			ELSE FALSE
+			END AS IS_MOST_RECENT
+		,MAIN_ANSWER
+		,CHANNEL
+		,ORIGIN
+		,USER_ID
+		,EXTERNAL_USER_REF
+		,EMAIL
+		,EMAIL_DOMAIN
+		,INSERTED_DATE_TIME
+		,SYSDATE() AS UPDATED_DATE_TIME
+	FROM
+		union_old_lc_records
+)
 
 SELECT
 	*
 FROM
-	add_auth_events_select
-	
+	alter_is_most_recent_flag

@@ -15,6 +15,7 @@ Parameters:
     config(
         materialized='incremental'
 		,unique_key='EVENT_ID'
+		,merge_update_columns = ['IS_MOST_RECENT', 'UPDATED_DATE_TIME']
     )
 }}
 
@@ -23,7 +24,7 @@ lc AS (
     SELECT * 
     FROM {{ref('fact_loyalty_card_removed_secure')}}
 	{% if is_incremental() %}
-  	WHERE INSERTED_DATE_TIME >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
+  	WHERE UPDATED_DATE_TIME>= (SELECT MAX(UPDATED_DATE_TIME) from {{ this }})
 	{% endif %}
 )
 
@@ -33,6 +34,7 @@ lc AS (
 		,EVENT_DATE_TIME
 		,LOYALTY_CARD_ID
 		,LOYALTY_PLAN
+		,IS_MOST_RECENT
 		// ,MAIN_ANSWER
 		,CHANNEL
 		,ORIGIN
@@ -41,6 +43,7 @@ lc AS (
 		// ,EMAIL
 		,EMAIL_DOMAIN
 		,INSERTED_DATE_TIME
+		,UPDATED_DATE_TIME
     FROM
         lc
 )

@@ -23,11 +23,14 @@ run_full: clean
 test: compile deps
 	dbt test
 
-source_test: compile deps
+test_source: compile
 	dbt test --select tag:source
 
-output_tests: compile deps
-	dbt test --exclude tag:source
+test_output: compile
+	dbt test --exclude tag:"source" tag:"business"
+
+test_business: compile
+	dbt test --select tag:"business"
 	
 docs:
 	dbt docs generate

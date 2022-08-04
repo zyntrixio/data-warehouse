@@ -5,7 +5,10 @@ Last modified by:
 Last modified date: 
 
 Description:
-    extracts user created and user deleted from the events table and 
+    Loads user created and user deleted from the events table 
+	Incremental strategy: loads all newly inserted records, transforms, then loads
+	all user events which require updating, finally calculating is_most_recent flag,
+	and merging based on the event id
 
 Parameters:
     ref_object      - stg_hermes__events
@@ -16,6 +19,7 @@ Parameters:
 		alias='fact_user'
         ,materialized='incremental'
 		,unique_key='EVENT_ID'
+		,merge_update_columns = ['IS_MOST_RECENT', 'UPDATED_DATE_TIME']
     )
 }}
 
@@ -25,7 +29,7 @@ user_events AS (
 	FROM {{ ref('stg_hermes__EVENTS')}}
 	WHERE EVENT_TYPE LIKE 'user%'
 	{% if is_incremental() %}
-  	AND _AIRBYTE_NORMALIZED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
+  	AND _AIRBYTE_EMITTED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
 	{% endif %}	
 )
 
@@ -53,24 +57,51 @@ user_events AS (
 			THEN 'DELETED'
 			ELSE NULL
 			END AS EVENT_TYPE
-		,CASE WHEN
-			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY USER_ID))
-			THEN TRUE
-			ELSE FALSE
-			END AS IS_MOST_RECENT
+		,NULL AS IS_MOST_RECENT
 		,ORIGIN
 		,CHANNEL
 		,NULLIF(EXTERNAL_USER_REF,'') AS EXTERNAL_USER_REF
-		// ,LOWER(EMAIL) AS EMAIL
+		,LOWER(EMAIL) AS EMAIL
 		,SPLIT_PART(EMAIL,'@',2) AS DOMAIN
 		,SYSDATE() AS INSERTED_DATE_TIME
+		,NULL AS UPDATED_DATE_TIME
 	FROM user_events_unpack
-
 )
 
+,union_old_user_records AS (
+	SELECT *
+	FROM user_events_select
+	{% if is_incremental() %}
+	UNION
+	SELECT *
+	FROM {{ this }}
+	WHERE USER_ID IN (
+		SELECT USER_ID
+		FROM user_events_select
+	)
+	{% endif %}
+)
+
+,alter_is_most_recent_flag AS (
+	SELECT
+		EVENT_ID
+		,EVENT_DATE_TIME
+		,USER_ID
+		,EVENT_TYPE
+		,NULL AS IS_MOST_RECENT
+		,ORIGIN
+		,CHANNEL
+		,EXTERNAL_USER_REF
+		,EMAIL
+		,DOMAIN
+		,INSERTED_DATE_TIME
+		,SYSDATE() AS UPDATED_DATE_TIME
+	FROM
+		union_old_user_records
+)
 
 SELECT
 	*
 FROM
-	user_events_select
+	alter_is_most_recent_flag
 	

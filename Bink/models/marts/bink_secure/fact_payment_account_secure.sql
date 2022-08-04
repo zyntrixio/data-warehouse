@@ -6,6 +6,9 @@ Last modified date:
 
 Description:
     extracts payment_account added and payment_account removed from the events table
+	Incremental strategy: loads all newly inserted records, transforms, then loads
+	all payment account events which require updating, finally calculating is_most_recent
+	flag, and merging based on the event id
 
 Parameters:
     ref_object      - stg_hermes__events
@@ -16,6 +19,7 @@ Parameters:
 		alias='fact_payment_account'
         ,materialized='incremental'
 		,unique_key='EVENT_ID'
+		,merge_update_columns = ['IS_MOST_RECENT', 'UPDATED_DATE_TIME']
     )
 }}
 
@@ -27,7 +31,7 @@ payment_events AS (
 	WHERE EVENT_TYPE LIKE 'payment.account%'
 	AND EVENT_TYPE != 'payment.account.status.change'
 	{% if is_incremental() %}
-  	AND _AIRBYTE_NORMALIZED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
+  	AND _AIRBYTE_EMITTED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
 	{% endif %}
 )
 
@@ -85,11 +89,7 @@ payment_events AS (
 			THEN 'REMOVED'
 			ELSE NULL
 			END AS EVENT_TYPE
-		,CASE WHEN
-			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY PAYMENT_ACCOUNT_ID)) // Need to think about simeultaneous events - rank by business logic
-			THEN TRUE
-			ELSE FALSE
-			END AS IS_MOST_RECENT
+		,NULL AS IS_MOST_RECENT
 		,STATUS_ID
 		,STATUS
 		,ORIGIN
@@ -106,12 +106,55 @@ payment_events AS (
 		,LOWER(EMAIL) AS EMAIL
 		,SPLIT_PART(EMAIL,'@',2) AS EMAIL_DOMAIN
 		,SYSDATE() AS INSERTED_DATE_TIME
+		,NULL AS UPDATED_DATE_TIME
 	FROM payment_events_join_status
 )
 
 
+,union_old_pa_records AS (
+	SELECT *
+	FROM payment_events_select
+	{% if is_incremental() %}
+	UNION
+	SELECT *
+	FROM {{ this }}
+	WHERE PAYMENT_ACCOUNT_ID IN (
+		SELECT PAYMENT_ACCOUNT_ID
+		FROM payment_events_select
+	)
+	{% endif %}
+)
+
+,alter_is_most_recent_flag AS (
+	SELECT
+		EVENT_ID
+		,EVENT_DATE_TIME
+		,PAYMENT_ACCOUNT_ID
+		,EVENT_TYPE
+		,CASE WHEN
+			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY PAYMENT_ACCOUNT_ID))
+			THEN TRUE
+			ELSE FALSE
+			END AS IS_MOST_RECENT
+		,STATUS_ID
+		,STATUS
+		,ORIGIN
+		,CHANNEL
+		,USER_ID
+		,EXTERNAL_USER_REF
+		,EXPIRY_MONTH
+		,EXPIRY_YEAR
+		,EXPIRY_YEAR_MONTH
+		,TOKEN
+		,EMAIL
+		,EMAIL_DOMAIN
+		,INSERTED_DATE_TIME
+		,SYSDATE() AS UPDATED_DATE_TIME
+	FROM
+		union_old_pa_records
+)
+
 SELECT
 	*
 FROM
-	payment_events_select
-	
+	alter_is_most_recent_flag

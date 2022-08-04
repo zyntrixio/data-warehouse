@@ -25,7 +25,7 @@ all_events as (
 	FROM
 		{{ source('hermes_events', 'events') }}
 	{% if is_incremental() %}
-  	WHERE _AIRBYTE_NORMALIZED_AT >= (SELECT MAX(_AIRBYTE_NORMALIZED_AT) from {{ this }})
+  	WHERE _AIRBYTE_EMITTED_AT >= (SELECT MAX(_AIRBYTE_EMITTED_AT) from {{ this }})
 	{% endif %}
 	
 )

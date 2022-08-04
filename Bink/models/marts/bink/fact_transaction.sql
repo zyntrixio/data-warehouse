@@ -24,7 +24,7 @@ transaction_events AS (
 	FROM {{ ref('stg_hermes__EVENTS')}}
 	WHERE EVENT_TYPE = 'transaction.exported'
 	{% if is_incremental() %}
-  	AND _AIRBYTE_NORMALIZED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
+  	AND _AIRBYTE_NORMALIZED_AT>= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
 	{% endif %}
 )
 
@@ -71,6 +71,7 @@ transaction_events AS (
 		,PAYMENT_ACCOUNT_ID
 		,SETTLEMENT_KEY
 		,SYSDATE() AS INSERTED_DATE_TIME
+		,SYSDATE() AS UPDATED_DATE_TIME
 	FROM
 		transaction_events_unpack t
 	LEFT JOIN

@@ -6,6 +6,9 @@ Last modified date:
 
 Description:
     Fact table for loyalty card register request / fail / success
+	Incremental strategy: loads all newly inserted records, transforms, then loads
+	all loyalty card events which require updating, finally calculating is_most_recent
+	flag, and merging based on the event id
 
 Parameters:
     ref_object      - stg_hermes__events
@@ -16,6 +19,7 @@ Parameters:
 		alias='fact_loyalty_card_status_change'
         ,materialized='incremental'
 		,unique_key='EVENT_ID'
+		,merge_update_columns = ['IS_MOST_RECENT', 'UPDATED_DATE_TIME']
     )
 }}
 
@@ -26,7 +30,7 @@ status_change_events AS (
 	FROM {{ ref('stg_hermes__EVENTS')}}
 	WHERE EVENT_TYPE = 'lc.statuschange'
 	{% if is_incremental() %}
-  	AND _AIRBYTE_NORMALIZED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
+  	AND _AIRBYTE_EMITTED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
 	{% endif %}
 )
 
@@ -85,11 +89,7 @@ status_change_events AS (
 		,asl_from.STATUS AS FROM_STATUS
 		,TO_STATUS_ID
 		,asl_to.STATUS AS TO_STATUS
-		,CASE WHEN
-			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY LOYALTY_CARD_ID))
-			THEN TRUE
-			ELSE FALSE
-			END AS IS_MOST_RECENT
+		,NULL AS IS_MOST_RECENT
 		,NULLIF(MAIN_ANSWER,'') AS MAIN_ANSWER
 		,ORIGIN
 		,CHANNEL
@@ -98,6 +98,7 @@ status_change_events AS (
 		,LOWER(EMAIL) AS EMAIL
 		,SPLIT_PART(EMAIL,'@',2) AS EMAIL_DOMAIN
 		,SYSDATE() AS INSERTED_DATE_TIME
+		,NULL AS UPDATED_DATE_TIME
 	FROM status_change_events_add_from_status sce
 	LEFT JOIN loyalty_plan lp
 		ON sce.LOYALTY_PLAN_ID = lp.LOYALTY_PLAN_ID
@@ -108,9 +109,50 @@ status_change_events AS (
 
 )
 
+,union_old_lc_records AS (
+	SELECT *
+	FROM status_change_events_select
+	{% if is_incremental() %}
+	UNION
+	SELECT *
+	FROM {{ this }}
+	WHERE LOYALTY_CARD_ID IN (
+		SELECT LOYALTY_CARD_ID
+		FROM status_change_events_select
+	)
+	{% endif %}
+)
+
+,alter_is_most_recent_flag AS (
+	SELECT
+		EVENT_ID
+		,EVENT_DATE_TIME
+		,LOYALTY_CARD_ID
+		,LOYALTY_PLAN_ID
+		,LOYALTY_PLAN_NAME
+		,FROM_STATUS_ID
+		,FROM_STATUS
+		,TO_STATUS_ID
+		,TO_STATUS
+		,CASE WHEN
+			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY LOYALTY_CARD_ID))
+			THEN TRUE
+			ELSE FALSE
+			END AS IS_MOST_RECENT
+		,MAIN_ANSWER
+		,ORIGIN
+		,CHANNEL
+		,USER_ID
+		,EXTERNAL_USER_REF
+		,EMAIL
+		,EMAIL_DOMAIN
+		,INSERTED_DATE_TIME
+		,SYSDATE() AS UPDATED_DATE_TIME
+	FROM
+		union_old_lc_records
+)
 
 SELECT
 	*
 FROM
-	status_change_events_select
-	
+	alter_is_most_recent_flag
