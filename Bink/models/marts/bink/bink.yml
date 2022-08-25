@@ -400,3 +400,62 @@ models:
           tests:
             # - unique
             - not_null
+          
+
+
+    - name: fact_voucher
+      description: ""
+      columns:
+        - name: voucher_code
+          description: "part surogate key for asos vouchers"
+          tests:
+            - unique
+            - not_null
+
+        - name: loyalty_card_id
+          description: "FK to dim loyalty card table"
+          tests:
+            - relationships:
+                to: ref('dim_loyalty_card')
+                field: LOYALTY_CARD_ID
+
+        - name: loyalty_plan_id
+          description: "loyalty plan id"
+
+        - name: state
+          description: "state of voucher"
+
+        - name: voucher_type
+          description: "voucher type"
+
+        - name: date_redeemed
+          description: "date the voucher was redeemed not tracked for asos "
+
+        - name: date_issued
+          description: "date voucher was  issued "
+
+        - name: expiry_date
+          description: "expirary date on voucher "
+
+        - name: redemption_tracked
+          description: "can we track voucher redemptions"
+
+        - name: time_to_redemption
+          description: "length of time until redemption"
+          tests:
+          - dbt_utils.expression_is_true:
+              expression: '>= 0'
+              
+        - name: days_left_on_vouchers
+          description: " days left on vouchers that can be tracked"
+          tests:
+          - dbt_utils.expression_is_true:
+              expression: '>= 0'
+
+
+        - name: days_valid_for
+          description: "days the voucher is valid for when issued"
+          tests:
+          - dbt_utils.expression_is_true:
+              expression: '>= 0'
+              
