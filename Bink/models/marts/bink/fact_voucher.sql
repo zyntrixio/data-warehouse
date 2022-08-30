@@ -23,6 +23,7 @@ SELECT  v.voucher_code
        ,v.expiry_date
        ,v.EARN_TYPE as voucher_type
        ,case when l.LOYALTY_PLAN_COMPANY = 'ASOS' then 'FALSE'
+            when state = 'CANCELLED' then 'FALSE'
             else 'TRUE'
         end as Redemption_TRACKED
        ,l.LOYALTY_PLAN_COMPANY
