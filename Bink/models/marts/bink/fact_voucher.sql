@@ -1,3 +1,7 @@
+/* One row per voucher with links loyalty_card_id and loyalty_plan
+If there are duplicated it takes the latest loyalty plan by created date */
+
+
 with vouchers as (
     select * from 
     {{ref('transformed_voucher_keys')}}
