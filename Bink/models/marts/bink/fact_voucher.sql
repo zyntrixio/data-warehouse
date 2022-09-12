@@ -4,48 +4,61 @@ If there are duplicated it takes the latest loyalty plan by created date */
 
 with vouchers as (
     select * from 
-    {{ref('transformed_voucher_keys')}}
+    {{ref('transformed_voucher_signups')}}
 )
 
 
-, loyalty_plan as (
+, loyalty_card as (
     select * 
-    from {{ref('stg_hermes__SCHEME_SCHEME')}}
+    from {{ref('dim_loyalty_card')}}
 )
 
 , add_company as (
-SELECT  v.voucher_code
-       ,v.LOYALTY_CARD_ID
-       ,v.LOYALTY_PLAN_ID
+
+SELECT  v.EVENT_DATE_TIME
+       ,v.loyalty_card_id
+       ,v.current_channel
+       ,v.user_id
        ,v.state
+       ,v.earn_type
+       ,v.voucher_code
        ,v.date_redeemed
        ,v.date_issued
        ,v.expiry_date
-       ,v.EARN_TYPE as voucher_type
-       ,case when l.LOYALTY_PLAN_COMPANY = 'ASOS' then 'FALSE'
+       ,v.issued
+       ,v.issued_channel
+       ,v.redemed
+       ,v.redeemed_channel
+       ,case when lc.LOYALTY_PLAN_COMPANY = 'ASOS' then 'FALSE'
             when state = 'CANCELLED' then 'FALSE'
             else 'TRUE'
         end as Redemption_TRACKED
-       ,l.LOYALTY_PLAN_COMPANY
 FROM vouchers v
-left join loyalty_plan l 
-on l.loyalty_plan_id = v.loyalty_plan_id
+left join loyalty_card lc
+on v.loyalty_card_id = lc.loyalty_card_id
+
 )
 
 
 
 , timings as (
 Select 
-voucher_code
-,LOYALTY_CARD_ID
-,LOYALTY_PLAN_ID
+ EVENT_DATE_TIME
+,loyalty_card_id
+,current_channel
+,user_id
 ,state
-,voucher_type
+,earn_type
+,voucher_code
+,Redemption_TRACKED
 ,date_redeemed
 ,date_issued
 ,expiry_date
-,Redemption_TRACKED
-,case when Redemption_TRACKED = 'TRUE' and state in ( 'ISSUED' ,'REDEEMED') and expiry_date >= current_date() -1  then datediff(day, date_issued,coalesce(date_redeemed, current_date()-1)) 
+,issued
+,issued_channel
+,redemed
+,redeemed_channel
+,case when Redemption_TRACKED = 'TRUE' and state in ( 'ISSUED' ,'REDEEMED')  then datediff(day, date_issued,coalesce(date_redeemed, current_date()-1)) 
         else null 
         end as time_to_redemption
 ,case when STATE = 'ISSUED' and Redemption_TRACKED = 'TRUE' and expiry_date >= current_date() -1  then  datediff(day, current_date()-1 ,expiry_date)
@@ -58,5 +71,6 @@ from add_company
 
 
 select * from timings
+--where current_channel = 'com.barclays.bmb'
 
 
