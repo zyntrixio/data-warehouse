@@ -54,6 +54,7 @@ loyalty_card AS (
     WHERE IS_MOST_RECENT = TRUE
 )
 
+
 , join_to_base AS (
     SELECT 
     -- BALANCES --is this a json field
