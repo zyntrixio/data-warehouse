@@ -43,13 +43,14 @@ on v.loyalty_card_id = lc.loyalty_card_id
 
 , timings as (
 Select 
-EVENT_DATE_TIME
+ EVENT_DATE_TIME
 ,loyalty_card_id
 ,current_channel
 ,user_id
 ,state
 ,earn_type
 ,voucher_code
+,Redemption_TRACKED
 ,date_redeemed
 ,date_issued
 ,expiry_date
@@ -57,7 +58,7 @@ EVENT_DATE_TIME
 ,issued_channel
 ,redemed
 ,redeemed_channel
-,case when Redemption_TRACKED = 'TRUE' and state in ( 'ISSUED' ,'REDEEMED') and expiry_date >= current_date() -1  then datediff(day, date_issued,coalesce(date_redeemed, current_date()-1)) 
+,case when Redemption_TRACKED = 'TRUE' and state in ( 'ISSUED' ,'REDEEMED')  then datediff(day, date_issued,coalesce(date_redeemed, current_date()-1)) 
         else null 
         end as time_to_redemption
 ,case when STATE = 'ISSUED' and Redemption_TRACKED = 'TRUE' and expiry_date >= current_date() -1  then  datediff(day, current_date()-1 ,expiry_date)
@@ -70,6 +71,6 @@ from add_company
 
 
 select * from timings
-where current_channel = 'com.barclays.bmb'
+--where current_channel = 'com.barclays.bmb'
 
 

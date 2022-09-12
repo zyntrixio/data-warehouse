@@ -127,3 +127,47 @@ SELECT
 	*
 FROM
 	alter_is_most_recent_flag
+
+-- union all
+
+-- select 000000001 as event_id,
+-- to_timestamp('2020-12-11 19:08:25.283') as EVENT_DATE_TIME,
+-- 'AUTH' as auth_type,
+-- 'SUCCESS' as EVENT_TYPE,
+-- '349429' as LOYALTY_CARD_ID,
+-- null as LOYALTY_PLAN,
+-- 'FALSE'  as is_most_recent
+-- ,null as MAIN_ANSWER
+-- ,'com.barclays.bmb' as CHANNEL
+-- ,null as ORIGIN
+-- ,'0000001' as USER_ID
+-- , null as EXTERNAL_USER_REF
+-- ,null  as EMAIL
+-- ,null as EMAIL_DOMAIN
+-- ,SYSDATE() as INSERTED_DATE_TIME
+-- ,SYSDATE() AS UPDATED_DATE_TIME
+
+
+-- union all 
+
+
+
+-- select 000000002 as event_id,
+-- to_timestamp('2020-12-13 19:08:25.283') as EVENT_DATE_TIME,
+-- 'AUTH' as auth_type,
+-- 'SUCCESS' as EVENT_TYPE,
+-- '349429' as LOYALTY_CARD_ID,
+-- null as LOYALTY_PLAN,
+-- 'FALSE'  as is_most_recent
+-- ,null as MAIN_ANSWER
+-- ,'barclays' as CHANNEL
+-- ,null as ORIGIN
+-- ,'0000001' as USER_ID
+-- , null as EXTERNAL_USER_REF
+-- ,null  as EMAIL
+-- ,null as EMAIL_DOMAIN
+-- ,SYSDATE() as INSERTED_DATE_TIME
+-- ,SYSDATE() AS UPDATED_DATE_TIME
+
+
+
