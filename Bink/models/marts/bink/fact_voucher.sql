@@ -4,7 +4,7 @@ If there are duplicated it takes the latest loyalty plan by created date */
 
 with vouchers as (
     select * from 
-    {{ref('transformed_voucher_signups')}}
+    {{ref('transformed_voucher_keys')}}
 )
 
 
@@ -15,20 +15,14 @@ with vouchers as (
 
 , add_company as (
 
-SELECT  v.EVENT_DATE_TIME
+SELECT  v.CREATED
        ,v.loyalty_card_id
-       ,v.current_channel
-       ,v.user_id
        ,v.state
        ,v.earn_type
        ,v.voucher_code
        ,v.date_redeemed
        ,v.date_issued
        ,v.expiry_date
-       ,v.issued
-       ,v.issued_channel
-       ,v.redemed
-       ,v.redeemed_channel
        ,case when lc.LOYALTY_PLAN_COMPANY = 'ASOS' then 'FALSE'
             when state = 'CANCELLED' then 'FALSE'
             else 'TRUE'
@@ -43,10 +37,8 @@ on v.loyalty_card_id = lc.loyalty_card_id
 
 , timings as (
 Select 
- EVENT_DATE_TIME
+ CREATED
 ,loyalty_card_id
-,current_channel
-,user_id
 ,state
 ,earn_type
 ,voucher_code
@@ -54,10 +46,6 @@ Select
 ,date_redeemed
 ,date_issued
 ,expiry_date
-,issued
-,issued_channel
-,redemed
-,redeemed_channel
 ,case when Redemption_TRACKED = 'TRUE' and state in ( 'ISSUED' ,'REDEEMED')  then datediff(day, date_issued,coalesce(date_redeemed, current_date()-1)) 
         else null 
         end as time_to_redemption
