@@ -32,7 +32,7 @@ Select * from
 ,date_redeemed
 ,date_issued
 ,expiry_date
-,row_number() over(partition by code order by created desc) as voucher_rank
+,row_number() over(partition by LOYALTY_CARD_ID, code order by created desc) as voucher_rank
 ,row_number() over(partition by code order by created desc) as voucher_rank_rev
 from vouchers
 where code not like 'Due:%'
@@ -64,4 +64,4 @@ d1.LOYALTY_CARD_ID
 ,d1.date_issued
 ,d1.expiry_date
 from de_dupe d1 
---where d1.voucher_rank = 1
+where d1.voucher_rank = 1

@@ -405,12 +405,19 @@ models:
 
     - name: fact_voucher
       description: ""
+      tests:
+        - dbt_utils.unique_combination_of_columns:
+            combination_of_columns:
+              - voucher_code
+              - loyalty_card_id
+        - unique:
+            column_name: "(voucher_code || '-' || loyalty_card_id)"
+
       columns:
-        - name: voucher_code
+        - name: voucher_code 
           description: "part surogate key for asos vouchers"
-          tests:
-            - unique
-            - not_null
+   
+
 
         - name: loyalty_card_id
           description: "FK to dim loyalty card table"
@@ -459,3 +466,34 @@ models:
           - dbt_utils.expression_is_true:
               expression: '>= 0'
               
+
+    - name: Dim_loyalty_card_active_scd
+      description: ""
+      tests:
+        - dbt_utils.unique_combination_of_columns:
+            combination_of_columns:
+              - user_id
+              - loyalty_card_id
+              - channel
+              - valid_from
+              - valid_to
+        - unique:
+            column_name: "(valid_to|| '-' || loyalty_card_id || '-' || user_id || '-' || channel || '-' || valid_from )"
+      columns:
+        - name: loyalty_card_id
+          description: ""
+
+        - name: user_id
+          description: ""
+
+        - name: channel
+          description: ""
+
+        - name: removed
+          description: ""
+
+        - name: valid_from
+          description: ""
+
+        - name: valid_to
+          description: ""

@@ -1,4 +1,4 @@
 
- {{ codegen.generate_source('stg_hermes__VOUCHERS') }} 
+ {#{{ codegen.generate_source('Dim_loyalty_card_active_scd') }} #}
 
  
