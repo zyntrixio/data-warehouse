@@ -35,17 +35,19 @@ WITH all_users_from_events as (
 
     {%- for item in results_list
     -%}
-    {%- if not loop.first %} UNION {% endif %}
-    SELECT USER_ID FROM {{target.database}}.{{target.schema}}.{{ item }}
-    WHERE EVENT_DATE_TIME < (
-        SELECT MAX(EVENT_DATE_TIME)
-        FROM {{ref('fact_user')}}
-        )
-    AND EVENT_DATE_TIME > dateadd(day, -1, (
-        SELECT MAX(EVENT_DATE_TIME)
-        FROM {{ref('fact_user')}}
-        )
-        )
+        {%- if item != 'FACT_VOUCHER' %}
+            {%- if not loop.first %} UNION {% endif %}
+            SELECT USER_ID FROM {{target.database}}.{{target.schema}}.{{ item }}
+            WHERE EVENT_DATE_TIME < (
+                SELECT MAX(EVENT_DATE_TIME)
+                FROM {{ref('fact_user')}}
+                )
+            AND EVENT_DATE_TIME > dateadd(day, -1, (
+                SELECT MAX(EVENT_DATE_TIME)
+                FROM {{ref('fact_user')}}
+                )
+                )
+        {% endif %}
     {%- endfor -%}
 )
 
