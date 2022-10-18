@@ -15,7 +15,7 @@ Parameters:
 WITH source AS (
     SELECT
         ID
-        ,MID AS MERCHANT_ID
+        ,IDENTIFIER AS MERCHANT_ID
         ,LOCATION
         ,POSTCODE
         ,CREATED_AT::DATETIME AS CREATED_AT

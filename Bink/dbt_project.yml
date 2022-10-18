@@ -2,7 +2,7 @@ name: 'Bink'
 version: '1.0.0'
 config-version: 2
 
-profile: 'Bink'
+profile: 'BINK'
 
 model-paths: ["models"]
 analysis-paths: ["analyses"]

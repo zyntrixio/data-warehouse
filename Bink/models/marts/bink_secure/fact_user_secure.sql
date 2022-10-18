@@ -55,6 +55,8 @@ user_events AS (
 			THEN 'CREATED'
 			WHEN EVENT_TYPE = 'user.deleted'
 			THEN 'DELETED'
+			WHEN EVENT_TYPE = 'user.session.start'
+			THEN 'REFRESH'
 			ELSE NULL
 			END AS EVENT_TYPE
 		,NULL AS IS_MOST_RECENT
