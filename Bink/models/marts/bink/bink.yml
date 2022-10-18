@@ -104,7 +104,7 @@ models:
           tests:
             - not_null
             - accepted_values:
-                values: ['CREATED', 'DELETED']
+                values: ['CREATED', 'DELETED', 'REFRESH']
             - sd_daily_spike:
                 vals: ['CREATED']
                 datetime_col: EVENT_DATE_TIME
