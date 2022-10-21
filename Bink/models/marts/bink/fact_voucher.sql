@@ -46,10 +46,10 @@ Select
 ,date_redeemed
 ,date_issued
 ,expiry_date
-,case when Redemption_TRACKED = 'TRUE' and state in ( 'ISSUED' ,'REDEEMED')  then datediff(day, date_issued,coalesce(date_redeemed, current_date()-1)) 
+,case when Redemption_TRACKED = 'TRUE' and state in ( 'ISSUED' ,'REDEEMED')  then datediff(day, date_issued,coalesce(date_redeemed, current_date())) 
         else null 
         end as time_to_redemption
-,case when STATE = 'ISSUED' and Redemption_TRACKED = 'TRUE' and expiry_date >= current_date() -1  then  datediff(day, current_date()-1 ,expiry_date)
+,case when STATE = 'ISSUED' and Redemption_TRACKED = 'TRUE' and expiry_date >= current_date()  then  datediff(day, current_date() ,expiry_date)
         else null 
         end as days_left_on_vouchers
 ,datediff(day, date_issued ,expiry_date) as days_valid_for
