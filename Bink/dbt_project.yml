@@ -30,7 +30,11 @@ models:
         bink_secure:
           +schema: "BINK_SECURE"
           materialized: table
-
+  elementary:
+    +schema: 'BINK_MONITORING'
+    +materialized: table
+    +transient: false
+    
 vars:
  dbt_artifacts_database: 'DEV'
  dbt_artifacts_schema: 'BINK_MONITORING'
