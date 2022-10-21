@@ -64,6 +64,10 @@ models:
                 datetime_col: EVENT_DATE_TIME
                 unique_id_col: EVENT_ID
                 max_sd: 2
+                config:
+                  severity: warn
+                  # error_if: ">1000"
+                  # warn_if: ">10"
 
 
     - name: dim_date
@@ -110,11 +114,19 @@ models:
                 datetime_col: EVENT_DATE_TIME
                 unique_id_col: EVENT_ID
                 max_sd: 2
+                config:
+                  severity: error
+                  # error_if: ">1000"
+                  # warn_if: ">10"                
             - sd_daily_spike:
                 vals: ['DELETED']
                 datetime_col: EVENT_DATE_TIME
                 unique_id_col: EVENT_ID
                 max_sd: 2
+                config:
+                  severity: error
+                  # error_if: ">1000"
+                  # warn_if: ">10"                
         - name: USER_ID
           description: Business PK
           quote: true
@@ -190,11 +202,19 @@ models:
                 datetime_col: EVENT_DATE_TIME
                 unique_id_col: EVENT_ID
                 max_sd: 2
+                config:
+                  severity: error
+                  # error_if: ">1000"
+                  # warn_if: ">10"                
             - sd_daily_spike:
                 vals: ['REMOVED']
                 datetime_col: EVENT_DATE_TIME
                 unique_id_col: EVENT_ID
                 max_sd: 2
+                config:
+                  severity: error
+                  # error_if: ">1000"
+                  # warn_if: ">10"
         - name: 'STATUS'
           description: Mapping from payment account status mapping
           quote: true 
@@ -388,7 +408,10 @@ models:
                 datetime_col: EVENT_DATE_TIME
                 unique_id_col: EVENT_ID
                 max_sd: 2
-
+                config:
+                  severity: error
+                  # error_if: ">1000"
+                  # warn_if: ">10"                
 
     - name: join_loyalty_card_payment_account
       description: Joins the loyalty_card and payment cards with PLL links
