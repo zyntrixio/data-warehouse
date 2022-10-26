@@ -115,7 +115,7 @@ models:
                 unique_id_col: EVENT_ID
                 max_sd: 2
                 config:
-                  severity: error
+                  severity: warn
                   # error_if: ">1000"
                   # warn_if: ">10"                
             - sd_daily_spike:
@@ -124,7 +124,7 @@ models:
                 unique_id_col: EVENT_ID
                 max_sd: 2
                 config:
-                  severity: error
+                  severity: warn
                   # error_if: ">1000"
                   # warn_if: ">10"                
         - name: USER_ID
@@ -203,7 +203,7 @@ models:
                 unique_id_col: EVENT_ID
                 max_sd: 2
                 config:
-                  severity: error
+                  severity: warn
                   # error_if: ">1000"
                   # warn_if: ">10"                
             - sd_daily_spike:
@@ -212,7 +212,7 @@ models:
                 unique_id_col: EVENT_ID
                 max_sd: 2
                 config:
-                  severity: error
+                  severity: warn
                   # error_if: ">1000"
                   # warn_if: ">10"
         - name: 'STATUS'
@@ -409,7 +409,7 @@ models:
                 unique_id_col: EVENT_ID
                 max_sd: 2
                 config:
-                  severity: error
+                  severity: warn
                   # error_if: ">1000"
                   # warn_if: ">10"                
 
