@@ -1,12 +1,14 @@
 /*
-Generic Test to ensure all delete events have a corresponding create event
+Generic Test to ensure sum of delete and create events is not less than 0 or greater than 1
 
 Created By:     SP
 Created Date:   2022/07/12
+Last modified by:   AB
+Last modified date: 2022/10/26
 */
 
 
-{% test more_created_deleted(model, column_name, created_val, deleted_val, datetime_col, group_col) %}
+{% test more_created_deleted(model, column_name, created_val, deleted_val, datetime_col, group_col, filter_date) %}
     {{ config(tags = ['business']) }}
 
     WITH vals AS (
@@ -19,9 +21,24 @@ Created Date:   2022/07/12
                 END AS event_val
             ,{{group_col}}
             ,{{datetime_col}}
+            ,{{column_name}}
+            ,RANK() OVER ( PARTITION BY {{group_col}} ORDER BY {{datetime_col}} ASC) AS r
         FROM {{model}}
         WHERE {{group_col}} IS NOT null
+        AND {{datetime_col}} > {{"'" + filter_date + "'"}}
     )
+
+    , create_first AS (
+        SELECT 
+            {{group_col}}
+            ,{{column_name}}
+        FROM
+            vals
+        WHERE
+            r = 1
+            AND {{column_name}} = {{ "'" + created_val + "'"}}
+    )
+
 
     ,sum_event_vals AS (
         SELECT
@@ -30,10 +47,12 @@ Created Date:   2022/07/12
             MAX({{datetime_col}}) max_time
         FROM
             vals
+        WHERE
+            {{group_col}} IN (SELECT {{group_col}} FROM create_first)
         GROUP BY
             {{group_col}}
         HAVING
-            s < 0
+            s NOT IN (0,1)
             AND TIMEDIFF(hour, max_time, sysdate()) < 24
     )
 

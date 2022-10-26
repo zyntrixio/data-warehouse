@@ -227,3 +227,4 @@ models:
                 deleted_val: 'DELETED'
                 datetime_col: EVENT_DATE_TIME
                 group_col: EXTERNAL_USER_REF
+                filter_date: '2022-09-01'
