@@ -68,7 +68,6 @@ add_auth_events AS (
 		,MAIN_ANSWER // Unique identifier for schema account record
 		,CHANNEL
         ,BRAND
-        ,BRAND
 		,ORIGIN
 		,USER_ID
 		,EXTERNAL_USER_REF
