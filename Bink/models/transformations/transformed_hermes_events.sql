@@ -23,7 +23,7 @@ WITH new_events AS (
     SELECT *
 	FROM {{ ref('stg_hermes__EVENTS')}}
 	{% if is_incremental() %}
-  	AND _AIRBYTE_EMITTED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
+  	WHERE _AIRBYTE_EMITTED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
 	{% endif %}
 )
 ,extract_channel AS (
