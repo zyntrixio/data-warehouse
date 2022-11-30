@@ -38,8 +38,9 @@ add_auth_events AS (
 		EVENT_ID
 		,EVENT_TYPE
 		,EVENT_DATE_TIME
-		,JSON:origin::varchar as ORIGIN
-		,JSON:channel::varchar as CHANNEL
+		,CHANNEL
+        ,BRAND
+        ,JSON:origin::varchar as ORIGIN
 		,JSON:external_user_ref::varchar as EXTERNAL_USER_REF
 		,JSON:internal_user_ref::varchar as USER_ID
 		,JSON:email::varchar as EMAIL
@@ -66,6 +67,8 @@ add_auth_events AS (
 		,NULL AS IS_MOST_RECENT
 		,MAIN_ANSWER // Unique identifier for schema account record
 		,CHANNEL
+        ,BRAND
+        ,BRAND
 		,ORIGIN
 		,USER_ID
 		,EXTERNAL_USER_REF
@@ -105,6 +108,7 @@ add_auth_events AS (
 			END AS IS_MOST_RECENT
 		,MAIN_ANSWER
 		,CHANNEL
+        ,BRAND
 		,ORIGIN
 		,USER_ID
 		,EXTERNAL_USER_REF

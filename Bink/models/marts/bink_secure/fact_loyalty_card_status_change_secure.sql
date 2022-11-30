@@ -49,8 +49,9 @@ status_change_events AS (
 		EVENT_TYPE
 		,EVENT_DATE_TIME
 		,EVENT_ID
-		,JSON:origin::varchar as ORIGIN
-		,JSON:channel::varchar as CHANNEL
+		,CHANNEL
+        ,BRAND
+        ,JSON:origin::varchar as ORIGIN
 		,JSON:external_user_ref::varchar as EXTERNAL_USER_REF
 		,JSON:internal_user_ref::varchar as USER_ID
 		,JSON:email::varchar as EMAIL
@@ -71,6 +72,7 @@ status_change_events AS (
 		,LAG(TO_STATUS_ID, 1) OVER (PARTITION BY LOYALTY_CARD_ID ORDER BY EVENT_DATE_TIME) AS FROM_STATUS_ID
 		,TO_STATUS_ID
 		,CHANNEL
+        ,BRAND
 		,ORIGIN
 		,USER_ID
 		,EXTERNAL_USER_REF
@@ -93,6 +95,7 @@ status_change_events AS (
 		,NULLIF(MAIN_ANSWER,'') AS MAIN_ANSWER
 		,ORIGIN
 		,CHANNEL
+        ,BRAND
 		,USER_ID
 		,EXTERNAL_USER_REF
 		,LOWER(EMAIL) AS EMAIL
@@ -142,6 +145,7 @@ status_change_events AS (
 		,MAIN_ANSWER
 		,ORIGIN
 		,CHANNEL
+        ,BRAND
 		,USER_ID
 		,EXTERNAL_USER_REF
 		,EMAIL

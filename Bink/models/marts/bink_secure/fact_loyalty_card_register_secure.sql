@@ -38,8 +38,9 @@ register_events AS (
 		EVENT_ID
 		,EVENT_TYPE
 		,EVENT_DATE_TIME
-		,JSON:origin::varchar as ORIGIN
-		,JSON:channel::varchar as CHANNEL
+		,CHANNEL
+        ,BRAND
+        ,JSON:origin::varchar as ORIGIN
 		,JSON:external_user_ref::varchar as EXTERNAL_USER_REF
 		,JSON:internal_user_ref::varchar as USER_ID
 		,JSON:email::varchar as EMAIL
@@ -71,6 +72,7 @@ register_events AS (
 			END AS MAIN_ANSWER
 		,STATUS
 		,CHANNEL
+        ,BRAND
 		,ORIGIN
 		,USER_ID
 		,EXTERNAL_USER_REF
@@ -111,6 +113,7 @@ register_events AS (
 		,MAIN_ANSWER
 		,STATUS
 		,CHANNEL
+        ,BRAND
 		,ORIGIN
 		,USER_ID
 		,EXTERNAL_USER_REF

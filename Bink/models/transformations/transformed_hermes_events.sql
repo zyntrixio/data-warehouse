@@ -16,7 +16,6 @@ Parameters:
     config(
         materialized='incremental'
 		,unique_key='EVENT_ID'
-		-- ,merge_update_columns = ['IS_MOST_RECENT', 'UPDATED_DATE_TIME'] #Do we need to add in a UPDATED_DATE_TIME field?
     )
 }}
 

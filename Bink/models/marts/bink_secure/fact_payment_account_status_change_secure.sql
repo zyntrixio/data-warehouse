@@ -42,8 +42,9 @@ WITH payment_events AS (
 		EVENT_ID
 		,EVENT_TYPE
 		,EVENT_DATE_TIME
-		,JSON:origin::varchar as ORIGIN
-		,JSON:channel::varchar as CHANNEL
+		,CHANNEL
+        ,BRAND
+        ,JSON:origin::varchar as ORIGIN
 		,JSON:external_user_ref::varchar as EXTERNAL_USER_REF
 		,JSON:internal_user_ref::varchar as USER_ID
 		,JSON:email::varchar as EMAIL
@@ -62,6 +63,7 @@ WITH payment_events AS (
 		,PAYMENT_ACCOUNT_ID
 		,ORIGIN
 		,CHANNEL
+        ,BRAND
 		,USER_ID
 		,EXTERNAL_USER_REF
 		,EXPIRY_DATE
@@ -91,6 +93,7 @@ WITH payment_events AS (
 		,TO_STATUS
 		,ORIGIN
 		,CHANNEL
+        ,BRAND
 		,USER_ID
 		,EXTERNAL_USER_REF
 		,SPLIT_PART(EXPIRY_DATE,'/',1)::integer AS EXPIRY_MONTH
@@ -137,6 +140,7 @@ WITH payment_events AS (
 		,TO_STATUS
 		,ORIGIN
 		,CHANNEL
+        ,BRAND
 		,USER_ID
 		,EXTERNAL_USER_REF
 		,EXPIRY_MONTH

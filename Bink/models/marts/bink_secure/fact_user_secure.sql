@@ -38,9 +38,10 @@ user_events AS (
 		EVENT_ID
 		,EVENT_TYPE
 		,EVENT_DATE_TIME
+	    ,CHANNEL
+        ,BRAND
 		,JSON:internal_user_ref::varchar as USER_ID
 		,JSON:origin::varchar as ORIGIN
-		,JSON:channel::varchar as CHANNEL
 		,JSON:external_user_ref::varchar as EXTERNAL_USER_REF
 		,JSON:email::varchar as EMAIL		
 	FROM user_events
@@ -62,6 +63,7 @@ user_events AS (
 		,NULL AS IS_MOST_RECENT
 		,ORIGIN
 		,CHANNEL
+        ,BRAND
 		,NULLIF(EXTERNAL_USER_REF,'') AS EXTERNAL_USER_REF
 		,LOWER(EMAIL) AS EMAIL
 		,SPLIT_PART(EMAIL,'@',2) AS DOMAIN
@@ -93,6 +95,7 @@ user_events AS (
 		,NULL AS IS_MOST_RECENT
 		,ORIGIN
 		,CHANNEL
+        ,BRAND
 		,EXTERNAL_USER_REF
 		,EMAIL
 		,DOMAIN
