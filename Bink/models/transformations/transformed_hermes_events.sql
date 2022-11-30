@@ -5,14 +5,20 @@ Last modified by:
 Last modified date: 
 
 Description:
-    Add brand and rename channel for all events that have a channel field.
+    Add brand and alias channel for all events that have a channel field.
 
 Parameters:
-    ref_object      - stg_hermes__payment_account
-                    - stg_hermes__payment_status
-					- stg_hermes__payment_card
+    ref_object      - stg_hermes__EVENTS
 */
 
+
+{{
+    config(
+        materialized='incremental'
+		,unique_key='EVENT_ID'
+		-- ,merge_update_columns = ['IS_MOST_RECENT', 'UPDATED_DATE_TIME'] #Do we need to add in a UPDATED_DATE_TIME field?
+    )
+}}
 
 WITH new_events AS (
     SELECT *
@@ -55,6 +61,7 @@ WITH new_events AS (
         WHEN CHANNEL in ('com.bink.wallet') THEN 'BINK'
         ELSE CHANNEL
         END AS BRAND
+    ,SYSDATE() AS INSERTED_DATE_TIME
   FROM extract_channel
 )
 
