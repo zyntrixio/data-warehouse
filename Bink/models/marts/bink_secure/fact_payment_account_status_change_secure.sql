@@ -11,7 +11,7 @@ Description:
 	flag, and merging based on the event id
 
 Parameters:
-    ref_object      - stg_hermes__events
+    ref_object      - transformed_hermes_events
 */
 
 {{
@@ -25,7 +25,7 @@ Parameters:
 
 WITH payment_events AS (
 	SELECT *
-	FROM {{ ref('stg_hermes__EVENTS')}}
+	FROM {{ ref('transformed_hermes_events')}}
 	WHERE EVENT_TYPE = 'payment.account.status.change'
 	{% if is_incremental() %}
   	AND _AIRBYTE_EMITTED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})

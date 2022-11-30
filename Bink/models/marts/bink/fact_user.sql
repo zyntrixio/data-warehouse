@@ -8,7 +8,7 @@ Description:
     extracts user created and user deleted from the events table and 
 
 Parameters:
-    ref_object      - stg_hermes__events
+    ref_object      - transformed_hermes_events
 */
 
 {{
