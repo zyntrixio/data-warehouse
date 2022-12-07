@@ -29,6 +29,7 @@ lc AS (
          else md5(main_answer)
          end  as main_answer
 		,CHANNEL
+		,BRAND
 		,ORIGIN
 		,USER_ID
 		// ,EXTERNAL_USER_REF

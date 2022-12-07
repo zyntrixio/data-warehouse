@@ -11,7 +11,7 @@ Description:
 	flag, and merging based on the event id
 
 Parameters:
-    ref_object      - stg_hermes__events
+    ref_object      - transformed_hermes_events
 */
 
 {{
@@ -26,7 +26,7 @@ Parameters:
 WITH
 removed_events AS (
 	SELECT *
-	FROM {{ ref('stg_hermes__EVENTS')}}
+	FROM {{ ref('transformed_hermes_events')}}
 	WHERE EVENT_TYPE = 'lc.removed'
 	{% if is_incremental() %}
   	AND _AIRBYTE_EMITTED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
@@ -38,8 +38,9 @@ removed_events AS (
 		EVENT_TYPE
 		,EVENT_DATE_TIME
 		,EVENT_ID
-		,JSON:origin::varchar as ORIGIN
-		,JSON:channel::varchar as CHANNEL
+		,CHANNEL
+        ,BRAND
+        ,JSON:origin::varchar as ORIGIN
 		,JSON:external_user_ref::varchar as EXTERNAL_USER_REF
 		,JSON:internal_user_ref::varchar as USER_ID
 		,JSON:email::varchar as EMAIL
@@ -60,6 +61,7 @@ removed_events AS (
 		,MAIN_ANSWER
 		,STATUS
 		,CHANNEL
+        ,BRAND
 		,ORIGIN
 		,USER_ID
 		,EXTERNAL_USER_REF
@@ -99,6 +101,7 @@ removed_events AS (
 		,FALSE AS MAIN_ANSWER
 		,STATUS
 		,CHANNEL
+        ,BRAND
 		,ORIGIN
 		,USER_ID
 		,EXTERNAL_USER_REF
