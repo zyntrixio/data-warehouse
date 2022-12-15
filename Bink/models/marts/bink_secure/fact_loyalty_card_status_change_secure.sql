@@ -17,11 +17,21 @@ Parameters:
 {{
     config(
 		alias='fact_loyalty_card_status_change'
+    )
+}}
+
+/* Add this back in if you want incremental models agaion - roughly 5m rows is when this becomes worth it.
+{#
+{{
+    config(
+		alias='fact_loyalty_card_status_change'
         ,materialized='incremental'
 		,unique_key='EVENT_ID'
 		,merge_update_columns = ['IS_MOST_RECENT', 'UPDATED_DATE_TIME']
     )
 }}
+#}
+*/
 
 
 WITH
