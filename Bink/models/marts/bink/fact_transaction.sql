@@ -52,7 +52,7 @@ transaction_events AS (
 		,JSON:payment_card_account_id :: VARCHAR AS PAYMENT_ACCOUNT_ID
 		,JSON:settlement_key :: VARCHAR AS SETTLEMENT_KEY
 		,JSON:authorisation_code :: NUMBER(6) AS AUTH_CODE
-		,JSON::approval_code :: VARCHAR AS APPROVAL_CODE
+		,JSON:approval_code :: VARCHAR AS APPROVAL_CODE
 
 	FROM transaction_events
 )
