@@ -11,8 +11,8 @@ WITH account_status AS (
         ,JOURNEY_TYPE
         ,STATUS_TYPE
         ,STATUS_ROLLUP
-        ,STATUS_V2
-        ,ERROR_SLUG_V2
+        ,API2_STATUS
+        ,API2_ERROR_SLUG
     FROM account_status
 )
 
