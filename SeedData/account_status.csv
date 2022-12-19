@@ -1,23 +1,23 @@
-CODE,STATUS,STATUS_GROUP,JOURNEY_TYPE,STATUS_TYPE,STATUS_ROLLUP,STATUS_V2,ERROR_SLUG_V2
+CODE,STATUS,STATUS_GROUP,JOURNEY_TYPE,STATUS_TYPE,STATUS_ROLLUP,API2_STATUS,API2_ERROR_SLUG
 0,Pending,Join Pending,,Pending,Pending,PENDING,NULL
 1,Active,Active,,Success,Success,AUTHORISED,NULL
-5,Please check your scheme account login details,User Error,,Error,Invalid Cred,UNAUTHORISED,AUTHORISATION_FAILED
+5,Please check your scheme account login details,User Error,,Error,Invalid credentials,UNAUTHORISED,AUTHORISATION_FAILED
 9,Midas unavailable,Midas unavailable,,Error,System Issue,DEPENDANT,NULL
-10,Wallet only card,Wallet only card,,Wallet only,,PENDING,WALLET_ONLY
+10,Wallet only card,Wallet only card,,Pending,Wallet only,PENDING,WALLET_ONLY
 204,Pending manual check.,Pending manual check.,,Pending,Pending,PENDING,NULL
-401,Failed validation,Failed validation,,Error,Invalid Cred,FAILED,ADD_FAILED
-403,Invalid credentials,User Error,,Error,Invalid Cred,UNAUTHORISED,AUTHORISATION_FAILED
+401,Failed validation,Failed validation,,Error,Invalid credentials,FAILED,ADD_FAILED
+403,Invalid credentials,User Error,,Error,Invalid credentials,UNAUTHORISED,AUTHORISATION_FAILED
 404,Agent does not exist in midas,System Error,,Error,System Issue,DEPENDANT,NULL
-406,Pre-registered card,User Error,,Error,Unregistered Card,FAILED,ACCOUNT_NOT_REGISTERED
+406,Pre-registered card,User Error,,Error,Account not registered,FAILED,ACCOUNT_NOT_REGISTERED
 429,"Cannot connect, too many retries",User Error,,Error,System Issue,DEPENDANT,NULL
-432,Invalid mfa,System Error,,Error,Invalid Cred,UNAUTHORISED,AUTHORISATION_FAILED
-434,Account locked on end site,User Error,,Error,Invalid Cred,UNAUTHORISED,AUTHORISATION_FAILED
-436,Please check your scheme account login details,Please check your scheme account login details,,Error,Invalid Cred,UNAUTHORISED,AUTHORISATION_FAILED
-437,You can only link 1 card per day,You can only link 1 card per day,,Error,You can only link 1 card per day,DEPENDANT,NULL
-438,Unknown Card number,User Error,,Error,Unregistered Card,FAILED,ACCOUNT_NOT_REGISTERED
-439,General Error such as incorrect user details,User Error,,Error,Invalid Cred,UNAUTHORISED,AUTHORISATION_FAILED
-435,,,,,,WRONG_CREDENTIAL_TYPE,UNMAPPED
-440,,,,,,STATUS_REGISTRATION_FAILED,UNMAPPED
+432,Invalid mfa,System Error,,Error,Invalid credentials,UNAUTHORISED,AUTHORISATION_FAILED
+434,Account locked on end site,User Error,,Error,Invalid credentials,UNAUTHORISED,AUTHORISATION_FAILED
+436,Please check your scheme account login details,Please check your scheme account login details,,Error,Invalid credentials,UNAUTHORISED,AUTHORISATION_FAILED
+437,You can only link 1 card per day,You can only link 1 card per day,,Error,System Issue,DEPENDANT,NULL
+438,Unknown Card number,User Error,,Error,Account not registered,FAILED,ACCOUNT_NOT_REGISTERED
+439,General Error such as incorrect user details,User Error,,Error,Invalid credentials,UNAUTHORISED,AUTHORISATION_FAILED
+435,Wrong credential type,Unmapped,,Unmapped,Unmapped,WRONG_CREDENTIAL_TYPE,UNMAPPED
+440,Status registration failed,Unmapped,,Unmapped,Unmapped,STATUS_REGISTRATION_FAILED,UNMAPPED
 441,Join in progress,Join in progress,Join Journey,Pending,Pending,PENDING,JOIN_IN_PROGRESS
 442,Asynchronous join in progress,Join Pending,Join Journey,Pending,Pending,PENDING,JOIN_IN_PROGRESS
 443,Asynchronous registration in progress,Register Pending,Join Journey,Pending,Pending,PENDING,REGISTRATION_IN_PROGRESS
@@ -32,13 +32,13 @@ CODE,STATUS,STATUS_GROUP,JOURNEY_TYPE,STATUS_TYPE,STATUS_ROLLUP,STATUS_V2,ERROR_
 530,End site down,System Error,,Error,System Issue,DEPENDANT,NULL
 531,IP blocked,System Error,,Error,System Issue,DEPENDANT,NULL
 532,Tripped captcha,System Error,,Error,System Issue,DEPENDANT,NULL
-533,Password expired,Password expired,,Error,System Issue,UNAUTHORISED,AUTHORISATION_FAILED
+533,Password expired,Password expired,,Error,Password expired,UNAUTHORISED,AUTHORISATION_FAILED
 535,Request was not sent,System Error,,Error,System Issue,DEPENDANT,NULL
 536,Error with the configuration or it was not possible to retrieve,Error with the configuration or it was not possible to retrieve,,Error,System Issue,DEPENDANT,NULL
 537,Service connection error,System Error,,Error,System Issue,DEPENDANT,NULL
 538,A system error occurred during join,A system error occurred during join,,Error,System Issue,DEPENDANT,NULL
-900,Join,Join,,Join,,FAILED,JOIN_FAILED
-901,Enrol Failed,Enrol Failed,Join Journey,Error,Enrol Fail,FAILED,JOIN_FAILED
-902,Ghost Card Registration Failed,Ghost Card Registration Failed,Join Journey,Error,Enrol Fail,FAILED,ACCOUNT_NOT_REGISTERED
+900,Join,Join,,Error,Join Failed,FAILED,JOIN_FAILED
+901,Enrol Failed,Enrol Failed,Join Journey,Error,Join Failed,FAILED,JOIN_FAILED
+902,Ghost Card Registration Failed,Ghost Card Registration Failed,Join Journey,Error,Account not registered,FAILED,ACCOUNT_NOT_REGISTERED
 1001,Add and Auth pending,Link Pending,,Pending,Pending,PENDING,NULL
 2001,Auth pending,Link Pending,,Pending,Pending,PENDING,NULL
