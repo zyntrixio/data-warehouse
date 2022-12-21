@@ -21,7 +21,7 @@ Parameters:
 WITH
 transaction_events AS (
 	SELECT *
-	FROM {{ ref('stg_hermes__EVENTS')}}
+	FROM {{ ref('transformed_hermes_events')}}
 	WHERE EVENT_TYPE = 'transaction.exported'
 	{% if is_incremental() %}
   	AND _AIRBYTE_NORMALIZED_AT>= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})

@@ -8,7 +8,7 @@ Description:
     extracts user created and user deleted from the events table and 
 
 Parameters:
-    ref_object      - stg_hermes__events
+    ref_object      - transformed_hermes_events
 */
 
 {{
@@ -37,6 +37,7 @@ user_events AS (
 		,IS_MOST_RECENT
 		,ORIGIN
 		,CHANNEL
+		,BRAND
 		// ,EXTERNAL_USER_REF
 		// ,LOWER(EMAIL) AS EMAIL
 		,INSERTED_DATE_TIME

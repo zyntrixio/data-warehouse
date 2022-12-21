@@ -43,6 +43,7 @@ lc AS (
 		// ,MAIN_ANSWER
 		,ORIGIN
 		,CHANNEL
+		,BRAND
 		,USER_ID
 		// ,EXTERNAL_USER_REF
 		// ,EMAIL
