@@ -17,11 +17,21 @@ Parameters:
 {{
     config(
 		alias='fact_loyalty_card_status_change'
+    )
+}}
+
+/* Add this back in if you want incremental models agaion - roughly 5m rows is when this becomes worth it.
+{#
+{{
+    config(
+		alias='fact_loyalty_card_status_change'
         ,materialized='incremental'
 		,unique_key='EVENT_ID'
 		,merge_update_columns = ['IS_MOST_RECENT', 'UPDATED_DATE_TIME']
     )
 }}
+#}
+*/
 
 
 WITH
@@ -89,8 +99,32 @@ status_change_events AS (
 		,lp.LOYALTY_PLAN_NAME
 		,FROM_STATUS_ID
 		,asl_from.STATUS AS FROM_STATUS
+		,asl_from.STATUS_TYPE AS FROM_STATUS_TYPE
+		,asl_from.STATUS_ROLLUP AS FROM_STATUS_ROLLUP
+		,CASE CHANNEL
+			WHEN 'LLOYDS'
+			THEN asl_from.API2_STATUS 
+			ELSE NULL
+			END AS FROM_EXTERNAL_STATUS
+		,CASE CHANNEL
+			WHEN 'LLOYDS'
+			THEN asl_from.API2_ERROR_SLUG
+			ELSE NULL
+			END AS FROM_ERROR_SLUG
 		,TO_STATUS_ID
 		,asl_to.STATUS AS TO_STATUS
+		,asl_to.STATUS_TYPE AS TO_STATUS_TYPE
+		,asl_to.STATUS_ROLLUP AS TO_STATUS_ROLLUP
+		,CASE CHANNEL
+			WHEN 'LLOYDS'
+			THEN asl_to.API2_STATUS 
+			ELSE NULL
+			END AS TO_EXTERNAL_STATUS
+		,CASE CHANNEL
+			WHEN 'LLOYDS'
+			THEN asl_to.API2_ERROR_SLUG
+			ELSE NULL
+			END AS TO_ERROR_SLUG
 		,NULL AS IS_MOST_RECENT
 		,NULLIF(MAIN_ANSWER,'') AS MAIN_ANSWER
 		,ORIGIN
@@ -135,8 +169,16 @@ status_change_events AS (
 		,LOYALTY_PLAN_NAME
 		,FROM_STATUS_ID
 		,FROM_STATUS
+		,FROM_STATUS_TYPE
+		,FROM_STATUS_ROLLUP
+		,FROM_EXTERNAL_STATUS
+		,FROM_ERROR_SLUG
 		,TO_STATUS_ID
 		,TO_STATUS
+		,TO_STATUS_TYPE
+		,TO_STATUS_ROLLUP
+		,TO_EXTERNAL_STATUS
+		,TO_ERROR_SLUG
 		,CASE WHEN
 			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY LOYALTY_CARD_ID))
 			THEN TRUE
