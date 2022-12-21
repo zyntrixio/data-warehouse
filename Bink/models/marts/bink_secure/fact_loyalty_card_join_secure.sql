@@ -33,6 +33,11 @@ join_events AS (
 	{% endif %}
 )
 
+,loyalty_plan AS (
+	SELECT *
+	FROM {{ ref('stg_hermes__SCHEME_SCHEME')}}
+)
+
 ,join_events_unpack AS (
 	SELECT
 		EVENT_ID
@@ -57,6 +62,7 @@ join_events AS (
 		,EVENT_DATE_TIME
 		,LOYALTY_CARD_ID
 		,LOYALTY_PLAN
+		,lp.LOYALTY_PLAN_NAME
 		,CASE WHEN EVENT_TYPE = 'lc.join.request'
 			THEN 'REQUEST'
 			WHEN EVENT_TYPE = 'lc.join.success'
@@ -80,7 +86,10 @@ join_events AS (
 		,SPLIT_PART(EMAIL,'@',2) AS EMAIL_DOMAIN
 		,SYSDATE() AS INSERTED_DATE_TIME
 		,NULL AS UPDATED_DATE_TIME
-	FROM join_events_unpack
+	FROM 
+		join_events_unpack e
+	LEFT JOIN
+		loyalty_plan lp ON lp.LOYALTY_PLAN_ID = e.LOYALTY_PLAN
 	ORDER BY EVENT_DATE_TIME DESC
 )
 
@@ -104,6 +113,7 @@ join_events AS (
 		,EVENT_DATE_TIME
 		,LOYALTY_CARD_ID
 		,LOYALTY_PLAN
+		,LOYALTY_PLAN_NAME
 		,EVENT_TYPE
 		,CASE WHEN
 			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY LOYALTY_CARD_ID))

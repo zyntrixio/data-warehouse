@@ -33,6 +33,11 @@ add_auth_events AS (
 	{% endif %}
 )
 
+,loyalty_plan AS (
+	SELECT *
+	FROM {{ ref('stg_hermes__SCHEME_SCHEME')}}
+)
+
 ,add_auth_events_unpack AS (
 	SELECT
 		EVENT_ID
@@ -64,6 +69,7 @@ add_auth_events AS (
 			END AS EVENT_TYPE
 		,LOYALTY_CARD_ID
 		,LOYALTY_PLAN
+		,lp.LOYALTY_PLAN_NAME
 		,NULL AS IS_MOST_RECENT
 		,MAIN_ANSWER // Unique identifier for schema account record
 		,CHANNEL
@@ -75,7 +81,10 @@ add_auth_events AS (
 		,SPLIT_PART(EMAIL,'@',2) AS EMAIL_DOMAIN
 		,SYSDATE() AS INSERTED_DATE_TIME
 		,NULL AS UPDATED_DATE_TIME
-	FROM add_auth_events_unpack
+	FROM 
+		add_auth_events_unpack e
+	LEFT JOIN
+		loyalty_plan lp ON lp.LOYALTY_PLAN_ID = e.LOYALTY_PLAN
 	ORDER BY EVENT_DATE_TIME DESC
 )
 
@@ -100,6 +109,7 @@ add_auth_events AS (
 		,EVENT_TYPE
 		,LOYALTY_CARD_ID
 		,LOYALTY_PLAN
+		,LOYALTY_PLAN_NAME
 		,CASE WHEN
 			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY LOYALTY_CARD_ID))
 			THEN TRUE

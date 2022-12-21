@@ -33,6 +33,11 @@ removed_events AS (
 	{% endif %}
 )
 
+,loyalty_plan AS (
+	SELECT *
+	FROM {{ ref('stg_hermes__SCHEME_SCHEME')}}
+)
+
 ,removed_events_unpack AS (
 	SELECT
 		EVENT_TYPE
@@ -57,6 +62,7 @@ removed_events AS (
 		,EVENT_DATE_TIME
 		,LOYALTY_CARD_ID
 		,LOYALTY_PLAN
+		,lp.LOYALTY_PLAN_NAME
 		,NULL AS IS_MOST_RECENT
 		,MAIN_ANSWER
 		,STATUS
@@ -69,7 +75,10 @@ removed_events AS (
 		,SPLIT_PART(EMAIL,'@',2) AS EMAIL_DOMAIN
 		,SYSDATE() AS INSERTED_DATE_TIME
 		,NULL AS UPDATED_DATE_TIME
-	FROM removed_events_unpack
+	FROM 
+		removed_events_unpack e
+	LEFT JOIN
+		loyalty_plan lp ON lp.LOYALTY_PLAN_ID = e.LOYALTY_PLAN
 	ORDER BY EVENT_DATE_TIME DESC
 )
 
@@ -93,6 +102,7 @@ removed_events AS (
 		,EVENT_DATE_TIME
 		,LOYALTY_CARD_ID
 		,LOYALTY_PLAN
+		,LOYALTY_PLAN_NAME
 		,CASE WHEN
 			(EVENT_DATE_TIME = MAX(EVENT_DATE_TIME) OVER (PARTITION BY LOYALTY_CARD_ID))
 			THEN TRUE
