@@ -15,8 +15,8 @@ models:
             - unique
             - not_null
 
-    - name: api_response_times
-      description: "Table containing freshservice data convering incidents, complaints and SLAs"
+    - name: fact_api_response_times
+      description: "Table containing api_response_times"
       schema: 'service_data'
       config:
         elementary:
