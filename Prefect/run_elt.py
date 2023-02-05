@@ -39,7 +39,7 @@ def dbt_cli_task(dbt_cli_profile, command):
 def trigger_extractions():
     copybot_output = trigger_sync.submit(
         airbyte_server_host=String.load("airbyte-ip").value,
-        connection_id=String.load("airbyte-copybot-connection").value,
+        connection_id=String.load("airbyte-snowstorm-connection").value,
         poll_interval_s=3,
         status_updates=True,
     )
