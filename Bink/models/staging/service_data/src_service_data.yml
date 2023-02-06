@@ -25,10 +25,6 @@ sources:
             tests:
               - unique
               - not_null
-          - name: 'TICKET_ID'
-            description: Ticket identifier
-            tests:
-              - not_null
               
       - name: apistats
         identifier: APISTATS
