@@ -1,0 +1,31 @@
+version: 2
+
+models:
+    - name: service_management
+      description: "Table containing freshservice data convering incidents, complaints and SLAs"
+      schema: 'service_data'
+      config:
+        elementary:
+          timestamp_column: inserted_date_time
+      columns:
+        - name: 'TICKET_ID'
+          description: Primary Key of the table
+          quote: true
+          tests:
+            - unique
+            - not_null
+
+    - name: fact_api_response_time
+      description: "Table containing api_response_times"
+      schema: 'service_data'
+      config:
+        elementary:
+          timestamp_column: inserted_date_time
+      columns:
+        - name: 'API_ID'
+          description: Primary Key of the table
+          quote: true
+          tests:
+            - unique
+            - not_null
+        

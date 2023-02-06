@@ -30,6 +30,9 @@ models:
         bink_secure:
           +schema: "BINK_SECURE"
           materialized: table
+        service_data:
+          +schema: "SERVICE_DATA"
+          materialized: table
   elementary:
     +schema: 'BINK_MONITORING'
     +materialized: table

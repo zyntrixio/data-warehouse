@@ -48,7 +48,7 @@ models:
           quote: true
           tests:
             - not_null
-            # - relationships:
+            # - relationships: --this needs to be fixed and reinstated
             #     to: ref('dim_merchant')
             #     field: MERCHANT_ID
         - name: 'SPEND_AMOUNT'

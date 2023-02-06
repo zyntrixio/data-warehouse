@@ -1,0 +1,49 @@
+version: 2
+
+sources:
+  - name: service_data
+    description: operational data for SLAs and APIs
+    database: RAW
+    schema: SERVICE_DATA
+    tags: ['source']
+
+    tables:
+      - name: freshservice
+        identifier: FRESHSERVICE
+        description: Table contains all freshservice data
+        freshness:
+          warn_after: { count: 24, period: hour }
+        meta:
+          elementary:
+            timestamp_column: '_AIRBYTE_EMITTED_AT'
+        tests:
+            - elementary.table_anomalies
+            - elementary.schema_changes
+        columns:
+          - name: 'ID'
+            description: Primary key of user table
+            tests:
+              - unique
+              - not_null
+          - name: 'TICKET_ID'
+            description: Ticket identifier
+            tests:
+              - not_null
+              
+      - name: apistats
+        identifier: APISTATS
+        description: Table contains all log analytics data
+        freshness:
+          warn_after: { count: 24, period: hour }
+        meta:
+          elementary:
+            timestamp_column: '_AIRBYTE_EMITTED_AT'
+        tests:
+            - elementary.table_anomalies
+            - elementary.schema_changes
+        columns:
+          - name: 'ID'
+            description: Primary key of user table
+            tests:
+              - unique
+              - not_null
