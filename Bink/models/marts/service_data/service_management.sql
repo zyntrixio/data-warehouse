@@ -20,7 +20,30 @@ all_data as (
 		{{ ref('stg_service_data__FRESHSERVICE') }}
 )
 
+,add_most_recent as (
+	SELECT
+		ID
+		,TICKET_ID
+		,MI
+		,STATUS
+		,CHANNEL
+		,SERVICE
+		,CREATED_AT
+		,UPDATED_AT
+		,SLA_BREACHED
+		,CASE WHEN
+			(UPDATED_AT = MAX(UPDATED_AT) OVER (PARTITION BY TICKET_ID))
+			THEN TRUE
+			ELSE FALSE
+			END AS IS_MOST_RECENT
+		,_AIRBYTE_EMITTED_AT
+		,SYSDATE() AS INSERTED_DATE_TIME
+	FROM
+		all_data
+)
+
+
 SELECT
 	*
 FROM
-	all_data
+	add_most_recent
