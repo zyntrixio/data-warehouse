@@ -22,7 +22,11 @@ all_data as (
 
 ,all_data_select as (
 	SELECT
-		ID AS SERVICE_ID
+		{{ dbt_utils.surrogate_key(
+      ['ID',
+      'UPDATED_AT']
+  			) }} as ID
+		,ID AS TICKET_ID
 		,MI
 		,STATUS
 		,CHANNEL
@@ -30,10 +34,7 @@ all_data as (
 		,CREATED_AT
 		,UPDATED_AT
 		,SLA_BREACHED
-		,_AIRBYTE_AB_ID
 		,_AIRBYTE_EMITTED_AT
-		,_AIRBYTE_NORMALIZED_AT
-		,_AIRBYTE_FRESHSERVICE_HASHID
 	FROM
 		all_data
 )
