@@ -14,7 +14,7 @@ Parameters:
 {{
     config(
         materialized='incremental'
-		,unique_key='ID'
+		,unique_key='API_ID'
     )
 }}
 
@@ -41,6 +41,8 @@ all_events as (
 			,CASE WHEN CONTAINS(PATH, 'ubiquity') AND CONTAINS(USER_AGENT, 'Apache') THEN 'BARCLAYS' ELSE NULL END
 					) AS CHANNEL 
 		,RESPONSE_TIME
+		,STATUS_CODE
+		,SYSDATE() AS INSERTED_DATE_TIME
 	FROM all_events
 )
 
