@@ -23,7 +23,7 @@ all_events as (
 	SELECT
 		*
 	FROM
-		{{ source('hermes_events', 'events') }}
+		{{ source('hermes_events', 'events') }} --this is pointing to service_data schema
 	{% if is_incremental() %}
   	WHERE _AIRBYTE_EMITTED_AT >= (SELECT MAX(_AIRBYTE_EMITTED_AT) from {{ this }})
 	{% endif %}
