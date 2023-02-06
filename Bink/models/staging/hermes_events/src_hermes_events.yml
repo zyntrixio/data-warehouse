@@ -4,7 +4,7 @@ sources:
   - name: hermes_events
     description: Heremes events schema
     database: RAW
-    schema: HERMES_EVENTS
+    schema: SERVICE_DATA #This needs to be changed once new structrue is created
     tags: ['source']
 
     tables:
