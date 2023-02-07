@@ -9,7 +9,6 @@ Created Date:   2022/07/12
 {{
     config(
         tags = ['business']
-        ,error_if = '>2000'
     ) 
 }}
 
