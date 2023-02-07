@@ -9,6 +9,7 @@ Created Date:   2022/07/12
 {{
     config(
         tags = ['business']
+        ,severity = 'warn'
     ) 
 }}
 
