@@ -23,7 +23,6 @@ sources:
           - name: 'ID'
             description: Primary key of user table
             tests:
-              - unique
               - not_null
               
       - name: apistats

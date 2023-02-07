@@ -8,11 +8,16 @@ models:
         elementary:
           timestamp_column: inserted_date_time
       columns:
-        - name: 'TICKET_ID'
+        - name: 'ID'
           description: Primary Key of the table
           quote: true
           tests:
             - unique
+            - not_null
+        - name: 'TICKET_ID'
+          description: Primary Key of the table
+          quote: true
+          tests:
             - not_null
 
     - name: fact_api_response_time
