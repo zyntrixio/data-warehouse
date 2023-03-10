@@ -5,7 +5,11 @@ Created By:     SP
 Created Date:   2022/07/12
 */
 
-{{ config(tags = ['business']) }}
+{{ config(
+        tags=['business']
+        ,meta={"description": "est to ensure no create user events are followed by another create user event in last 24 hours.", 
+            "test_type": "Business"},
+) }}
 
 WITH all_events AS (
     SELECT USER_ID,"EVENT_TYPE"

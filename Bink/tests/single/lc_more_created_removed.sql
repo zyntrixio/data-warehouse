@@ -5,7 +5,11 @@
  Created Date:   2022/07/13
  */
 
-{{ config(tags = ['business']) }}
+
+{{ config(
+    tags=['business']
+    ,meta={"description": "This test ensures there are not more deleted events than created", "test_type": "Business"},
+) }}
 
 with joins AS (
     SELECT *

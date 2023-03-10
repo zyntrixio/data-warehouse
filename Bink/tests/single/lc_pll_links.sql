@@ -6,7 +6,13 @@
  */
 
 
-{{ config(tags = ['business']) }}
+{{ config(
+        tags=['business']
+        ,error_if = '>100'
+        ,warn_if = '>100'
+        ,meta={"description": "Test to ensure all barclays lc create events have a PLL link with set limits.", 
+            "test_type": "Business"},
+) }}
 
 -- SELECT
 --     *
