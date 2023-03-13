@@ -40,11 +40,13 @@ WITH new_events AS (
   FROM new_events
 )
 
-,add_brand AS (
+,transform_brand_time AS (
   SELECT
     JSON
     ,EVENT_TYPE
-    ,EVENT_DATE_TIME
+    ,CASE WHEN EVENT_TYPE IN ('lc.addandauth.request', 'lc.auth.request') THEN DATEADD('seconds',-0.5,EVENT_DATE_TIME) --half second penalty to fix event order issue
+        ELSE EVENT_DATE_TIME
+        END AS EVENT_DATE_TIME
     ,_AIRBYTE_AB_ID
     ,_AIRBYTE_EMITTED_AT
     ,_AIRBYTE_NORMALIZED_AT
@@ -65,4 +67,4 @@ WITH new_events AS (
 )
 
 SELECT *
-FROM add_brand
+FROM transform_brand_time
