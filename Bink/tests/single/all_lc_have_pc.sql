@@ -5,14 +5,13 @@
  Created Date:   2022/07/19
  */
 
-
-{{
-    config(
-        tags = ['business']
+{{ config(
+        tags=['business']
         ,error_if = '>100'
         ,warn_if = '>100'
-    ) 
-}}
+        ,meta={"description": "Test to ensure all active Barcalys loyalty cards are linked to a payment card.", 
+            "test_type": "Business"},
+) }}
 
 WITH new_lc AS (
     SELECT *

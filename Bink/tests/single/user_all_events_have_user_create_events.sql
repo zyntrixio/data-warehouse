@@ -6,12 +6,13 @@ Created Date:   2022/07/12
 */
 
 -- depends_on: {{ ref('fact_user') }}
-{{
-    config(
-        tags = ['business']
+{{ config(
+        tags=['business']
         ,severity = 'warn'
-    ) 
-}}
+        ,meta={"description": "Test to ensure all event tables with users have a corresponding create user event 
+                    - this is redundant for now as users created before events(could this be for lloyds only).", 
+            "test_type": "Business"},
+) }}
 
 WITH all_users_from_events as (
     {% set get_tables  %}

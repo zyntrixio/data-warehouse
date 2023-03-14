@@ -1,3 +1,9 @@
+{{ config(
+    tags=['business']
+    ,meta={"description": "Check if all events generated in raw make there way to a fact table in prod.", 
+            "test_type": "Business"},
+) }}
+
 with events_src as (
     SELECT EVENT_ID
     FROM {{ ref('stg_hermes__EVENTS')}}

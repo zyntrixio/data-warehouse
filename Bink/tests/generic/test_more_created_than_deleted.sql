@@ -9,7 +9,11 @@ Last modified date: 2022/10/26
 
 
 {% test more_created_deleted(model, column_name, created_val, deleted_val, datetime_col, group_col, filter_date) %}
-    {{ config(tags = ['business']) }}
+    {{ config(
+        tags=['business']
+        ,meta={"description": "Generic Test to ensure sum of delete and create events is not less than 0 or greater than 1.", 
+            "test_type": "Business"},
+) }}
 
     WITH vals AS (
         SELECT 

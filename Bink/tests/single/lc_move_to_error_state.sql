@@ -6,13 +6,13 @@
  */
 
 
-{{
-    config(
-        tags = ['business']
+{{ config(
+        tags=['business']
         ,error_if = '>100'
         ,warn_if = '>100'
-    ) 
-}}
+        ,meta={"description": "Test to ensure all lc within the last day are not ending in error states with set limits.", 
+            "test_type": "Business"},
+) }}
 
 
 with lc_errors as (

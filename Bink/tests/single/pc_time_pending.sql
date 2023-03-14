@@ -6,13 +6,13 @@
 */
 
 
-{{
-    config(
-        tags = ['business']
-        ,error_if = '>1000'
+{{ config(
+        tags=['business']
+        ,error_if = '>100'
         ,warn_if = '>100'
-    ) 
-}}
+        ,meta={"description": "Test to monitor long delays (10 mins) whilst the payment account is in pending with set limits.", 
+            "test_type": "Business"},
+) }}
 
 WITH new_pa AS (
     SELECT *

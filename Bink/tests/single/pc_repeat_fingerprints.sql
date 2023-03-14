@@ -6,7 +6,11 @@
  */
 
 
-{{ config(tags = ['business']) }}
+{{ config(
+        tags=['business']
+        ,meta={"description": "Test to ensure no duplicate fingerprints for a payment accounts created in the last day.", 
+            "test_type": "Business"},
+) }}
 
 WITH new_pa AS (
     SELECT *

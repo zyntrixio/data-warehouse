@@ -6,7 +6,11 @@ Created Date:   2022/07/12
 */
 
 {% test sd_daily_spike(model, column_name, vals, datetime_col, unique_id_col, max_sd) %}
-    {{ config(tags = ['business']) }}
+        {{ config(
+        tags=['business']
+        ,meta={"description": "Generic test to ensure the number of events in the past day isn't outside a given multiple of the standard deviation beyond the median.", 
+            "test_type": "Business"},
+        ) }}
     WITH count_new_vals AS (
         SELECT COUNT(*) c
         FROM {{ model }}
