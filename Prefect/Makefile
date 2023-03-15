@@ -13,3 +13,7 @@ deploy-prod: build-prod
 run-dev: deploy
 	prefect deployment run ELT_Flow/dev
 	prefect deployment run Full_Refresh_Flow/dev
+build-viator:
+	prefect deployment build ./viator_weekly.py:run --name prod -q prod-agent --tag viator-files --output viator-deployment.yaml
+deploy-viator:
+	prefect deployment apply viator-deployment.yaml
