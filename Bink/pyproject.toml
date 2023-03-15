@@ -9,7 +9,7 @@ readme = "README.md"
 python = "^3.10"
 dbt-snowflake = "^1.2.0"
 
-[tool.poetry.dev-dependancies]
+[tool.poetry.dev-dependencies]
 pydantic = "^1.10.6"
 ipykernel = "^6.21.3"
 
