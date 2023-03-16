@@ -37,7 +37,7 @@ def dbt_cli_task(dbt_cli_profile, command):
 
 @task(name="trigger-extraction", retries=3, retry_delay_seconds=60)
 def trigger_extraction_task(connection, wait_for):
-        trigger_sync.submit(
+        trigger_sync(
             airbyte_server_host=String.load("airbyte-ip").value,
             connection_id=String.load(connection).value,
             poll_interval_s=3,
