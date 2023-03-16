@@ -5,8 +5,8 @@ from prefect_dbt.cli.credentials import DbtCliProfile
 from prefect_snowflake.credentials import SnowflakeCredentials
 from prefect_snowflake.database import SnowflakeConnector
 
-@task(name = "get-dbt-profile", task_run_name = "{task_run_name}")
-def get_dbt_cli_profile(env, task_run_name):
+@task(name = "get-dbt-profile")
+def get_dbt_cli_profile(env):
     dbt_connector = SnowflakeConnector(
         schema="BINK",
         database={"dev": "DEV", "prod": "BINK"}[env],
@@ -20,7 +20,7 @@ def get_dbt_cli_profile(env, task_run_name):
     )
     return dbt_cli_profile
 
-def dbt_cli_task(dbt_cli_profile, command, task_run_name):
+def dbt_cli_task(dbt_cli_profile, command):
     return trigger_dbt_cli_command(
         command=command,
         overwrite_profiles=True,
