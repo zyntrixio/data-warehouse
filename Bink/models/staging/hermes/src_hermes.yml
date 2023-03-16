@@ -17,7 +17,9 @@ sources:
           elementary:
             timestamp_column: '_AIRBYTE_EMITTED_AT'
         tests:
-            - elementary.table_anomalies
+            - elementary.table_anomalies:
+                config:
+                  severity: warn
             - elementary.schema_changes
         columns:
           - name: 'ID'
@@ -40,7 +42,9 @@ sources:
           elementary:
             timestamp_column: '_AIRBYTE_EMITTED_AT'
         tests:
-            - elementary.table_anomalies
+            - elementary.table_anomalies:
+                config:
+                  severity: warn
             - elementary.schema_changes
         columns:
           - name: 'ID'
@@ -62,7 +66,9 @@ sources:
           elementary:
             timestamp_column: '_AIRBYTE_EMITTED_AT'
         tests:
-            - elementary.table_anomalies
+            - elementary.table_anomalies:
+                config:
+                  severity: warn
             - elementary.schema_changes
         columns:
           - name: 'ID'
@@ -79,7 +85,9 @@ sources:
           elementary:
             timestamp_column: '_AIRBYTE_EMITTED_AT'
         tests:
-            - elementary.table_anomalies
+            - elementary.table_anomalies:
+                config:
+                  severity: warn
             - elementary.schema_changes
         columns:
           - name: 'ID'
@@ -96,7 +104,9 @@ sources:
           elementary:
             timestamp_column: '_AIRBYTE_EMITTED_AT'
         tests:
-            - elementary.table_anomalies
+            - elementary.table_anomalies:
+                config:
+                  severity: warn
             - elementary.schema_changes
         columns:
           - name: 'ID'
@@ -114,7 +124,9 @@ sources:
           elementary:
             timestamp_column: '_AIRBYTE_EMITTED_AT'
         tests:
-            - elementary.table_anomalies
+            - elementary.table_anomalies:
+                config:
+                  severity: warn
             - elementary.schema_changes
         columns:
           - name: 'ID'
@@ -132,7 +144,9 @@ sources:
           elementary:
             timestamp_column: '_AIRBYTE_EMITTED_AT'
         tests:
-            - elementary.table_anomalies
+            - elementary.table_anomalies:
+                config:
+                  severity: warn
             - elementary.schema_changes
         columns:
           - name: 'ID'
@@ -149,7 +163,9 @@ sources:
           elementary:
             timestamp_column: '_AIRBYTE_EMITTED_AT'
         tests:
-            - elementary.table_anomalies
+            - elementary.table_anomalies:
+                config:
+                  severity: warn
             - elementary.schema_changes
         columns:
           - name: 'CLIENT_ID'
@@ -166,7 +182,9 @@ sources:
           elementary:
             timestamp_column: '_AIRBYTE_EMITTED_AT'
         tests:
-            - elementary.table_anomalies
+            - elementary.table_anomalies:
+                config:
+                  severity: warn
             - elementary.schema_changes
         columns:
           - name: 'ID'
@@ -184,7 +202,9 @@ sources:
           elementary:
             timestamp_column: '_AIRBYTE_EMITTED_AT'
         tests:
-            - elementary.table_anomalies
+            - elementary.table_anomalies:
+                config:
+                  severity: warn
             - elementary.schema_changes
         columns:
           - name: 'ID'
