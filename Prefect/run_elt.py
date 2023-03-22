@@ -1,15 +1,14 @@
 from prefect import flow, task
 from prefect.blocks.system import Secret, String
 from prefect_airbyte.connections import trigger_sync
-from prefect_dask.task_runners import DaskTaskRunner
 from prefect_dbt.cli.commands import trigger_dbt_cli_command
 from prefect_dbt.cli.configs import SnowflakeTargetConfigs
 from prefect_dbt.cli.credentials import DbtCliProfile
 from prefect_snowflake.credentials import SnowflakeCredentials
 from prefect_snowflake.database import SnowflakeConnector
+from prefect_dask import DaskTaskRunner
 
-
-@task
+@task(name = "dbt-profile")
 def get_dbt_cli_profile(env):
     dbt_connector = SnowflakeConnector(
         schema="BINK",
@@ -24,7 +23,7 @@ def get_dbt_cli_profile(env):
     )
     return dbt_cli_profile
 
-
+@task(name="dbt-command")
 def dbt_cli_task(dbt_cli_profile, command):
     return trigger_dbt_cli_command(
         command=command,
@@ -34,29 +33,25 @@ def dbt_cli_task(dbt_cli_profile, command):
         dbt_cli_profile=dbt_cli_profile,
     )
 
+@task(name="trigger-extraction",
+      task_run_name="extracting-{connection}",
+      retries=3,
+      retry_delay_seconds=60,
+      task_runner=DaskTaskRunner)
+def trigger_extraction_task(connection, wait_for):
+        trigger_sync.submit(
+            airbyte_server_host=String.load("airbyte-ip").value,
+            connection_id=String.load(connection).value,
+            poll_interval_s=3,
+            status_updates=True,
+            wait_for = wait_for
+    )
 
-@flow(name="ELT_Extractions", task_runner=DaskTaskRunner)
+@flow(name="ELT_Extractions")
 def trigger_extractions():
-    copybot_output = trigger_sync.submit(
-        airbyte_server_host=String.load("airbyte-ip").value,
-        connection_id=String.load("airbyte-snowstorm-connection").value,
-        poll_interval_s=3,
-        status_updates=True,
-    )
-    trigger_sync.submit(
-        airbyte_server_host=String.load("airbyte-ip").value,
-        connection_id=String.load("airbyte-hermes-connection").value,
-        poll_interval_s=3,
-        status_updates=True,
-        wait_for=[copybot_output],
-    )
-    trigger_sync.submit(
-        airbyte_server_host=String.load("airbyte-ip").value,
-        connection_id=String.load("airbyte-harmonia-connection").value,
-        poll_interval_s=3,
-        status_updates=True,
-        wait_for=[copybot_output],
-    )
+    snowstorm = trigger_extraction_task("airbyte-snowstorm-connection", None )
+    hermes = trigger_extraction_task("airbyte-hermes-connection", [snowstorm])
+    trigger_extraction_task("airbyte-harmonia-connection", [hermes])
 
 
 @flow(name="ELT_Flow")
