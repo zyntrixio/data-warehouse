@@ -38,20 +38,6 @@ user AS (
 		// ,FACEBOOK						
 		// ,TWITTER									
 		,MAGIC_LINK_VERIFIED
-		,CITY
-		// ,PHONE
-		// ,GENDER
-		,REGION
-		,COUNTRY
-		,CURRENCY
-		// ,POSTCODE
-		// ,LAST_NAME
-		,PASS_CODE
-		// ,FIRST_NAME
-		// ,DATE_OF_BIRTH
-		,NOTIFICATIONS
-		// ,ADDRESS_LINE_1
-		// ,ADDRESS_LINE_2
     FROM
         user
 )
