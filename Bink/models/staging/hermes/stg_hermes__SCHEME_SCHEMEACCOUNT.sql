@@ -25,7 +25,6 @@ SELECT  BALANCES
        ,ID                   AS LOYALTY_CARD_ID
        ,LINK_DATE::timestamp as LINK_DATE
        ,SCHEME_ID            AS LOYALTY_PLAN_ID
-       ,STATUS
        ,_AIRBYTE_AB_ID
        ,_AIRBYTE_SCHEME_SCHEMEACCOUNT_HASHID
        ,JOIN_DATE::timestamp AS JOIN_DATE
@@ -34,7 +33,6 @@ SELECT  BALANCES
        ,BARCODE
        ,VOUCHERS
        ,CREATED::timestamp   AS CREATED
-       ,MAIN_ANSWER
        ,"order"              AS ORDERS
        ,TRANSACTIONS
        ,ORIGINATING_JOURNEY
