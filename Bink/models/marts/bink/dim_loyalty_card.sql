@@ -28,10 +28,6 @@ loyalty_card AS (
         ,REGISTER_DATE_TIME
         // ,CARD_NUMBER
         ,UPDATED
-        ,STATUS_ID
-        ,STATUS
-        ,STATUS_TYPE
-        ,STATUS_ROLLUP
         // ,BARCODE
         ,LINK_DATE
         ,CREATED

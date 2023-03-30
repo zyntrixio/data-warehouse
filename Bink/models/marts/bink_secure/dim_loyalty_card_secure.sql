@@ -31,11 +31,6 @@ loyalty_card AS (
     FROM {{ref('stg_hermes__SCHEME_CATEGORY')}}
 )
 
-, account_status AS (
-    SELECT *
-    FROM {{ref('stg_lookup__SCHEME_ACCOUNT_STATUS')}}
-)
-
 ,lc_add_auth AS (
     SELECT *
     FROM {{ref('fact_loyalty_card_add_auth_secure')}}
@@ -67,15 +62,10 @@ loyalty_card AS (
         ,lcr.EVENT_DATE_TIME AS REGISTER_DATE_TIME
         ,CARD_NUMBER
         ,UPDATED
-        ,lc.STATUS AS STATUS_ID
-        ,a.STATUS
-        ,a.STATUS_TYPE
-        ,a.STATUS_ROLLUP
         ,BARCODE
         ,LINK_DATE
     --    ,VOUCHERS  --is this a json field
        ,CREATED
-    --    ,MAIN_ANSWER --??? what does this relate to
        ,ORDERS
     --    ,TRANSACTIONS
        ,ORIGINATING_JOURNEY -- is there a linking table for this ?
@@ -95,8 +85,6 @@ loyalty_card AS (
         ON lc.LOYALTY_PLAN_ID = lp.LOYALTY_PLAN_ID
     LEFT JOIN loyalty_plan_category lpc
         ON lp.LOYALTY_PLAN_CATEGORY_ID = lpc.LOYALTY_PLAN_CATEGORY_ID
-    LEFT JOIN account_status a
-        ON lc.STATUS = a.CODE
     LEFT JOIN lc_add_auth lcaa
         ON lc.LOYALTY_CARD_ID = lcaa.LOYALTY_CARD_ID
     LEFT JOIN lc_join lcj
