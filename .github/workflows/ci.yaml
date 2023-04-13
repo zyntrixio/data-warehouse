@@ -1,0 +1,26 @@
+---
+name: ci
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  release:
+    name: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: echo "container_tag=$(date +'%FT%H%M%SZ')" >> $GITHUB_ENV
+      - uses: docker/login-action@v2
+        with:
+          registry: binkcore.azurecr.io
+          username: binkcore
+          password: ${{ secrets.ACR_BINKCORE_PASSWORD }}
+      - uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: |
+            binkcore.azurecr.io/${{ github.event.repository.name }}:${{ env.container_tag }}
+            binkcore.azurecr.io/${{ github.event.repository.name }}:latest
