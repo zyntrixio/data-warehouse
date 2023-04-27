@@ -151,3 +151,38 @@ models:
       - name: DAILY_DEREGISTRATIONS
         description: Total successful deregistratsion in the day with the loyalty plan
         
+  - name: lc_journey_sankey_funnel
+    description: Loyalty card journey funnel showing attempts 1-4 for each user/merchant and the 5th attempt showing the last in sequence.
+    columns:
+      - name: LOYALTY_PLAN_NAME
+        description: Loyalty plan associated with the journey
+
+      - name: ID
+        description: Unique identifier for the journey (external_user_ref+loyalty_plan_name+iteration)
+
+      - name: ORG_AUTH_TYPE
+        description: Originating journey type
+
+      - name: SIZE
+        description: Fixed value of 1 to create sum
+
+      - name: LINK
+        description: Linking field for sankey model table
+
+      - name: START_TIME
+        description: Start time of journey
+
+      - name: '1'
+        description: Attempt number in journey
+
+      - name: '2'
+        description: Attempt number in journey
+
+      - name: '3'
+        description: Attempt number in journey
+
+      - name: '4'
+        description: Attempt number in journey
+
+      - name: '5'
+        description: Attempt number in journey
