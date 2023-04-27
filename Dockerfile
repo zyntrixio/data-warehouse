@@ -1,5 +1,8 @@
 FROM ghcr.io/binkhq/python:3.11
 
+RUN apt-get update && apt-get -y install make && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN pip install \
             adlfs \
             dbt-snowflake \
