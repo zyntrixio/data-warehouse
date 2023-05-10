@@ -2,13 +2,19 @@
 name: ci
 
 on:
+  push:
+    branches:
+      - master
   release:
     types:
       - published
 
 jobs:
-  release:
-    name: release
+  release_staging:
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    name: release_staging
+    environment:
+      name: Staging
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -18,9 +24,25 @@ jobs:
           registry: binkcore.azurecr.io
           username: binkcore
           password: ${{ secrets.ACR_BINKCORE_PASSWORD }}
-      - uses: docker/build-push-action@v3
+      - uses: docker/build-push-action@v4
         with:
           push: true
           tags: |
             binkcore.azurecr.io/${{ github.event.repository.name }}:${{ env.container_tag }}
-            binkcore.azurecr.io/${{ github.event.repository.name }}:latest
+            binkcore.azurecr.io/${{ github.event.repository.name }}:staging-${{ env.container_tag }}
+            binkcore.azurecr.io/${{ github.event.repository.name }}:staging
+  release_production:
+    name: release_production
+    environment:
+      name: Production
+    needs: [release_staging]
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/binkhq/tagbot:latest
+    steps:
+      - run: |
+          tagbot \
+            --username binkcore \
+            --password ${{ secrets.ACR_BINKCORE_PASSWORD }} \
+            --source binkcore.azurecr.io/${{ github.event.repository.name }}:${{ env.container_tag }} \
+            --tag prod-${{ env.container_tag }}
