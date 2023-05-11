@@ -11,14 +11,18 @@ on:
 
 jobs:
   release_staging:
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    if: github.event_name == 'release' && github.event.action == 'published'
     name: release_staging
     environment:
       name: Staging
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: echo "container_tag=$(date +'%FT%H%M%SZ')" >> $GITHUB_ENV
+      - name: tag_check
+        run: |
+          if ! [[ ${{ github.event.release.tag_name }} =~ [0-9]+.[0-9]+.[0-9]+ ]]; then
+            exit 1;
+          fi
       - uses: docker/login-action@v2
         with:
           registry: binkcore.azurecr.io
@@ -28,8 +32,8 @@ jobs:
         with:
           push: true
           tags: |
-            binkcore.azurecr.io/${{ github.event.repository.name }}:${{ env.container_tag }}
-            binkcore.azurecr.io/${{ github.event.repository.name }}:staging-${{ env.container_tag }}
+            binkcore.azurecr.io/${{ github.event.repository.name }}:${{ github.event.release.tag_name }}
+            binkcore.azurecr.io/${{ github.event.repository.name }}:staging-${{ github.event.release.tag_name }}
             binkcore.azurecr.io/${{ github.event.repository.name }}:staging
   release_production:
     name: release_production
@@ -44,5 +48,5 @@ jobs:
           tagbot \
             --username binkcore \
             --password ${{ secrets.ACR_BINKCORE_PASSWORD }} \
-            --source binkcore.azurecr.io/${{ github.event.repository.name }}:${{ env.container_tag }} \
-            --tag prod-${{ env.container_tag }}
+            --source binkcore.azurecr.io/${{ github.event.repository.name }}:${{ github.event.release.tag_name }} \
+            --tag prod-${{ github.event.release.tag_name }}
