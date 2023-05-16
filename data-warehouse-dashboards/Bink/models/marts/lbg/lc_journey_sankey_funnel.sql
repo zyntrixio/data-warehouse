@@ -20,37 +20,48 @@ with lc as (
         and EVENT_TYPE != 'REQUEST'
 ),
 
+dim_lc AS (
+    SELECT *
+    FROM {{ref('src__dim_loyalty_card')}}
+),
+
 lc_group as (
     SELECT
-        EXTERNAL_USER_REF,
-        EVENT_DATE_TIME,
-        CASE WHEN AUTH_TYPE IN ('JOIN', 'REGISTER') THEN 'JOIN' ELSE 'LINK' END as AUTH_TYPE,
-        EVENT_TYPE,
-        LOYALTY_CARD_ID,
-        LOYALTY_PLAN_NAME,
+        lc.EXTERNAL_USER_REF,
+        lc.EVENT_DATE_TIME,
+        lc.BRAND,
+        CASE WHEN lc.AUTH_TYPE IN ('JOIN', 'REGISTER') THEN 'JOIN' ELSE 'LINK' END as AUTH_TYPE,
+        lc.EVENT_TYPE,
+        lc.LOYALTY_CARD_ID,
+        lc.LOYALTY_PLAN_NAME,
+        d.LOYALTY_PLAN_COMPANY,
         SUM(
             CASE
-                WHEN EVENT_TYPE = 'SUCCESS' THEN 1
+                WHEN lc.EVENT_TYPE = 'SUCCESS' THEN 1
                 ELSE 0
             END
         ) OVER (
-            PARTITION BY EXTERNAL_USER_REF,
-            LOYALTY_PLAN
+            PARTITION BY lc.EXTERNAL_USER_REF,
+            lc.LOYALTY_PLAN
             ORDER BY
-                EVENT_DATE_TIME ASC
+                lc.EVENT_DATE_TIME ASC
         ) as LC_GROUP
     from
         lc
+    LEFT JOIN dim_lc d 
+        ON lc.loyalty_card_id = d.loyalty_card_id
 ),
 
 lc_group2 as (
     SELECT
         EXTERNAL_USER_REF,
         EVENT_DATE_TIME,
+        BRAND,
         AUTH_TYPE,
         EVENT_TYPE,
         LOYALTY_CARD_ID,
         LOYALTY_PLAN_NAME,
+        LOYALTY_PLAN_COMPANY,
         CASE
             WHEN EVENT_TYPE = 'SUCCESS' THEN LC_GROUP -1
             ELSE LC_GROUP
@@ -63,6 +74,7 @@ modify_fields as (
     SELECT
         EXTERNAL_USER_REF,
         EVENT_DATE_TIME,
+        BRAND,
         AUTH_TYPE,
         first_value(AUTH_TYPE) over (partition by EXTERNAL_USER_REF,
             LOYALTY_PLAN_NAME,
@@ -87,6 +99,7 @@ modify_fields as (
         concat(AUTH_TYPE, ' ', EVENT_TYPE) as EVENT_TYPE,
         LOYALTY_CARD_ID,
         LOYALTY_PLAN_NAME,
+        LOYALTY_PLAN_COMPANY,
         LC_GROUP
         from lc_group2
 ),
@@ -94,6 +107,8 @@ modify_fields as (
 select_fields as (
     SELECT
         LOYALTY_PLAN_NAME,
+        LOYALTY_PLAN_COMPANY,
+        BRAND,
         concat(EXTERNAL_USER_REF, ' ', LOYALTY_PLAN_NAME, ' ', lc_group) as ID,
         ORG_AUTH_TYPE,
         1 as SIZE,
