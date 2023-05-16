@@ -12,4 +12,13 @@ sources:
       - name: STG_LOOKUP__SCHEME_ACCOUNT_STATUS
         description: LC Status lookup
 
+  - name: RAW_BINK_LOOKUP
+    description: Bink lookup data
+    database: RAW
+    schema: BINK_LOOKUP
+    loader: DBT
+    
+    tables:
+      - name: SANKEY_MODEL
+        description: Distribution model to join to Sankey models
       
