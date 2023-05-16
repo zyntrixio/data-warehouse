@@ -16,14 +16,15 @@
 WITH new_lc AS (
     SELECT *
     FROM
-        {{ref('fact_loyalty_card_join')}}
+        {{ref('fact_loyalty_card')}}
     WHERE
-        EVENT_TYPE = 'SUCCESS'
+        AUTH_TYPE in ('REGISTER', 'JOIN')
+        AND EVENT_TYPE = 'SUCCESS'
         AND CHANNEL LIKE '%barclays%'
         AND TIMEDIFF(
                     HOUR, EVENT_DATE_TIME, (
                         SELECT MAX(EVENT_DATE_TIME)
-                        FROM {{ref('fact_loyalty_card_join')}}
+                        FROM {{ref('fact_loyalty_card')}}
                         )
                     ) < 24
 )

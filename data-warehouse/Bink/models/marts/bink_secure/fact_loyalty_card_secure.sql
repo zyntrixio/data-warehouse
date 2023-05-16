@@ -88,7 +88,7 @@ add_auth_events_select AS (
         loyalty_plan,
         lp.loyalty_plan_name,
         NULL AS is_most_recent,
-        main_answer -- Unique identifier for schema account record,
+        main_answer, -- Unique identifier for schema account record,
         channel,
         brand,
         origin,

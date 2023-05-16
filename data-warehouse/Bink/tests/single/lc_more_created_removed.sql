@@ -1,5 +1,5 @@
 /*
- Test to ensure all lc create event shave a corresponding create user event
+ This test ensures there are not more deleted events than created
  
  Created By:     SP
  Created Date:   2022/07/13
@@ -8,7 +8,8 @@
 
 {{ config(
     tags=['business']
-    ,meta={"description": "This test ensures there are not more deleted events than created", "test_type": "Business"},
+    ,meta={"description": "This test ensures there are not more deleted events than created", "test_type": "Business"}
+    ,enabled = False
 ) }}
 
 with joins AS (

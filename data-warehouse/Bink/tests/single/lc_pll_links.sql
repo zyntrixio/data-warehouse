@@ -16,7 +16,7 @@
 
 -- SELECT
 --     *
--- FROM {{ref('fact_loyalty_card_join')}}
+-- FROM {{ref('fact_loyalty_card')}}
 -- WHERE loyalty_card_id NOT IN (
 --         SELECT loyalty_card_id
 --         FROM {{ref('join_loyalty_card_payment_account')}}
@@ -26,7 +26,7 @@
 --     AND CHANNEL LIKE '%barclays%'
 --     AND TIMEDIFF(hour, EVENT_DATE_TIME, (
 --             select max(EVENT_DATE_TIME)
---             from {{ref('fact_loyalty_card_join')}}
+--             from {{ref('fact_loyalty_card')}}
 --         )
 --     ) < 24
 

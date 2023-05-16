@@ -1,7 +1,11 @@
+{{ config(
+  enabled= false
+) }}
+
 with loyalty_add as (
   select * 
 
-  from {{ref('fact_loyalty_card_add')}} 
+  from {{ref('fact_loyalty_card')}} 
 
 )
 
@@ -63,5 +67,3 @@ user_id,
   add_time as valid_from,
   coalesce(remove_time, current_timestamp()::timestamp_ntz) as valid_to
   from add_time
-
-

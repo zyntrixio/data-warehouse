@@ -35,30 +35,7 @@ loyalty_plan_category AS (
     FROM
         {{ ref('stg_hermes__SCHEME_CATEGORY') }}
 ),
-lc_add_auth AS (
-    SELECT
-        *
-    FROM
-        {{ ref('fact_loyalty_card_add_auth_secure') }}
-    WHERE
-        is_most_recent = TRUE
-),
-lc_join AS (
-    SELECT
-        *
-    FROM
-        {{ ref('fact_loyalty_card_join_secure') }}
-    WHERE
-        is_most_recent = TRUE
-),
-lc_register AS (
-    SELECT
-        *
-    FROM
-        {{ ref('fact_loyalty_card_register_secure') }}
-    WHERE
-        is_most_recent = TRUE
-),
+
 join_to_base AS (
     SELECT
         -- BALANCES --is this a json field
@@ -92,12 +69,6 @@ join_to_base AS (
         ON lc.loyalty_plan_id = lp.loyalty_plan_id
         LEFT JOIN loyalty_plan_category lpc
         ON lp.loyalty_plan_category_id = lpc.loyalty_plan_category_id
-        /* LEFT JOIN lc_add_auth lcaa
-                ON lc.LOYALTY_CARD_ID = lcaa.LOYALTY_CARD_ID
-            LEFT JOIN lc_join lcj
-                ON lc.LOYALTY_CARD_ID = lcj.LOYALTY_CARD_ID
-            LEFT JOIN lc_register lcr
-                ON lc.LOYALTY_CARD_ID = lcr.LOYALTY_CARD_ID */
 )
 SELECT
     *
