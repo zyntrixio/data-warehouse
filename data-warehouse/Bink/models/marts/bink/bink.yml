@@ -253,7 +253,7 @@ models:
           tests:
             - not_null
 
-    - name: fact_loyalty_card_add_auth
+    - name: fact_loyalty_card
       description: "Table containing events for loyalty card addition and authorisation"
       schema: 'Bink'
       columns:
@@ -264,113 +264,16 @@ models:
             - unique
             - not_null
         - name: 'EVENT_TYPE'
-          description: Request / Success / Failure
+          description: Request / Success / Failure / Removed
           quote: true 
           tests:
             - not_null
             - accepted_values:
-                values: ['REQUEST', 'FAILED', 'SUCCESS']
+                values: ['REQUEST', 'FAILED', 'SUCCESS','REMOVED']
             # - consecutive_events_group:
             #     created_val: 'SUCCESS'
             #     datetime_col: EVENT_DATE_TIME
             #     group_cols: [USER_ID, MERCHANT_ID]
-        - name: 'LOYALTY_CARD_ID'
-          description: loyalty card id
-          quote: true 
-          tests:
-            - not_null
-            - relationships:
-                to: ref('dim_loyalty_card')
-                field: LOYALTY_CARD_ID
-
-    - name: fact_loyalty_card_auth
-      description: "Table containing events for loyalty card authorisation"
-      schema: 'Bink'
-      columns:
-        - name: EVENT_ID
-          description: unique event ID
-          quote: true
-          tests:
-            - unique
-            - not_null
-        - name: 'EVENT_TYPE'
-          description: Request / Success / Failure
-          quote: true 
-          tests:
-            - not_null
-            - accepted_values:
-                values: ['REQUEST', 'FAILED', 'SUCCESS']
-        - name: 'LOYALTY_CARD_ID'
-          description: loyalty card id blah
-          quote: true 
-          tests:
-            - not_null
-            - relationships:
-                to: ref('dim_loyalty_card')
-                field: LOYALTY_CARD_ID
-
-    - name: fact_loyalty_card_join
-      description: "Table containing events for loyalty card join"
-      schema: 'Bink'
-      columns:
-        - name: EVENT_ID
-          description: unique event ID
-          quote: true
-          tests:
-            - unique
-            - not_null
-        - name: 'EVENT_TYPE'
-          description: Request / Success / Failure
-          quote: true 
-          tests:
-            - not_null
-            - accepted_values:
-                values: ['REQUEST', 'FAILED', 'SUCCESS']
-        - name: 'LOYALTY_CARD_ID'
-          description: loyalty card id blah
-          quote: true 
-          tests:
-            - not_null
-            - relationships:
-                to: ref('dim_loyalty_card')
-                field: LOYALTY_CARD_ID
-
-    - name: fact_loyalty_card_register
-      description: "Table containing events for loyalty card register"
-      schema: 'Bink'
-      columns:
-        - name: EVENT_ID
-          description: unique event ID
-          quote: true
-          tests:
-            - unique
-            - not_null
-        - name: 'EVENT_TYPE'
-          description: Request / Success / Failure
-          quote: true 
-          tests:
-            - not_null
-            - accepted_values:
-                values: ['REQUEST', 'FAILED', 'SUCCESS']
-        - name: 'LOYALTY_CARD_ID'
-          description: loyalty card id
-          quote: true 
-          tests:
-            - not_null
-            - relationships:
-                to: ref('dim_loyalty_card')
-                field: LOYALTY_CARD_ID
-
-    - name: fact_loyalty_card_removed
-      description: "Table containing events for loyalty card being removed from wallet"
-      schema: 'Bink'
-      columns:
-        - name: EVENT_ID
-          description: unique event ID
-          quote: true
-          tests:
-            - unique
-            - not_null
         - name: 'LOYALTY_CARD_ID'
           description: loyalty card id
           quote: true 

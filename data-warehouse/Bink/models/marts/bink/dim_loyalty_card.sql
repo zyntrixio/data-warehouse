@@ -20,12 +20,12 @@ loyalty_card AS (
 , loyalty_card_select AS (
     SELECT
         LOYALTY_CARD_ID
-        ,ADD_AUTH_STATUS
-        ,ADD_AUTH_DATE_TIME
-        ,JOIN_STATUS
-        ,JOIN_DATE_TIME
-        ,REGISTER_STATUS
-        ,REGISTER_DATE_TIME
+        // ,ADD_AUTH_STATUS
+        // ,ADD_AUTH_DATE_TIME
+        // ,JOIN_STATUS
+        // ,JOIN_DATE_TIME
+        // ,REGISTER_STATUS
+        // ,REGISTER_DATE_TIME
         // ,CARD_NUMBER
         ,UPDATED
         // ,BARCODE
