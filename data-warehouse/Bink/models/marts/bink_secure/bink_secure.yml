@@ -163,3 +163,24 @@ models:
                 datetime_col: EVENT_DATE_TIME
                 group_col: EXTERNAL_USER_REF
                 filter_date: '2022-09-01'
+
+    - name: fact_wallet_refresh_secure
+      description: "Secure fact  wallet refresh, with external user id"
+      schema: 'BINK_SECURE'
+      columns:
+        - name: EVENT_ID
+          description: unique event ID
+          quote: true
+          tests:
+            - unique
+            - not_null
+        - name: EXTERNAL_USER_REF
+          description: external id
+          quote: true
+          # tests:
+          #   - not_null
+        - name: EVENT_TYPE
+          description: external id
+          quote: true
+          tests:
+            - not_null

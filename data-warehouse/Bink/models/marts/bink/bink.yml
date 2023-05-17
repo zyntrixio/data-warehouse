@@ -108,7 +108,7 @@ models:
           tests:
             - not_null
             - accepted_values:
-                values: ['CREATED', 'DELETED', 'REFRESH']
+                values: ['CREATED', 'DELETED']
             - sd_daily_spike:
                 vals: ['CREATED']
                 datetime_col: EVENT_DATE_TIME
@@ -120,6 +120,41 @@ models:
                   # warn_if: ">10"                
             - sd_daily_spike:
                 vals: ['DELETED']
+                datetime_col: EVENT_DATE_TIME
+                unique_id_col: EVENT_ID
+                max_sd: 2
+                config:
+                  severity: warn
+                  # error_if: ">1000"
+                  # warn_if: ">10"                
+        - name: USER_ID
+          description: Business PK
+          quote: true
+          tests:
+            - not_null
+            # - relationships:
+            #     to: ref('dim_user')
+            #     field: USER_ID
+
+    - name: fact_wallet_refresh
+      description: "Table containing events for user refresh"
+      schema: 'Bink'
+      columns:
+        - name: EVENT_ID
+          description: Unique event ID
+          quote: true
+          tests:
+            - unique
+            - not_null
+        - name: 'EVENT_TYPE'
+          description: Created or deleted
+          quote: true 
+          tests:
+            - not_null
+            - accepted_values:
+                values: ['REFRESH']              
+            - sd_daily_spike:
+                vals: ['REFRESH']
                 datetime_col: EVENT_DATE_TIME
                 unique_id_col: EVENT_ID
                 max_sd: 2

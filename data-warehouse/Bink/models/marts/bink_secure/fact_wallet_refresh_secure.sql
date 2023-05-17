@@ -1,11 +1,11 @@
 /*
-Created by:         Sam Pibworth
-Created date:       2022-05-04
-Last modified by:   Anand Bhakta
-Last modified date: 2023-05-17
+Created by:         Anand Bhakta
+Created date:       2023-05-17
+Last modified by:   
+Last modified date: 
 
 Description:
-    Loads user created and user deleted from the events table 
+    Loads user wallet refresh events from event table
 	Incremental strategy: loads all newly inserted records, transforms, then loads
 	all user events which require updating, finally calculating is_most_recent flag,
 	and merging based on the event id
@@ -16,7 +16,7 @@ Parameters:
 
 {{
     config(
-		alias='fact_user'
+		alias='fact_wallet_refresh'
         ,materialized='incremental'
 		,unique_key='EVENT_ID'
 		,merge_update_columns = ['IS_MOST_RECENT', 'UPDATED_DATE_TIME']
@@ -27,7 +27,7 @@ WITH
 user_events AS (
 	SELECT *
 	FROM {{ ref('transformed_hermes_events')}}
-	WHERE EVENT_TYPE LIKE 'user%' and EVENT_TYPE != 'user.session.start'
+	WHERE EVENT_TYPE = 'user.session.start'
 	{% if is_incremental() %}
   	AND _AIRBYTE_EMITTED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
 	{% endif %}	
@@ -52,10 +52,8 @@ user_events AS (
 		EVENT_ID
 		,EVENT_DATE_TIME
 		,USER_ID
-		,CASE WHEN EVENT_TYPE = 'user.created'
-			THEN 'CREATED'
-			WHEN EVENT_TYPE = 'user.deleted'
-			THEN 'DELETED'
+		,CASE WHEN EVENT_TYPE = 'user.session.start'
+			THEN 'REFRESH'
 			ELSE NULL
 			END AS EVENT_TYPE
 		,NULL AS IS_MOST_RECENT
