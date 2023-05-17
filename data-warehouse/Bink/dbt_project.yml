@@ -2,7 +2,7 @@ name: 'Bink'
 version: '1.0.0'
 config-version: 2
 
-profile: 'Bink'
+profile: 'Bink_New'
 
 model-paths: ["models"]
 analysis-paths: ["analyses"]
@@ -17,27 +17,32 @@ clean-targets:
 
 models:
   Bink:
+    prod:
+      +database: "PROD"
+      bink:
+        +schema: "BINK"
+        materialized: table
+      bink_secure:
+        +schema: "BINK_SECURE"
+        materialized: table
+      service_data:
+        +schema: "SERVICE_DATA"
+        materialized: table
+
     staging:
-      +schema: "BINK_STAGING"
-      materialized: view
-    transformations:
-      +schema: "BINK_TRANSFORMED"
-      materialized: view
-    marts:
-        bink:
-          +schema: "BINK"
-          materialized: table
-        bink_secure:
-          +schema: "BINK_SECURE"
-          materialized: table
-        service_data:
-          +schema: "SERVICE_DATA"
-          materialized: table
+      +database: "STAGING"
+      staging:
+        +schema: "STAGING"
+        materialized: view
+      transformation:
+        +schema: "TRANSFORMATION"
+        materialized: view
+        
   elementary:
-    +schema: 'BINK_MONITORING'
+    +database: 'MONITORING'
+    +schema: 'MONITORING'
     +materialized: table
     +transient: false
-    
 vars:
  dbt_artifacts_database: 'DEV'
- dbt_artifacts_schema: 'BINK_MONITORING'
+ dbt_artifacts_schema: 'MONITORING'
