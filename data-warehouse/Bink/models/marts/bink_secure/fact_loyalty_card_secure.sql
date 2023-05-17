@@ -87,6 +87,7 @@ add_auth_events_select AS (
         loyalty_card_id,
         loyalty_plan,
         lp.loyalty_plan_name,
+        lp.LOYALTY_PLAN_COMPANY,
         NULL AS is_most_recent,
         main_answer, -- Unique identifier for schema account record,
         channel,
@@ -138,7 +139,9 @@ alter_is_most_recent_flag AS (
         event_type,
         loyalty_card_id,
         loyalty_plan,
-        loyalty_plan_name,CASE
+        loyalty_plan_name,
+        LOYALTY_PLAN_COMPANY,
+        CASE
             WHEN (event_date_time = MAX(event_date_time) over (PARTITION BY loyalty_card_id)) THEN TRUE
             ELSE FALSE
         END AS is_most_recent,

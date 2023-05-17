@@ -17,6 +17,8 @@ with vouchers as (
 
 SELECT  v.CREATED
        ,v.loyalty_card_id
+       ,lc.LOYALTY_PLAN_COMPANY
+       ,lc.LOYALTY_PLAN_NAME
        ,v.state
        ,v.earn_type
        ,v.voucher_code
@@ -39,6 +41,8 @@ on v.loyalty_card_id = lc.loyalty_card_id
 Select 
  CREATED
 ,loyalty_card_id
+,LOYALTY_PLAN_COMPANY
+,LOYALTY_PLAN_NAME
 ,state
 ,earn_type
 ,voucher_code
@@ -60,5 +64,3 @@ from add_company
 
 select * from timings
 --where current_channel = 'com.barclays.bmb'
-
-

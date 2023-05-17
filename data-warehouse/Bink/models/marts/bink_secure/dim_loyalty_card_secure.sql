@@ -39,7 +39,8 @@ loyalty_plan_category AS (
 join_to_base AS (
     SELECT
         -- BALANCES --is this a json field
-        lc.loyalty_card_id --    ,lcaa.EVENT_TYPE AS ADD_AUTH_STATUS
+        lc.loyalty_card_id,
+         --    ,lcaa.EVENT_TYPE AS ADD_AUTH_STATUS
         --    ,lcaa.EVENT_DATE_TIME AS ADD_AUTH_DATE_TIME
         --    ,lcj.EVENT_TYPE AS JOIN_STATUS
         --    ,COALESCE(lcj.EVENT_DATE_TIME, lc.JOIN_DATE) AS JOIN_DATE_TIME
@@ -48,10 +49,12 @@ join_to_base AS (
         card_number,
         updated,
         barcode,
-        link_date --    ,VOUCHERS  --is this a json field,
+        link_date,
+         --    ,VOUCHERS  --is this a json field,
         created,
-        orders --    ,TRANSACTIONS,
-        originating_journey -- is there a linking table for this ?
+        orders,
+         --    TRANSACTIONS,
+        originating_journey, -- is there a linking table for this ?
         --    ,PLL_LINKS  --is this a json field
         --    ,FORMATTED_IMAGES --is this a json field,
         is_deleted,
