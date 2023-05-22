@@ -1,6 +1,6 @@
 WITH source AS (
     SELECT * 
-    FROM {{ source('BINK_SECURE', 'FACT_LOYALTY_CARD_ADD') }}
+    FROM {{ source('BINK_SECURE', 'FACT_LOYALTY_CARD') }}
 )
 
 ,renamed AS (
@@ -12,6 +12,7 @@ WITH source AS (
         ,LOYALTY_CARD_ID
         ,LOYALTY_PLAN
         ,LOYALTY_PLAN_NAME
+        ,LOYALTY_PLAN_COMPANY
         ,IS_MOST_RECENT
         ,CHANNEL
         ,ORIGIN
