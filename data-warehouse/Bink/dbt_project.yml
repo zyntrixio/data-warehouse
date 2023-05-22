@@ -37,6 +37,24 @@ models:
       transformation:
         +schema: "TRANSFORMATION"
         materialized: view
+    
+    metrics_staging:
+      +database: "METRICS_STAGING"
+      +materialized: view
+      warehouse:
+        +schema: "WAREHOUSE"      
+      lookup:
+        +schema: "LOOKUP"
+      metrics_transformation:
+        +schema: "TRANSFORMATION"
+
+    metrics:
+      +database: "METRICS"
+      user:
+        +schema: "USER"
+        materialized: table
+
+
         
   elementary:
     +database: 'MONITORING'

@@ -3,6 +3,7 @@ version: 2
 sources:
   - name: BINK
     description: Data for DBT template
+    database: PROD
     schema: BINK
     loader: DBT
     
@@ -16,23 +17,8 @@ sources:
       - name: DIM_USER
         description: User dimension   
 
-      - name: FACT_LOYALTY_CARD_ADD
-        description: All new LCs
-
-      - name: FACT_LOYALTY_CARD_ADD_AUTH
-        description: New LCs via add_auth route
-
-      - name: FACT_LOYALTY_CARD_AUTH
-        description: New LCs via auth route
-
-      - name: FACT_LOYALTY_CARD_JOIN
-        description: New LCs via join route
-
-      - name: FACT_LOYALTY_CARD_REGISTER
-        description: New LCs via register route
-
-      - name: FACT_LOYALTY_CARD_REMOVED
-        description: LCs deleted
+      - name: FACT_LOYALTY_CARD
+        description: All new LC events
 
       - name: FACT_LOYALTY_CARD_STATUS_CHANGE
         description: LC status change
@@ -51,6 +37,7 @@ sources:
 
   - name: BINK_SECURE
     description: Data for DBT template
+    database: PROD
     schema: BINK_SECURE
     loader: DBT
     
@@ -64,23 +51,8 @@ sources:
       - name: DIM_USER
         description: User dimension   
 
-      - name: FACT_LOYALTY_CARD_ADD
-        description: All new LCs
-
-      - name: FACT_LOYALTY_CARD_ADD_AUTH
-        description: New LCs via add_auth route
-
-      - name: FACT_LOYALTY_CARD_AUTH
-        description: New LCs via auth route
-
-      - name: FACT_LOYALTY_CARD_JOIN
-        description: New LCs via join route
-
-      - name: FACT_LOYALTY_CARD_REGISTER
-        description: New LCs via register route
-
-      - name: FACT_LOYALTY_CARD_REMOVED
-        description: LCs deleted
+      - name: FACT_LOYALTY_CARD
+        description: All new LC events
 
       - name: FACT_LOYALTY_CARD_STATUS_CHANGE
         description: LC status change
