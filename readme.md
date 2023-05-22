@@ -1,33 +1,27 @@
-# Foobar
+# Data Warehouse
 
 Foobar is a Python library for dealing with word pluralization.
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
-
-```bash
-pip install foobar
+```shell
+git clone {url/ssh}
+cd data-warehouse && cd bink
+poetry shell
+poetry install
+dbt deps
 ```
+And you are ready to go.
 
 ## Usage
 
-```python
-import foobar
-
-# returns 'words'
-foobar.pluralize('word')
-
-# returns 'geese'
-foobar.pluralize('goose')
-
-# returns 'phenomenon'
-foobar.singularize('phenomena')
+```shell
+dbt run -t uat # for UAT
+dbt run -t prod # for prod
+dbt run -t --select {name of model} # for a specific model
 ```
 
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change.
-
-Please make sure to update tests as appropriate.
+We operate on a two branch system with development for features on the development branch and indidivual features as separate branches.
+Pull requests must be raised. Failure to do so will lead to jokes at your expense.
