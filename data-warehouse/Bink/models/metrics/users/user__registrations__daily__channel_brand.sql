@@ -8,25 +8,20 @@ Description:
     CUMULATIVE AND PERIOD METRICS ON USER REGISTRATION AND DEREGISTRATION
 
 Parameters:
-    source_object       - src__fact_user
+    source_object       - user_trans
                         - src__dim_date
 */
 
 WITH fact_usr AS (
     SELECT *
-    FROM {{ ref('src__fact_user') }})
-
-     , fact_lc AS (
-          SELECT *
-          FROM {{ ref('src__fact_lc') }}
-     )
+    FROM {{ ref('users_trans') }})
 
    , dim_date AS (
     SELECT *
     FROM {{ ref('src__dim_date') }}
     WHERE date >= (
         SELECT MIN(DATE(from_date))
-        FROM fact_lc)
+        FROM fact_usr)
       AND date <= CURRENT_DATE())
 
    , usr_staging AS (
