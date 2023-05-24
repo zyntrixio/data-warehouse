@@ -13,7 +13,7 @@ Parameters:
 */
 
 WITH usr_events AS (SELECT *
-                    FROM {{ref(src__fact_user)}})
+                    FROM {{ref('src__fact_user')}})
    , usr_stage AS (SELECT user_id
                         , COALESCE(NULLIF(external_user_ref, ''), user_id) AS user_ref
                         , event_id
