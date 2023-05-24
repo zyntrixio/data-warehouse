@@ -1,0 +1,7 @@
+version: 2
+
+models:
+  - name: lc_trans
+    description: loyalty card metrics transformation layer
+  - name: users_trans
+    description: loyalty card metrics transformation layer

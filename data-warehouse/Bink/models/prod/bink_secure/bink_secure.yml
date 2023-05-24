@@ -184,3 +184,71 @@ models:
           quote: true
           tests:
             - not_null
+
+    - name: fact_transaction_secure
+      description: "Table containing transaction events"
+      schema: 'Bink'
+      config:
+        elementary:
+          timestamp_column: inserted_date_time
+      columns:
+        - name: 'EVENT_ID'
+          description: Primary Key of the table
+          quote: true
+          tests:
+            - unique
+            - not_null
+        - name: 'TRANSACTION_ID'
+          description: Busineess PK of the table
+          quote: true
+          tests:
+            - not_null
+        - name: 'USER_ID'
+          description: Transaction User
+          quote: true
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_user')
+                field: USER_ID
+        - name: 'PAYMENT_ACCOUNT_ID'
+          description: Transaction payment account
+          quote: true
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_payment_account')
+                field: PAYMENT_ACCOUNT_ID
+        - name: 'LOYALTY_CARD_ID'
+          description: Transaction loyalty card account
+          quote: true
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_loyalty_card')
+                field: LOYALTY_CARD_ID
+        - name: 'MERCHANT_ID'
+          description: Links to merchant dim
+          quote: true
+          tests:
+            - not_null
+            # - relationships: --this needs to be fixed and reinstated
+            #     to: ref('dim_merchant')
+            #     field: MERCHANT_ID
+        - name: 'SPEND_AMOUNT'
+          tests:
+            - not_null
+            - elementary.column_anomalies
+        - name: 'SPEND_CURRENCY'
+          description: GBP
+          quote: true
+          tests:
+            - sd_daily_spike:
+                vals: ['GBP']
+                datetime_col: EVENT_DATE_TIME
+                unique_id_col: EVENT_ID
+                max_sd: 2
+                config:
+                  severity: warn
+                  # error_if: ">1000"
+                  # warn_if: ">10"

@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: users_overview
+    description: Data source for user overview
