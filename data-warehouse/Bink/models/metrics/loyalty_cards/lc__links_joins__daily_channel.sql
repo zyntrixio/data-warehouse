@@ -1,13 +1,11 @@
 /*
 Created by:         Anand Bhakta
-Created date:       2023-02-05
+Created date:       2023-05-23
 Last modified by:   
 Last modified date: 
 
 Description:
     Rewrite of the LL table lc_joins_links_snapshot and lc_joins_links containing both snapshot and daily absolute data of all link and join journeys split by merchant.
-Notes:
-    This code can be made more efficient if the start is pushed to the trans__lbg_user code and that can be the source for the majority of the dashboards including user_loyalty_plan_snapshot and user_with_loyalty_cards
 Parameters:
     source_object       - src__fact_lc_add
                         - src__fact_lc_removed
@@ -33,8 +31,6 @@ WITH lc_events AS (
     d.DATE
     ,u.CHANNEL
     ,u.BRAND
-    ,u.LOYALTY_PLAN_NAME
-    ,u.LOYALTY_PLAN_COMPANY
         ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'SUCCESS' AND ADD_JOURNEY = 'JOIN' THEN 1 END),0) AS JOIN_SUCCESS_STATE
         ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'FAILED' AND ADD_JOURNEY = 'JOIN' THEN 1 END),0) AS JOIN_FAILED_STATE
         ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'REQUEST' AND ADD_JOURNEY = 'JOIN' THEN 1 END),0) AS JOIN_PENDING_STATE
@@ -52,8 +48,6 @@ GROUP BY
     d.DATE
     ,u.BRAND
     ,u.CHANNEL
-    ,u.LOYALTY_PLAN_NAME
-    ,u.LOYALTY_PLAN_COMPANY
 HAVING DATE IS NOT NULL
 )    
 
@@ -62,8 +56,6 @@ HAVING DATE IS NOT NULL
     d.DATE
     ,u.CHANNEL
     ,u.BRAND
-    ,u.LOYALTY_PLAN_NAME
-    ,u.LOYALTY_PLAN_COMPANY
         ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'REQUEST' AND ADD_JOURNEY = 'JOIN' THEN 1 END),0) AS JOIN_REQUESTS
         ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'FAILED' AND ADD_JOURNEY = 'JOIN' THEN 1 END),0) AS JOIN_FAILS
         ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'SUCCESS' AND ADD_JOURNEY = 'JOIN' THEN 1 END),0) AS JOIN_SUCCESSES
@@ -97,8 +89,6 @@ GROUP BY
     d.DATE
     ,u.BRAND
     ,u.CHANNEL
-    ,u.LOYALTY_PLAN_NAME
-    ,u.LOYALTY_PLAN_COMPANY
 HAVING DATE IS NOT NULL
 )
 
@@ -107,8 +97,6 @@ HAVING DATE IS NOT NULL
         COALESCE(a.date,s.date) DATE
         ,COALESCE(a.brand,s.brand) BRAND
         ,COALESCE(a.CHANNEL,s.CHANNEL) CHANNEL
-        ,COALESCE(a.LOYALTY_PLAN_NAME,s.LOYALTY_PLAN_NAME) LOYALTY_PLAN_NAME
-        ,COALESCE(a.LOYALTY_PLAN_COMPANY,s.LOYALTY_PLAN_COMPANY) LOYALTY_PLAN_COMPANY
 
         ,COALESCE(s.JOIN_SUCCESS_STATE,0) AS JOIN_SUCCESS_STATE
         ,COALESCE(s.JOIN_FAILED_STATE,0) AS JOIN_FAILED_STATE
@@ -138,7 +126,7 @@ HAVING DATE IS NOT NULL
         ,COALESCE(a.LINK_DELETES_UNIQUE_USERS,0) AS LINK_DELETES_UNIQUE_USERS
     FROM count_up_abs a
     FULL OUTER JOIN count_up_snap s     
-        ON a.date=s.date and a.brand = s.brand and a.loyalty_plan_name = s.loyalty_plan_name
+        ON a.date=s.date and a.brand = s.brand
 )
 
 ,add_combine_metrics AS (
@@ -146,8 +134,6 @@ HAVING DATE IS NOT NULL
         DATE
         ,CHANNEL
         ,BRAND
-        ,LOYALTY_PLAN_NAME
-        ,LOYALTY_PLAN_COMPANY
 
         ,JOIN_SUCCESS_STATE                                          AS LCJ001__JOIN_SUCCESS_CUMULATIVE
         ,JOIN_FAILED_STATE                                          

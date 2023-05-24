@@ -20,4 +20,23 @@ WITH trans_events AS (
     FROM {{ref('src__fact_transaction')}}
 )
 
-select * from trans_events
+,metrics AS (
+    SELECT
+        DATE(DATE) AS DATE
+        ,CHANNEL
+        ,BRAND
+        ,LOYALTY_PLAN_COMPANY
+        ,SUM(SPEND_AMOUNT) AS SPEND
+        ,1 AS ACTIVE_USERS
+        ,COUNT(TRANSACTION_ID) AS TRANSACTIONS
+    FROM
+        trans_events
+    GROUP BY
+        COALESCE(NULLIF(EXTERNAL_USER_REF,''), USER_ID)
+        ,CHANNEL
+        ,BRAND
+        ,LOYALTY_PLAN_COMPANY
+        ,DATE(DATE)
+)
+
+select * from metrics

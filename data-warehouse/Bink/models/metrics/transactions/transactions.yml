@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: trans__trans__daily_user_level
+    description: transactions broken down by date and user to provide some aggregation before most compute happens in analytics tool

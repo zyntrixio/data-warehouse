@@ -50,10 +50,18 @@ models:
 
     metrics:
       +database: "METRICS"
-      user:
-        +schema: "USER"
+      loyalty_cards:
+        +schema: "LOYALTY_CARDS"
+        materialized: table
+      transactions:
+        +schema: "TRANSACTIONS"
         materialized: table
 
+    output:
+      +database: "OUTPUT"
+      lbg:
+        +schema: "LBG"
+        materialized: table
 
         
   elementary:
