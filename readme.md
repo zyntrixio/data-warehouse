@@ -1,6 +1,8 @@
 # Data Warehouse
 
-Foobar is a Python library for dealing with word pluralization.
+Data Warehouse repostiory containing DBT models and Prefect Orchestration.
+
+LOTS OF TECHNICAL DEBT, PLEASE BE CAREFUL.
 
 ## Installation
 
