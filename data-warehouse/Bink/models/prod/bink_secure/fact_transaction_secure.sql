@@ -13,7 +13,8 @@ Parameters:
 
 {{
     config(
-        materialized='incremental'
+		alias='fact_transaction'
+        ,materialized='incremental'
 		,unique_key='EVENT_ID'
     )
 }}
@@ -36,6 +37,11 @@ transaction_events AS (
 ,dim_user AS (
 	SELECT *
 	FROM {{ref('stg_hermes__USER')}}
+)
+
+,dim_channel AS (
+	SELECT *
+	FROM {{ref('stg_hermes__CLIENT_APPLICATION')}}
 )
 
 ,transaction_events_unpack AS (
@@ -69,6 +75,16 @@ transaction_events AS (
 		,EVENT_DATE_TIME
 		,t.USER_ID
 		,u.EXTERNAL_ID AS EXTERNAL_USER_REF
+		,CASE WHEN c.CHANNEL_NAME IN ('Bank of Scotland', 'Lloyds', 'Halifax')  THEN 'LLOYDS'
+        	WHEN c.CHANNEL_NAME = 'Barclays Mobile Banking' THEN 'BARCLAYS'
+        	WHEN c.CHANNEL_NAME = 'Bink' THEN 'BINK'
+        	ELSE NULL
+        	END AS CHANNEL
+    	,CASE WHEN c.CHANNEL_NAME IN ('Bink', 'Lloyds', 'Halifax') THEN UPPER(c.CHANNEL_NAME)
+			WHEN c.CHANNEL_NAME = 'Barclays Mobile Banking' THEN 'BARCLAYS'
+			WHEN c.CHANNEL_NAME = 'Bank of Scotland' THEN 'BOS'
+			ELSE NULL
+			END AS BRAND
 		,TRANSACTION_ID
 		,PROVIDER_SLUG
 		,FEED_TYPE
@@ -92,6 +108,8 @@ transaction_events AS (
 		loyalty_plan lp ON lp.LOYALTY_PLAN_SLUG = t.PROVIDER_SLUG
 	LEFT JOIN
 		dim_user u ON u.USER_ID	= t.USER_ID
+	LEFT JOIN
+		dim_channel c ON u.CHANNEL_ID = c.CHANNEL_ID
 )
 
 SELECT
