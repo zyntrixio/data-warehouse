@@ -56,6 +56,9 @@ models:
       transactions:
         +schema: "TRANSACTIONS"
         materialized: table
+      users:
+        +schema: "USERS"
+        materialized: table
 
     output:
       +database: "OUTPUT"
