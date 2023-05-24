@@ -43,7 +43,7 @@ WITH fact_usr AS (
          , COALESCE(COUNT(CASE WHEN event_type = 'DELETED' THEN 1 END), 0) AS snap_user_deregistrations
     FROM fact_usr u
              LEFT JOIN dim_date d
-                       ON d.date <= DATE(from_date) AND d.date >= DATE(u.to_date)
+                       ON d.date <= DATE(from_date) AND d.date > DATE(u.to_date)
     GROUP BY d.date, u.channel, u.brand)
 
    , combine_all AS (
