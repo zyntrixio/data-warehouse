@@ -2,16 +2,15 @@
 Created by:         Anand Bhakta
 Created date:       2023-05-23
 Last modified by:   Christopher Mitchell
-Last modified date: 2023-05-24
+Last modified date: 2023-05-31
 
 Description:
     Datasource to produce lloyds mi dashboard - users_overview
 Parameters:
-    source_object       - src__fact_lc_add
-                        - src__fact_lc_removed
-                        - src__dim_loyalty_card
-                        - src__dim_date
-                        - user__registrations__daily_channel_brand
+    source_object       - lc__links_joins__daily_retailer_channel
+                        - lc__links_joins__daily_channel
+                        - trans__trans__daily_user_level
+                        - user__registrations__daily__channel_brand 
 */
 
 WITH lc_metrics_retailer AS (
@@ -54,6 +53,7 @@ WITH lc_metrics_retailer AS (
         ,BRAND
         ,LOYALTY_PLAN_COMPANY
         ,LC001__LC_SUCCESS_CUMULATIVE
+        ,NULL AS LC001__LC_SUCCESS_CUMULATIVE_ -- NEED TO CREATE SUFFIX FOR THIS METRIC
         ,LC002__LC_REMOVED_CUMULATIVE
         ,LC003__LC_SUCCESS_PERIOD
         ,LC004__LC_REMOVE_PERIOD
@@ -75,10 +75,11 @@ WITH lc_metrics_retailer AS (
         ,CHANNEL
         ,BRAND
         ,NULL AS LOYALTY_PLAN_COMPANY
-        ,LC001__LC_SUCCESS_CUMULATIVE
-        ,LC002__LC_REMOVED_CUMULATIVE
-        ,LC003__LC_SUCCESS_PERIOD
-        ,LC004__LC_REMOVE_PERIOD
+        ,NULL AS LC001__LC_SUCCESS_CUMULATIVE
+        ,LC001__LC_SUCCESS_CUMULATIVE AS LC001__LC_SUCCESS_CUMULATIVE_
+        ,NULL AS LC002__LC_REMOVED_CUMULATIVE
+        ,NULL AS LC003__LC_SUCCESS_PERIOD
+        ,NULL AS LC004__LC_REMOVE_PERIOD
         ,NULL AS USR001__DAILY_REGISTRATIONS_PERIOD
         ,NULL AS USR002__DAILY_DEREGISTRATIONS_PERIOD
         ,NULL AS USR003__DAILY_REGISTRATIONS_CUMULATIVE
@@ -87,7 +88,7 @@ WITH lc_metrics_retailer AS (
         ,NULL AS ACTIVE_USERS
         ,NULL AS TRANSACTIONS
     FROM
-        lc_metrics_retailer    
+        lc_metrics    
 
     UNION ALL
 
@@ -98,6 +99,7 @@ WITH lc_metrics_retailer AS (
         ,BRAND
         ,LOYALTY_PLAN_COMPANY
         ,NULL AS LC001__LC_SUCCESS_CUMULATIVE
+        ,NULL AS LC001__LC_SUCCESS_CUMULATIVE_
         ,NULL AS LC002__LC_REMOVED_CUMULATIVE
         ,NULL AS LC003__LC_SUCCESS_PERIOD
         ,NULL AS LC004__LC_REMOVE_PERIOD
@@ -120,6 +122,7 @@ WITH lc_metrics_retailer AS (
         ,BRAND
         ,NULL AS LOYALTY_PLAN_COMPANY
         ,NULL AS LC001__LC_SUCCESS_CUMULATIVE
+        ,NULL AS LC001__LC_SUCCESS_CUMULATIVE_
         ,NULL AS LC002__LC_REMOVED_CUMULATIVE
         ,NULL AS LC003__LC_SUCCESS_PERIOD
         ,NULL AS LC004__LC_REMOVE_PERIOD
