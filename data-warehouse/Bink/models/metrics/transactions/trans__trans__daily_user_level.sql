@@ -22,13 +22,13 @@ WITH trans_events AS (
 
 ,metrics AS (
     SELECT
-        DATE(DATE) AS DATE
+        DATE(DATE)                                          AS DATE
         ,CHANNEL
         ,BRAND
         ,LOYALTY_PLAN_COMPANY
-        ,SUM(SPEND_AMOUNT) AS SPEND
-        ,COALESCE(NULLIF(EXTERNAL_USER_REF,''), USER_ID) AS ACTIVE_USERS
-        ,COUNT(TRANSACTION_ID) AS TRANSACTIONS
+        ,SUM(SPEND_AMOUNT)                                  AS SPEND
+        ,COALESCE(NULLIF(EXTERNAL_USER_REF,''), USER_ID)    AS ACTIVE_USERS
+        ,COUNT(TRANSACTION_ID)                              AS TRANSACTIONS
     FROM
         trans_events
     GROUP BY
