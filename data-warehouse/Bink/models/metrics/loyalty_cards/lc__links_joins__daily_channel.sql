@@ -1,8 +1,8 @@
 /*
 Created by:         Anand Bhakta
 Created date:       2023-05-23
-Last modified by:   
-Last modified date: 
+Last modified by:   Christopher Mitchell
+Last modified date: 2023-06-05
 
 Description:
     Rewrite of the LL table lc_joins_links_snapshot and lc_joins_links containing both snapshot and daily absolute data of all link and join journeys split by merchant.
@@ -31,15 +31,18 @@ WITH lc_events AS (
     d.DATE
     ,u.CHANNEL
     ,u.BRAND
+        -- Joins
         ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'SUCCESS' AND ADD_JOURNEY = 'JOIN' THEN 1 END),0)      AS JOIN_SUCCESS_STATE
         ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'FAILED' AND ADD_JOURNEY = 'JOIN' THEN 1 END),0)       AS JOIN_FAILED_STATE
         ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'REQUEST' AND ADD_JOURNEY = 'JOIN' THEN 1 END),0)      AS JOIN_PENDING_STATE
         ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'DELETE' AND ADD_JOURNEY = 'JOIN' THEN 1 END),0)       AS JOIN_REMOVED_STATE
-  
+        -- Links
         ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'SUCCESS' AND ADD_JOURNEY = 'LINK' THEN 1 END),0)      AS LINK_SUCCESS_STATE
         ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'FAILED' AND ADD_JOURNEY = 'LINK' THEN 1 END),0)       AS LINK_FAILED_STATE
         ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'REQUEST' AND ADD_JOURNEY = 'LINK' THEN 1 END),0)      AS LINK_PENDING_STATE
         ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'DELETE' AND ADD_JOURNEY = 'LINK' THEN 1 END),0)       AS LINK_REMOVED_STATE
+        -- Links and Joins
+        ,COALESCE(COUNT(DISTINCT CASE WHEN EVENT_TYPE = 'SUCCESS' THEN USER_REF END),0)              AS LINK_JOIN_SUCESS_STATE
 FROM lc_events u
 LEFT JOIN dim_date d
     ON d.DATE >= DATE(u.FROM_DATE)
@@ -107,6 +110,8 @@ HAVING DATE IS NOT NULL
         ,COALESCE(s.LINK_PENDING_STATE,0)       AS LINK_PENDING_STATE
         ,COALESCE(s.LINK_REMOVED_STATE,0)       AS LINK_REMOVED_STATE
 
+        ,COALESCE(LINK_JOIN_SUCESS_STATE,0)     AS LINK_JOIN_SUCESS_STATE
+
         ,COALESCE(a.JOIN_REQUESTS,0)    AS JOIN_REQUESTS
         ,COALESCE(a.JOIN_FAILS,0)       AS JOIN_FAILS
         ,COALESCE(a.JOIN_SUCCESSES,0)   AS JOIN_SUCCESSES
@@ -124,6 +129,8 @@ HAVING DATE IS NOT NULL
         ,COALESCE(a.LINK_FAILS_UNIQUE_USERS,0)      AS LINK_FAILS_UNIQUE_USERS
         ,COALESCE(a.LINK_SUCCESSES_UNIQUE_USERS,0)  AS LINK_SUCCESSES_UNIQUE_USERS
         ,COALESCE(a.LINK_DELETES_UNIQUE_USERS,0)    AS LINK_DELETES_UNIQUE_USERS
+
+
     FROM count_up_abs a
     FULL OUTER JOIN count_up_snap s     
         ON a.date=s.date and a.brand = s.brand
@@ -143,10 +150,12 @@ HAVING DATE IS NOT NULL
         ,LINK_FAILED_STATE                                          
         ,LINK_PENDING_STATE                                         
         ,LINK_REMOVED_STATE                                          AS LCL004__LINK_REMOVED_CUMULATIVE
-        ,JOIN_SUCCESS_STATE+LINK_SUCCESS_STATE                       AS LC001__LC_SUCCESS_CUMULATIVE
-        ,JOIN_PENDING_STATE+LINK_PENDING_STATE                       AS PENDING_STATE
-        ,JOIN_FAILED_STATE+LINK_FAILED_STATE                         AS FAILED_STATE
-        ,LINK_REMOVED_STATE+JOIN_REMOVED_STATE                       AS LC002__LC_REMOVED_CUMULATIVE
+        ,JOIN_SUCCESS_STATE + LINK_SUCCESS_STATE                     AS LC001__LC_SUCCESS_CUMULATIVE
+        ,JOIN_PENDING_STATE + LINK_PENDING_STATE                     AS PENDING_STATE
+        ,JOIN_FAILED_STATE + LINK_FAILED_STATE                       AS FAILED_STATE
+        ,LINK_REMOVED_STATE + JOIN_REMOVED_STATE                     AS LC002__LC_REMOVED_CUMULATIVE
+
+        ,LINK_JOIN_SUCESS_STATE                                      AS LC005__JOIN_LINK_SUCCESS_CUMULATIVE
 
         ,JOIN_REQUESTS
         ,JOIN_FAILS
