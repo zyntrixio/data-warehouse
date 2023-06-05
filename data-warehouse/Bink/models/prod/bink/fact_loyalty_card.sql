@@ -1,3 +1,15 @@
+/*
+Created by:         Sam Pibworth
+Created date:       2022-06-15
+Last modified by:   Christopher Mitchell
+Last modified date: 2023-06-05
+
+Description:
+	Fact LC 
+
+Parameters:
+    ref_object      - fact_loyalty_card_secure
+*/
 {{
     config(
         materialized='incremental'

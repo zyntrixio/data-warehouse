@@ -1,8 +1,8 @@
 /*
 Created by:         Aidan Summerville
 Created date:       2022-04-22
-Last modified by:   
-Last modified date: 
+Last modified by:   Christopher Mitchell
+Last modified date: 05-06-2023
 
 Description:
 	The output Dimension table for dates/calendar
@@ -56,41 +56,41 @@ SELECT  Date
 
 ,final as (
     SELECT  Date
-       ,YEAR
-       ,QUARTER
-       ,MONTH
-       ,MONTHNAME
-       ,DAYOFMONTH
-       ,DAYOFWEEK
-       ,WEEKOFYEAR
-       ,DAYOFYEAR
-       ,DAYNAME
-       ,WEEKPART
-       ,DAYNUMBER
-       ,YEARNUMBER
-       ,QUARTERNUMBER
-       ,monthNUMBER
-       ,year_QUARTER
-       ,year_month
-       ,start_of_month
-,end_of_month
-,start_of_year
-,end_of_year
-,start_of_quarter
-,end_of_quarter
-,start_of_week
-,end_of_week
-       ,FINANCIAL_YEAR
-       , FINANCIAL_QUARTER
-       , FINANCIAL_MONTH
-       , FINANCIAL_WEEKOFYEAR
-       , FINANCIAL_DAYOFYEAR    
-        ,FINANCIAL_YEAR::varchar||'-'||FINANCIAL_QUARTER::varchar as FINANCIAL_YEAR_QUARTER
-          ,FINANCIAL_YEAR::varchar||'-'||FINANCIAL_MONTH::varchar as FINANCIAL_YEAR_month  
-          ,dateadd(month,8,start_of_year) as start_of_financial_year
-          ,dateadd(month,8,end_of_year) as end_of_financial_year
-          ,dateadd(month,8,start_of_quarter) as start_of_financial_quarter
-          ,dateadd(month,8,end_of_quarter) as end_of_financial_quarter
+        , YEAR
+        , QUARTER
+        , MONTH
+        , MONTHNAME
+        , DAYOFMONTH
+        , DAYOFWEEK
+        , WEEKOFYEAR
+        , DAYOFYEAR
+        , DAYNAME
+        , WEEKPART
+        , DAYNUMBER
+        , YEARNUMBER
+        , QUARTERNUMBER
+        , monthNUMBER
+        , year_QUARTER
+        , year_month
+        , start_of_month
+        , end_of_month
+        , start_of_year
+        , end_of_year
+        , start_of_quarter
+        , end_of_quarter
+        , start_of_week
+        , end_of_week
+        , FINANCIAL_YEAR
+        , FINANCIAL_QUARTER
+        , FINANCIAL_MONTH
+        , FINANCIAL_WEEKOFYEAR
+        , FINANCIAL_DAYOFYEAR    
+        , FINANCIAL_YEAR::varchar||'-'||FINANCIAL_QUARTER::varchar  AS FINANCIAL_YEAR_QUARTER
+        , FINANCIAL_YEAR::varchar||'-'||FINANCIAL_MONTH::varchar    AS FINANCIAL_YEAR_month  
+        , dateadd(month,8,start_of_year)                            AS start_of_financial_year
+        , dateadd(month,8,end_of_year)                              AS end_of_financial_year
+        , dateadd(month,8,start_of_quarter)                         AS start_of_financial_quarter
+        , dateadd(month,8,end_of_quarter)                           AS end_of_financial_quarter
     from finacial d
 )
 select *

@@ -1,8 +1,8 @@
 /*
 Created by:         Sam Pibworth
 Created date:       2022-04-08
-Last modified by:   
-Last modified date: 
+Last modified by:   Christopher Mitchell
+Last modified date: 05-06-2023
 
 Description:
     Channel table, which relates to the user_client tables in Hermes, and to channel in events
@@ -39,11 +39,11 @@ client AS (
 
 ,client_na_unions AS (
 	SELECT
-		'NOT_APPICABLE' AS CHANNEL_ID
+		'NOT_APPICABLE' 	AS CHANNEL_ID
 		,NULL AS CHANNEL_NAME
 		// ,NULL AS SECRET
-		,NULL AS ORGANISATION_ID
-		,NULL AS ORGANISATION_NAME
+		,NULL 				AS ORGANISATION_ID
+		,NULL 				AS ORGANISATION_NAME
 	UNION ALL
 	SELECT *
 	FROM client_select

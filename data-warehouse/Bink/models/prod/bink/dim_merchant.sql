@@ -1,8 +1,8 @@
 /*
 Created by:         Sam Pibworth
 Created date:       2022-07-08
-Last modified by:   
-Last modified date: 
+Last modified by:   Christopher Mitchell
+Last modified date: 2023-05-06
 
 Description:
 	Dim table for merchants
@@ -30,9 +30,9 @@ merchant_identifier AS (
 ,consolidate_multiple_locations as (
     SELECT
         m.MERCHANT_ID
-        ,LAST_VALUE(M.LOCATION) OVER (PARTITION BY m.MERCHANT_ID ORDER BY m.ID) AS LOCATION
-        ,LAST_VALUE(M.POSTCODE) OVER (PARTITION BY m.MERCHANT_ID ORDER BY m.ID) AS POSTCODE
-        ,LAST_VALUE(M.LOCATION_ID) OVER (PARTITION BY m.MERCHANT_ID ORDER BY m.ID) AS LOCATION_ID
+        ,LAST_VALUE(M.LOCATION) OVER (PARTITION BY m.MERCHANT_ID ORDER BY m.ID)     AS LOCATION
+        ,LAST_VALUE(M.POSTCODE) OVER (PARTITION BY m.MERCHANT_ID ORDER BY m.ID)     AS POSTCODE
+        ,LAST_VALUE(M.LOCATION_ID) OVER (PARTITION BY m.MERCHANT_ID ORDER BY m.ID)  AS LOCATION_ID
         ,m.LOYALTY_SCHEME_ID
         ,m.PAYMENT_PROVIDER_ID
   FROM merchant_identifier m

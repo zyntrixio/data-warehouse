@@ -1,5 +1,18 @@
-/* One row per voucher with links loyalty_card_id and loyalty_plan
-If there are duplicated it takes the latest loyalty plan by created date */
+/*
+Created by:         Sam Pibworth
+Created date:       2022-05-04
+Last modified by:   Christopher Mitchell
+Last modified date: 2023-06-05
+
+Description:
+    One row per voucher with links loyalty_card_id and loyalty_plan
+If there are duplicated it takes the latest loyalty plan by created date
+
+Parameters:
+    ref_object      - transformed_voucher-keys
+                    - dim_lc
+
+*/
 
 
 with vouchers as (
@@ -38,29 +51,27 @@ on v.loyalty_card_id = lc.loyalty_card_id
 
 
 , timings as (
-Select 
- CREATED
-,loyalty_card_id
-,LOYALTY_PLAN_COMPANY
-,LOYALTY_PLAN_NAME
-,state
-,earn_type
-,voucher_code
-,Redemption_TRACKED
-,date_redeemed
-,date_issued
-,expiry_date
-,case when Redemption_TRACKED = 'TRUE' and state in ( 'ISSUED' ,'REDEEMED')  then datediff(day, date_issued,coalesce(date_redeemed, current_date())) 
-        else null 
+SELECT 
+    CREATED
+    ,loyalty_card_id
+    ,LOYALTY_PLAN_COMPANY
+    ,LOYALTY_PLAN_NAME
+    ,state
+    ,earn_type
+    ,voucher_code
+    ,Redemption_TRACKED
+    ,date_redeemed
+    ,date_issued
+    ,expiry_date
+    ,CASE WHEN Redemption_TRACKED = 'TRUE' and state in ( 'ISSUED' ,'REDEEMED')  then datediff(day, date_issued,coalesce(date_redeemed, current_date())) 
+        else NULL 
         end as time_to_redemption
-,case when STATE = 'ISSUED' and Redemption_TRACKED = 'TRUE' and expiry_date >= current_date()  then  datediff(day, current_date() ,expiry_date)
-        else null 
-        end as days_left_on_vouchers
-,datediff(day, date_issued ,expiry_date) as days_valid_for
-from add_company
+    ,CASE WHEN STATE = 'ISSUED' and Redemption_TRACKED = 'TRUE' and expiry_date >= current_date()  then  datediff(day, current_date() ,expiry_date)
+        else NULL 
+        END AS days_left_on_vouchers
+    ,datediff(day, date_issued ,expiry_date) as days_valid_for
+FROM add_company
 )
-
-
 
 select * from timings
 --where current_channel = 'com.barclays.bmb'
