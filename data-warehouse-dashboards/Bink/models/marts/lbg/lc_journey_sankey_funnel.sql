@@ -127,4 +127,3 @@ pivot as (select * from select_fields
     PIVOT(min(EVENT_TYPE) for ATTEMPT in (1,2,3,4,5)))
 
 select * from pivot
-where "1" not like '%SUCCESS'
