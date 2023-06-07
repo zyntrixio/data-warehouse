@@ -63,10 +63,10 @@ FROM fact_usr u
     SELECT date
          , channel
          , brand
-         , daily_registrations       AS usr001__daily_registrations_period
-         , daily_deregistrations     AS usr002__daily_deregistrations_period
-         , snap_user_registrations   AS usr003__daily_registrations_cumulative
-         , snap_user_deregistrations AS usr004__daily_deregistrations_cumulative
+         , daily_registrations       AS U005__REGISTERED_USERS__DAILY_CHANNEL_BRAND__COUNT
+         , daily_deregistrations     AS U006__DEREGISTERED_USERS__DAILY_CHANNEL_BRAND__COUNT
+         , snap_user_registrations   AS U001__REGISTERED_USERS__DAILY_CHANNEL_BRAND__PIT
+         , snap_user_deregistrations AS U002__DEREGISTERED_USERS__DAILY_CHANNEL_BRAND__PIT
     FROM combine_all)
 
 SELECT *
