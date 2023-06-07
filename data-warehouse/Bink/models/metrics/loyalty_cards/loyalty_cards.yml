@@ -3,5 +3,3 @@ version: 2
 models:
   - name: lc__links_joins__daily_retailer_channel
     description: Loyalty card link and join metrics broken down by date, retailer and channel
-  - name: lc__links_joins__daily_channel
-    description: Loyalty card link and join metrics broken down by date and channel

@@ -25,7 +25,7 @@ WITH lc_metrics_retailer AS (
     SELECT 
         *
         ,'LC_CHANNEL' AS TAB
-    FROM {{ref('lc__links_joins__daily_channel')}}
+    FROM {{ref('user__loyalty_card__daily_channel_brand')}}
     WHERE CHANNEL = 'LLOYDS'
 )
 

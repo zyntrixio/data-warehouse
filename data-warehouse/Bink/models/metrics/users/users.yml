@@ -5,3 +5,5 @@ models:
     description: User registrations and deregistrations broken down daily by channel and brand
   - name: user__transactions__daily_user_level
     description: Active user metric on daily level with count of transactions
+  - name: user__loyalty_card__daily_channel_brand
+    description: Used for U003 users with linked loyalty card both join and link
