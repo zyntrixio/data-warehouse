@@ -3,5 +3,5 @@ version: 2
 models:
   - name: user__registrations__daily__channel_brand
     description: User registrations and deregistrations broken down daily by channel and brand
-  -name: user__transactions__daily_user_level
+  -name: user_transactions__daily_user_level
     description: Active user metric on daily level with count of transactions
