@@ -29,6 +29,7 @@ Last modified date: 2022/10/26
             ,RANK() OVER ( PARTITION BY {{group_col}} ORDER BY {{datetime_col}} ASC) AS r
         FROM {{model}}
         WHERE {{group_col}} IS NOT null
+        AND {{column_name}} IN ({{ "'" + created_val + "'"}}, {{ "'" + deleted_val + "'"}})
         AND {{datetime_col}} > {{"'" + filter_date + "'"}}
     )
 
