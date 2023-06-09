@@ -66,6 +66,7 @@ WITH lc_metrics_retailer AS (
         ,NULL AS TRANSACTIONS
     FROM
         lc_metrics_retailer
+    WHERE LOYALTY_PLAN_COMPANY IN ('SquareMeal', 'Viator', 'Iceland')
 
     UNION ALL
 
@@ -112,6 +113,7 @@ WITH lc_metrics_retailer AS (
         ,TRANSACTIONS
     FROM    
         trans
+    WHERE LOYALTY_PLAN_COMPANY IN ('SquareMeal', 'Viator', 'Iceland')
 
     UNION ALL
 
