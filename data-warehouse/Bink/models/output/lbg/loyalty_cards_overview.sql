@@ -15,12 +15,15 @@ WITH lc_metrics AS (
     SELECT *
     ,'LC' AS TAB
     FROM {{ref('lc__links_joins__daily_retailer_channel')}}
+    WHERE CHANNEL = 'LLOYDS'
+    AND LOYALTY_PLAN_COMPANY NOT IN ('Loyalteas', 'Bink Sweet Shop')
 )
 
 ,lc_user_metrics AS (
     SELECT *
     ,'LC_USER' AS TAB
-    FROM {{ref('user__loyalty_card__daily_channel_brand')}}    
+    FROM {{ref('user__loyalty_card__daily_channel_brand')}}
+    WHERE CHANNEL = 'LLOYDS'
 )
 
 ,combine AS (
