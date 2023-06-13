@@ -13,7 +13,8 @@ Parameters:
 
 WITH lc_errors AS (
     SELECT *
-    FROM {{ref('lc_errors_trans')}}
+    FROM {{ref('lc_status_trans')}}
+    WHERE STATUS_TYPE = 'Error'
 )
 
 ,errors_aggregate AS (
@@ -36,12 +37,12 @@ WITH lc_errors AS (
         ,BRAND
         ,LOYALTY_PLAN_COMPANY
         ,STATUS_ROLLUP
-        ,MAX(LC_USER_REF)                                       AS LC101__ERROR_LOYALTY_CARDS__DAILY_USER_LEVEL__NULL
+        ,MAX(LC_USER_REF)                                       AS LC101__ERROR_LOYALTY_CARDS__DAILY_USER_LEVEL__UID
         ,MAX(CASE 
             WHEN IS_RESOLVED 
             THEN LC_USER_REF
-        END)                                                    AS LC102__RESOLVED_ERROR_LOYALTY_CARDS__DAILY_USER_LEVEL__NULL
-        ,COUNT(*)                                               AS LC103__ERROR_VISITS__DAILY_USER_LEVEL__NULL
+        END)                                                    AS LC102__RESOLVED_ERROR_LOYALTY_CARDS__DAILY_USER_LEVEL__UID
+        ,COUNT(*)                                               AS LC103__ERROR_VISITS__DAILY_USER_LEVEL__COUNT
     FROM
         errors_aggregate
     GROUP BY

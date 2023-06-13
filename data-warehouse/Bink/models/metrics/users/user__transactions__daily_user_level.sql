@@ -27,7 +27,7 @@ WITH user_events AS (
         ,BRAND
         ,LOYALTY_PLAN_COMPANY
         ,SUM(SPEND_AMOUNT)                                  AS SPEND
-        ,COALESCE(NULLIF(EXTERNAL_USER_REF,''), USER_ID)    AS U007__ACTIVE_USERS__USER_LEVEL_DAILY__NULL
+        ,COALESCE(NULLIF(EXTERNAL_USER_REF,''), USER_ID)    AS U007__ACTIVE_USERS__USER_LEVEL_DAILY__UID
         ,COUNT(TRANSACTION_ID)                              AS TRANSACTIONS
     FROM
         user_events

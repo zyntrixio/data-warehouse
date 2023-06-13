@@ -5,5 +5,5 @@ models:
     description: loyalty card metrics transformation layer
   - name: users_trans
     description: loyalty card metrics transformation layer
-  - name: lc_errors_trans
+  - name: lc_status_trans
     description: loyalty card error metric transformation layer

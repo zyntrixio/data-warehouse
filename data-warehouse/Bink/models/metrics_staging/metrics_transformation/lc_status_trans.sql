@@ -99,6 +99,7 @@ WITH lc_sc AS (
         ,STATUS_DESCRIPTION
         ,STATUS_GROUP
         ,STATUS_ROLLUP
+        ,STATUS_TYPE
         ,USER_ID
         ,EXTERNAL_USER_REF
         ,CHANNEL
@@ -118,7 +119,7 @@ WITH lc_sc AS (
         ,TIMEDIFF_SECONDS
         ,TIMEDIFF_MILLISECONDS  
     FROM add_metrics lc
-    WHERE STATUS_TYPE = 'Error'
+    -- WHERE STATUS_TYPE = 'Error'
 )
 
 SELECT *
