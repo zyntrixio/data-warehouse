@@ -92,7 +92,7 @@ HAVING DATE IS NOT NULL
 
 FROM lc_events u
 LEFT JOIN dim_date d
-    ON d.DATE = u.FROM_DATE
+    ON d.DATE = DATE(u.FROM_DATE)
 GROUP BY
     d.DATE
     ,u.BRAND
