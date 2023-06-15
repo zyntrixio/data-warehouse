@@ -13,12 +13,14 @@ Parameters:
 
 WITH lc_errors AS (
     SELECT *
+    ,'ERRORS' AS TAB
     FROM {{ref('lc__errors__daily_status_rollup_user_level')}}
     WHERE CHANNEL = 'LLOYDS' AND STATUS_ROLLUP != 'System Issue'
 )
 
 ,lc_core AS (
     SELECT *
+    ,'LC_LINKS_JOINS' AS TAB
     FROM {{ref('lc__links_joins__daily_retailer_channel')}}
     WHERE CHANNEL = 'LLOYDS'
 )
