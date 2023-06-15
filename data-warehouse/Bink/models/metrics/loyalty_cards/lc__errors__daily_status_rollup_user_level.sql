@@ -42,6 +42,10 @@ WITH lc_errors AS (
             WHEN IS_RESOLVED 
             THEN LC_USER_REF
         END)                                                    AS LC102__RESOLVED_ERROR_LOYALTY_CARDS__DAILY_USER_LEVEL__UID
+        ,MAX(CASE 
+            WHEN NOT(IS_RESOLVED)
+            THEN LC_USER_REF
+        END)                                                    AS LC104__UNRESOLVED_ERROR_LOYALTY_CARDS__DAILY_USER_LEVEL__UID
         ,COUNT(*)                                               AS LC103__ERROR_VISITS__DAILY_USER_LEVEL__COUNT
     FROM
         errors_aggregate
