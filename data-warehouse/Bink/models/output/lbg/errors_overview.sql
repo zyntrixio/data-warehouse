@@ -28,6 +28,7 @@ WITH lc_errors AS (
 ,combine AS (
     SELECT
         DATE
+        ,TAB
         ,CHANNEL
         ,BRAND
         ,LOYALTY_PLAN_COMPANY
@@ -44,6 +45,7 @@ WITH lc_errors AS (
 
     SELECT
         DATE
+        ,TAB
         ,CHANNEL
         ,BRAND
         ,LOYALTY_PLAN_COMPANY
