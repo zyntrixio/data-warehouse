@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: STAGING
+    description: Data for DBT template
+    database: STAGING
+    schema: STAGING
+    loader: DBT
+    
+    tables:
+      - name: STG_LOOKUP__SCHEME_ACCOUNT_STATUS
+        description: Dim date

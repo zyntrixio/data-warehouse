@@ -5,3 +5,5 @@ models:
     description: Data source for user overview
   - name: loyalty_cards_overview
     description: Data source for loyalty cards overview
+  - name: errors_overview
+    description: Data source for loyalty cards errors overview
