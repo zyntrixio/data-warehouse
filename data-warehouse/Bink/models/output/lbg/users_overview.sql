@@ -19,6 +19,7 @@ WITH lc_metrics_retailer AS (
         ,'LC_RETAILER_CHANNEL' AS TAB
     FROM {{ref('lc__links_joins__daily_retailer_channel')}}
     WHERE CHANNEL = 'LLOYDS'
+    AND LOYALTY_PLAN_COMPANY NOT IN ('Bink Sweet Shop', 'Loyalteas')
 )
 
 ,lc_metrics AS (
@@ -35,6 +36,7 @@ WITH lc_metrics_retailer AS (
         ,'TRANS' AS TAB
     FROM {{ref('user__transactions__daily_user_level')}}
     WHERE CHANNEL = 'LLOYDS'
+    AND LOYALTY_PLAN_COMPANY NOT IN ('Bink Sweet Shop', 'Loyalteas')
 )
 
 ,users_metrics AS (
@@ -66,7 +68,6 @@ WITH lc_metrics_retailer AS (
         ,NULL AS TRANSACTIONS
     FROM
         lc_metrics_retailer
-    WHERE LOYALTY_PLAN_COMPANY IN ('SquareMeal', 'Viator', 'Iceland')
 
     UNION ALL
 
@@ -113,7 +114,6 @@ WITH lc_metrics_retailer AS (
         ,TRANSACTIONS
     FROM    
         trans
-    WHERE LOYALTY_PLAN_COMPANY IN ('SquareMeal', 'Viator', 'Iceland')
 
     UNION ALL
 
