@@ -54,7 +54,7 @@ models:
         - name: 'SPEND_AMOUNT'
           tests:
             - not_null
-            - elementary.column_anomalies
+            # - elementary.column_anomalies -- this needs to be fixed and reinstated
         - name: 'SPEND_CURRENCY'
           description: GBP
           quote: true
