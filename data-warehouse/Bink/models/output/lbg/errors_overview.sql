@@ -15,7 +15,9 @@ WITH lc_errors AS (
     SELECT *
     ,'ERRORS' AS TAB
     FROM {{ref('lc__errors__daily_status_rollup_user_level')}}
-    WHERE CHANNEL = 'LLOYDS' AND STATUS_ROLLUP != 'System Issue'
+    WHERE CHANNEL = 'LLOYDS' 
+        AND STATUS_ROLLUP != 'System Issue' 
+        AND LOYALTY_PLAN_COMPANY NOT IN ('Loyalteas', 'Bink Sweet Shop')
 )
 
 ,lc_core AS (
@@ -23,6 +25,7 @@ WITH lc_errors AS (
     ,'LC_LINKS_JOINS' AS TAB
     FROM {{ref('lc__links_joins__daily_retailer_channel')}}
     WHERE CHANNEL = 'LLOYDS'
+        AND LOYALTY_PLAN_COMPANY NOT IN ('Loyalteas', 'Bink Sweet Shop')
 )
 
 ,combine AS (

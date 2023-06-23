@@ -25,7 +25,7 @@ WITH lc_errors AS (
         ,LOYALTY_PLAN_COMPANY
         ,STATUS_ROLLUP
         ,IS_RESOLVED
-        ,CONCAT(EXTERNAL_USER_REF, LOYALTY_PLAN_COMPANY)        AS LC_USER_REF
+        ,CONCAT(USER_REF, LOYALTY_PLAN_COMPANY)        AS LC_USER_REF
     FROM
         lc_errors
 )
