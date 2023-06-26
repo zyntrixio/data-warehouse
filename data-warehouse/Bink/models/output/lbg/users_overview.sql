@@ -33,7 +33,7 @@ WITH lc_metrics_retailer AS (
 ,active_usr AS (
     SELECT
         *
-        ,'active_usr' AS TAB
+        ,'ACTIVE_USER' AS TAB
     FROM {{ref('user__transactions__daily_user_level')}}
     WHERE CHANNEL = 'LLOYDS'
     AND LOYALTY_PLAN_COMPANY NOT IN ('Bink Sweet Shop', 'Loyalteas')
