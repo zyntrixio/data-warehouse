@@ -10,3 +10,13 @@ sources:
     tables:
       - name: STG_LOOKUP__SCHEME_ACCOUNT_STATUS
         description: Dim date
+
+  - name: RAW_BINK_LOOKUP
+    description: Data for DBT outputs from RAW
+    database: RAW
+    schema: BINK_LOOKUP
+    loader: DBT
+
+    tables:
+      - name: SANKEY_MODEL
+        description: Sankey distribution model
