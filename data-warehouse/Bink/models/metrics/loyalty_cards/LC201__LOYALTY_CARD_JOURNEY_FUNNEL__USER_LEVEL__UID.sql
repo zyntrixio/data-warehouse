@@ -16,7 +16,7 @@ with lc as (
     from
         {{ref('src__fact_lc')}}
     where
-        EVENT_TYPE != 'REQUEST'
+        EVENT_TYPE NOT IN ('REQUEST', 'REMOVED')
 ),
 
 lc_group as (
