@@ -1,0 +1,61 @@
+﻿Area,View Name (Tab),Dashboard Name,Visuals/Name,Time Selection,Description
+Vouchers,Vouchers Dashboard,Vouchers Overview,Total Issued Vouchers,Launch (to end date),Number of vouchers issued
+Vouchers,Vouchers Dashboard,Vouchers Overview,Total Redeemed Vouchers,Launch (to end date),Number of vouchers redeemed
+Vouchers,Vouchers Dashboard,Vouchers Overview,Total Expired Vouchers,Launch (to end date),Number of vouchers expired
+Vouchers,Vouchers Dashboard,Vouchers Overview,Period Issued Vouchers,Period,Number of vouchers issued
+Vouchers,Vouchers Dashboard,Vouchers Overview,Period Redeemed Vouchers,Period,Number of vouchers redeemed
+Vouchers,Vouchers Dashboard,Vouchers Overview,Period Expired Vouchers,Period,Number of vouchers expired
+Vouchers,Vouchers Dashboard,Vouchers Overview,Avg. Time to Redemption,Launch (to end date),Average time (days) from voucher issuance to redemption 
+Vouchers,Vouchers Dashboard,Vouchers Overview,Avg. Days Left on Vouchers,Launch (to end date),Average days remaining for vouchers to be redeemed until expiry 
+Vouchers,Vouchers Dashboard,Vouchers Overview,Voucher Redemption Distribution,Launch (to end date),Distribution of days taken from voucher issuance to redemption
+Vouchers,Vouchers Dashboard,Vouchers Overview,Voucher Status Breakdown,Launch (to end date),"Breakdown of voucher statuses (issued, redeemed, expired) "
+Loyalty Cards,Loyalty Card Dashboard,Loyalty Cards Overview,Total Active Loyalty Cards,Launch (to end date),Number of active loyalty cards linked
+Loyalty Cards,Loyalty Card Dashboard,Loyalty Cards Overview,Total Users with Linked Loyalty Cards,Launch (to end date),Number of users with at least 1 loyalty card linked 
+Loyalty Cards,Loyalty Card Dashboard,Loyalty Cards Overview,Total Successful Period Links,Period,Number of successful links (add and authorise journeys) 
+Loyalty Cards,Loyalty Card Dashboard,Loyalty Cards Overview,Total Successful Period Joins,Period,Number of successful joins
+Loyalty Cards,Loyalty Card Dashboard,Loyalty Cards Overview,Total Failed Period Links,Period,Number of failed links (add and authorise journeys) 
+Loyalty Cards,Loyalty Card Dashboard,Loyalty Cards Overview,Total Failed Period Joins,Period,Number of failed joins 
+Loyalty Cards,Loyalty Card Dashboard,Loyalty Cards Overview,Merchant Period Loyalty Card Breakdown,Period,Breakdown of loyalty card journey events by merchant - colour indicates growth vs comparison period
+Loyalty Cards,Detailed Loyalty Card Dashboard,Loyalty Cards Exploration,Merchant Period Loyalty Card Timeline,Period,Timeline of loyalty card journey events by merchant
+Errors,Error Overview Dashboard,Errors Overview,Loyalty Card Requests,Period,Number of loyalty card requests made
+Errors,Error Overview Dashboard,Errors Overview,Loyalty Card Failed,Period,Number of failed loyalty card journeys
+Errors,Error Overview Dashboard,Errors Overview,Total Unresolved Errors,Period,Number of loyalty card errors started in report period and unresolved to date
+Errors,Error Overview Dashboard,Errors Overview,Loyalty Card Error States,Period,Loyalty card journey fail rate vs absolute count of requests by request date 
+Errors,Detailed Error Dashboard,Errors Exploration,Timeline,Period,A timeline to show the number of users reaching a status group per day
+Errors,Detailed Error Dashboard,Errors Exploration,Barchart,Period,A breakdown of status groups filtered by the timeline view
+Errors,Detailed Error Dashboard,Errors Exploration,Percentage of Users Reaching Status,Period,Users reaching selected error states divided by number of requests on that day
+Errors,Detailed Error Dashboard,Errors Exploration,Users Reaching Status,Period,Users reaching selected error states
+Errors,Detailed Error Dashboard,Errors Exploration,Average Number of Visits,Period,Average number of visits per user to selected statuses
+Errors,Detailed Error Dashboard,Errors Exploration,Percentage of Errors Resolved,Period,Percentage of errors within period which are now resolved.
+Core Metrics,Core Metrics,Core Metrics,Total Registered Users,Launch (to end date),Total number of registered users
+Core Metrics,Core Metrics,Core Metrics,% of Users with Linked Loyalty Card,Launch (to end date),Number of registered users with at least 1 loyalty card / total number of registered users 
+Core Metrics,Core Metrics,Core Metrics,% of Vouchers Expired,Launch (to end date),Number of expired vouchers / number of total vouchers (inc all states)
+Core Metrics,Core Metrics,Core Metrics,% of Deregistered Users,Launch (to end date),Number of deregistered users / number of total registered users
+Core Metrics,Core Metrics,Core Metrics,Total Complaints,Period,Number of complaints
+Core Metrics,Core Metrics,Core Metrics,Total Complaints per 1000 active users,Period,Number of complaints / number of bank active users within selected period
+Core Metrics,Core Metrics,Core Metrics,% of Joins Failed,Period,Total failed join requests / Total join requests within selected period
+Core Metrics,Core Metrics,Core Metrics,% of Links Failed,Period,Total failed link requests / Total link requests within selected period
+Users,Users Dashboard,Users Overview,Total Registered Users,Launch (to end date)/ Period,Total number of registered users
+Users,Users Dashboard,Users Overview,Total Users with Linked Loyalty Cards,Launch (to end date)/ Period,Number of users with at least 1 loyalty card linked 
+Users,Users Dashboard,Users Overview,Total Bank Active Users,Launch (to end date)/ Period,Total number of users with linked loyalty transaction
+Users,Users Dashboard,Users Overview,% Active Users,Launch (to end date),Number of active users / Number of registered users
+Users,Users Dashboard,Users Overview,% Active Users,Period,Number of active users within selected period / Total number of registered users since launch
+Users,Users Dashboard,Users Overview,Total Deregistered Users,Launch (to end date)/ Period,Number of users opt-ing out of the service (de-register)
+Users,Users Dashboard,Users Overview,Average Revenue per User,Period,Total value of transactions / total number of transactions broken down per Merchant
+Users,Users Dashboard,Users Overview,Active Users Breakdown,Period,Visual breakdown of active users per Merchant
+Service,Service Dashboard,Service Overview,P95 Response Time,Period,95th Percentile of API Response Times
+Service,Service Dashboard,Service Overview,P99 Response Time,Period,99th Percentile of API Response Times
+Service,Service Dashboard,Service Overview,Wallet Endpoint Calls Per Hour,Period,Number of calls to wallet_overview end point / by hours within selected period
+Service,Service Dashboard,Service Overview,Successful Full Link Removal (SLA 15),Period,Number of /Delete/v2/me endpoints returning 200 status code / Total Number of Delete/v2/me endpoints
+Service,Service Dashboard,Service Overview,Successful Delinking of Individual Merchants (SLA 16),Period,Number of /Delete/v2/loyalty_cards endpoints returning 200 status code / Total Number of /Delete/v2/loyalty_cards endpoints
+Service,Service Dashboard,Service Overview,Total Merchant Complaints,Period,Number of merchant complaints
+Service,Service Dashboard,Service Overview,Merchant Complaints per 1000 active users,Period,Number of merchant complaints / number of bank active users (1000s) within selected period
+Service,Service Dashboard,Service Overview,Total Service Complaints,Period,Number of service complaints
+Service,Service Dashboard,Service Overview,Service Complaints per 1000 active users,Period,Number of service complaints / number of bank active users (1000s) within selected period
+Service,Service Dashboard,Service Overview,Total Merchant Queries,Period,Number of merchant queries
+Service,Service Dashboard,Service Overview,Total Service Queries,Period,Number of service queries
+Service,Service Dashboard,Service Overview,Incidents,Period,"Number of incidents within selected period broken down by Priority (P1,P2..) and SLA Achieved/Breached"
+Service,Service Dashboard,Service Overview,Complaints Resolution,Period,Pie chart showing time taken for complaints to be resolved
+Service,Service Dashboard,Service Overview,Merchant Complaints Referral,Period,Pie chart showing time taken for merchant complaints to be referred
+Service,Service Dashboard,Service Overview,Service Query Resolution,Period,Pie chart showing time taken for queries to be resolved
+Service,Service Dashboard,Service Overview,Merchant Query Resolution,Period,Pie chart showing time taken for merchant queries to be resolved
