@@ -7,5 +7,5 @@ models:
     description: Data source for loyalty cards overview
   - name: errors_overview
     description: Data source for loyalty cards errors overview
-    - name: loylaty_card_error_funnel
+  - name: loylaty_card_error_funnel
     description: Data source for loyalty cards errors funnel
