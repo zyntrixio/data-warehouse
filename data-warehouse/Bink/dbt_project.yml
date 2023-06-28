@@ -66,6 +66,10 @@ models:
         +schema: "LBG"
         materialized: table
 
+seeds:
+  Bink:
+    +database: "ANALYTICS"
+    +schema: "BINK_LOOKUP"
         
   elementary:
     +database: 'MONITORING'

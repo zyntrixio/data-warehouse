@@ -1,0 +1,10 @@
+﻿Filter Name,Filter Definition,Applied to/affected fields
+Start Date,The start date of the reporting period for analysis,Period
+End Date,The end date of the reporting period for analysis (affects Cumulative + Period time selections),Global
+Comparison Period,Compare the pervious period or the same period last month,Global
+Brand,View all brands or select inividually for analysis,Global
+Merchant,View all merchants or select inividually for analysis,Global
+Granularity,"Set the data for the period broken down by days, weeks or months",Errors Dashboards
+Measures,Controls the measured metrics on certain visuals,Users Exploration
+,,
+,,
