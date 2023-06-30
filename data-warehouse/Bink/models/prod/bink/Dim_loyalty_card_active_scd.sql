@@ -13,7 +13,7 @@ Parameters:
 
 */
 {{ config(
-  enabled= false
+  enabled= true
 ) }}
 
 with loyalty_add as (
