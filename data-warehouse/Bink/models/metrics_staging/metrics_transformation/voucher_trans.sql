@@ -89,4 +89,4 @@ WITH source AS (
     FROM stage)
 
 SELECT *
-FROM to_date;
+FROM to_date
