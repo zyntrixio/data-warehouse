@@ -7,8 +7,30 @@
 with events_src as (
     SELECT EVENT_ID
     FROM {{ ref('stg_hermes__EVENTS')}}
-    WHERE EVENT_TYPE NOT IN ('transaction.exported.response')
-    -- WHERE EVENT_TYPE IN ('lc.auth.request', 'lc.addandauth.request', 'user.created', 'lc.register.failed', 'lc.auth.failed', 'lc.addandauth.success', 'user.deleted', 'lc.register.success', 'lc.join.failed', 'lc.auth.success', 'payment.account.added', 'payment.account.status.change', 'payment.account.removed', 'lc.join.request', 'lc.statuschange', 'transaction.exported', 'lc.join.success', 'lc.removed', 'lc.addandauth.failed', 'lc.register.request')
+    WHERE EVENT_TYPE IN
+        ('lc.addandauth.request'
+        ,'lc.auth.request'
+        ,'user.created'
+        ,'lc.auth.failed'
+        ,'lc.register.failed'
+        --,'pll_link.statuschange'
+        --,'transaction.exported.response'
+        ,'lc.addandauth.success'
+        ,'lc.join.failed'
+        ,'lc.register.success'
+        ,'user.deleted'
+        ,'lc.auth.success'
+        ,'payment.account.added'
+        ,'payment.account.status.change'
+        ,'payment.account.removed'
+        ,'lc.statuschange'
+        ,'lc.join.request'
+        ,'user.session.start'
+        ,'lc.join.success'
+        ,'transaction.exported'
+        ,'lc.removed'
+        ,'lc.addandauth.failed'
+        ,'lc.register.request')
 )
 
  ,fact_tables as (
