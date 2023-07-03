@@ -102,6 +102,7 @@ ORDER BY i.voucher_code
   select f.*
     , dl.loyalty_plan_company
     , dl.loyalty_plan_name
+    , dl.brand
   from final f
   left join FACT_LC dl 
   on dl.loyalty_card_id = f.LOYALTY_CARD_ID

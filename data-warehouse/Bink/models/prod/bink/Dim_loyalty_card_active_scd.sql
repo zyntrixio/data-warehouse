@@ -12,10 +12,6 @@ Parameters:
                     - fact_loyalty_card_removed
 
 */
-{{ config(
-  enabled= true
-) }}
-
 with loyalty_add as (
   select * 
 
@@ -26,7 +22,8 @@ with loyalty_add as (
 
 , loyalty_removed as (
 select * 
-  from {{ref('fact_loyalty_card_removed')}} 
+  from {{ref('fact_loyalty_card')}}
+  WHERE event_type = 'REMOVED' 
 
 )
 
