@@ -59,6 +59,9 @@ models:
       users:
         +schema: "USERS"
         materialized: table
+      voucher:
+        +schema: "VOUCHER"
+        materialized: table
 
     output:
       +database: "OUTPUT"

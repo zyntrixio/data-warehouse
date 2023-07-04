@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: voucher__daily_channel_brand_retailer
+    description: placeholder

@@ -103,6 +103,7 @@ ORDER BY i.voucher_code
     , dl.loyalty_plan_company
     , dl.loyalty_plan_name
     , dl.brand
+    , dl.event_date_time
   from final f
   left join FACT_LC dl 
   on dl.loyalty_card_id = f.LOYALTY_CARD_ID
