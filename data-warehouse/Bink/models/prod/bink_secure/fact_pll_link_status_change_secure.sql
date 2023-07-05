@@ -60,7 +60,6 @@ status_change_events AS (
 		,JSON:internal_user_ref::varchar as USER_ID
 		,JSON:scheme_account_id::varchar as LOYALTY_CARD_ID
         ,JSON:payment_account_id::varchar as PAYMENT_ACCOUNT_ID
-		-- ,JSON:loyalty_plan::varchar as LOYALTY_PLAN_ID
 		,JSON:from_state::int as FROM_STATUS_ID
 		,JSON:to_state::int as TO_STATUS_ID
 	FROM status_change_events s
@@ -110,7 +109,9 @@ status_change_events AS (
 	FROM status_change_events_unpack sce
     LEFT JOIN dim_loyalty l on l.LOYALTY_CARD_ID = sce.LOYALTY_CARD_ID
     LEFT JOIN dim_loyalty_plan p on p.LOYALTY_PLAN_ID = l.LOYALTY_PLAN_ID
-    qualify FROM_STATUS_ID = LAG(TO_STATUS_ID, 1) OVER (PARTITION BY sce.LOYALTY_CARD_ID, PAYMENT_ACCOUNT_ID  ORDER BY EVENT_DATE_TIME) 
+    QUALIFY NOT(EQUAL_NULL(FROM_STATUS_ID, LAG(FROM_STATUS_ID, 1) OVER (PARTITION BY sce.LOYALTY_CARD_ID, PAYMENT_ACCOUNT_ID  ORDER BY EVENT_DATE_TIME ASC)) 
+            AND
+            EQUAL_NULL(TO_STATUS_ID, LAG(TO_STATUS_ID, 1) OVER (PARTITION BY sce.LOYALTY_CARD_ID, PAYMENT_ACCOUNT_ID  ORDER BY EVENT_DATE_TIME ASC) )) -- REMOVING DUPLICATES
 )
 
 ,union_old_lc_records AS (
