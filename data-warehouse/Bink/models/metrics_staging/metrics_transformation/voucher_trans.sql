@@ -23,15 +23,6 @@ with FACT_VOUCHER AS (
     FROM {{ref('src__dim_loyalty_card_active_scd')}}
 )
 
-
-
-, FACT_LC AS (
-    SELECT * 
-    FROM {{ref('src__fact_lc')}}
-)
-
-
-
 ,issued as (
 SELECT  v.LOYALTY_CARD_ID
        , v.state
@@ -46,6 +37,9 @@ SELECT  v.LOYALTY_CARD_ID
        , v.days_left_on_vouchers
        , l.user_id
        , l.channel
+       , l.brand
+       , l.loyalty_plan_company
+       , l.loyalty_plan_name
        , l.removed
 FROM FACT_VOUCHER v
 INNER JOIN DIM_LOYALTY_CARD_scd l
@@ -68,6 +62,9 @@ SELECT  v.LOYALTY_CARD_ID
        , v.days_left_on_vouchers
        , l.user_id
        , l.channel
+       , l.brand
+       , l.loyalty_plan_company
+       , l.loyalty_plan_name
        , l.removed
 FROM FACT_VOUCHER v
 INNER JOIN DIM_LOYALTY_CARD_scd l
@@ -80,6 +77,9 @@ ON v.DATE_REDEEMED BETWEEN l.valid_from AND l.valid_to AND v.loyalty_card_id = l
 SELECT  coalesce(i.LOYALTY_CARD_ID,r.LOYALTY_CARD_ID)                                                                                                AS LOYALTY_CARD_ID
        , coalesce(i.USER_ID,r.USER_ID)                                                                                                               AS USER_ID
        , coalesce(i.CHANNEL,r.CHANNEL)                                                                                                               AS CHANNEL
+       , coalesce(i.BRAND, r.BRAND)                                                                                                                  AS BRAND
+       , coalesce(i.loyalty_plan_company, r.loyalty_plan_company)                                                                                    AS loyalty_plan_company
+       , coalesce(i.loyalty_plan_name, r.loyalty_plan_name)                                                                                          AS loyalty_plan_name
        , coalesce(i.state,r.state)                                                                                                                   AS state
        , coalesce(i.earn_type,r.earn_type)                                                                                                           AS earn_type
        , coalesce(i.voucher_code,i.voucher_code)                                                                                                     AS voucher_code
@@ -98,12 +98,5 @@ ORDER BY i.voucher_code
 
   )
 
-
-  select f.*
-    , dl.loyalty_plan_company
-    , dl.loyalty_plan_name
-    , dl.brand
-    , dl.event_date_time
-  from final f
-  left join FACT_LC dl 
-  on dl.loyalty_card_id = f.LOYALTY_CARD_ID
+  select *
+  from final

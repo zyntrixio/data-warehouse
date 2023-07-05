@@ -1,21 +1,23 @@
-with source as (
+WITH source AS (
 
-    select * from {{ source('BINK', 'DIM_LOYALTY_CARD_ACTIVE_SCD') }}
+    SELECT * FROM {{ source('BINK', 'DIM_LOYALTY_CARD_ACTIVE_SCD') }}
 
 ),
 
-renamed as (
+renamed AS (
 
-    select
-        loyalty_card_id,
-        user_id,
-        channel,
-        removed,
-        valid_from,
-        valid_to
-
-    from source
+    SELECT
+      loyalty_card_id
+     , user_id
+     , channel
+     , brand
+     , loyalty_plan_company
+     , loyalty_plan_name
+     , removed
+     , valid_from
+     , valid_to
+    FROM source
 
 )
-
-select * from renamed
+SELECT *
+FROM renamed
