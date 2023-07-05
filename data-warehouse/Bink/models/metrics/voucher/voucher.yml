@@ -3,3 +3,5 @@ version: 2
 models:
   - name: voucher__daily_channel_brand_retailer
     description: placeholder
+
+  - name: voucher__daily_voucher_level_channel_brand_retailer

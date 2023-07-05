@@ -14,30 +14,48 @@ WITH voucher_trans AS (
     SELECT *
     FROM {{ ref('voucher_trans') }})
 
+    , dim_date AS (
+        SELECT *
+        FROM {{ ref('dim_date') }}
+        WHERE
+            DATE >= (SELECT MIN(date_issued) FROM voucher_trans)
+            AND DATE <= CURRENT_DATE()
+    )
+
    , voucher_staging AS (
-    SELECT date_issued
-         , channel
-         , brand
-         , loyalty_plan_company
+    SELECT d.date
+         , v.channel
+         , v.brand
+         , v.loyalty_plan_company
          , COALESCE(COUNT(CASE WHEN state = 'ISSUED' THEN 1 END), 0)   AS daily_issued_vouchers
          , COALESCE(COUNT(CASE WHEN state = 'REDEEMED' THEN 1 END), 0) AS daily_redeemed_vouchers
          , COALESCE(COUNT(CASE WHEN state = 'EXPIRED' THEN 1 END), 0)  AS daily_expired_vouchers
-    FROM voucher_trans
-    GROUP BY date_issued, channel, brand, loyalty_plan_company)
+    FROM voucher_trans v
+    LEFT JOIN dim_date d 
+        ON d.date = DATE(v.date_issued)
+    GROUP BY 
+        d.date
+        , v.channel
+        , v.brand
+        , v.loyalty_plan_company
+    HAVING DATE IS NOT NULL
+    )
 
    , voucher_staging_snap AS (
-    SELECT date_issued
-         , channel
-         , brand
-         , loyalty_plan_company
+    SELECT d.date
+         , v.channel
+         , v.brand
+         , v.loyalty_plan_company
          , COALESCE(COUNT(CASE WHEN state = 'ISSUED' THEN 1 END), 0)   AS snap_issued_vouchers
          , COALESCE(COUNT(CASE WHEN state = 'REDEEMED' THEN 1 END), 0) AS snap_redeemed_vouchers
          , COALESCE(COUNT(CASE WHEN state = 'EXPIRED' THEN 1 END), 0)  AS snap_expired_vouchers
     FROM voucher_trans
-    GROUP BY date_issued, channel, brand, loyalty_plan_company)
+    LEFT JOIN dim_date d 
+        ON d.date = DATE(v.date)
+    GROUP BY d.date, v.channel, v.brand, v.loyalty_plan_company)
 
    , combine_all AS (
-    SELECT COALESCE(a.date_issued, s.date_issued) AS date_issued
+    SELECT COALESCE(a.date, s.date)               AS DATE
          , COALESCE(a.channel, s.channel)         AS channel
          , COALESCE(a.brand, s.brand)             AS brand
          , COALESCE(a.daily_issued_vouchers, 0)   AS daily_issued_vouchers
@@ -48,19 +66,19 @@ WITH voucher_trans AS (
          , COALESCE(s.snap_expired_vouchers, 0)   AS snap_expired_vouchers
     FROM voucher_staging a
              FULL OUTER JOIN voucher_staging_snap s
-                             ON a.date_issued = s.date_issued AND a.brand = s.brand)
+                             ON a.date = s.date AND a.brand = s.brand)
 
     , rename AS (
         SELECT
-            date_issued
+            date
             , channel
             , brand
-            , daily_expired_vouchers    AS V004__period_issued_vouchers
-            , daily_redeemed_vouchers   AS V005__period_redeemed_vouchers
-            , daily_expired_vouchers    AS V006__period_expired_vouchers
-            , snap_issued_vouchers      AS V001__total_issued_vouchers
-            , snap_redeemed_vouchers    AS V002__total_redeemed_vouchers
-            , snap_expired_vouchers     AS V003__total_expired_vouchers
+            , daily_expired_vouchers    AS V004__issued_vouchers__daily_channel_brand_retailer__count
+            , daily_redeemed_vouchers   AS V005__redeemed_vouchers__daily_channel_brand_retailer__count
+            , daily_expired_vouchers    AS V006__expired_vouchers__daily_channel_brand_retailer__count
+            , snap_issued_vouchers      AS V001__issued_vouchers__daily_channel_brand_retailer__pit
+            , snap_redeemed_vouchers    AS V002__redeemed_vouchers__daily_channel_brand_retailer__pit
+            , snap_expired_vouchers     AS V003__expired_vouchers__daily_channel_brand_retailer__pit
         FROM
             combine_all
     )
