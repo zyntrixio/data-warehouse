@@ -18,9 +18,10 @@ with FACT_VOUCHER AS (
 )
 
 
-, DIM_LOYALTY_CARD_scd AS (
+, LC_TRANS AS (
     SELECT * 
-    FROM {{ref('src__dim_loyalty_card_active_scd')}}
+    FROM {{ref('lc_trans')}}
+    WHERE EVENT_TYPE = 'SUCCESS'
 )
 
 ,issued as (
@@ -40,10 +41,9 @@ SELECT  v.LOYALTY_CARD_ID
        , l.brand
        , l.loyalty_plan_company
        , l.loyalty_plan_name
-       , l.removed
 FROM FACT_VOUCHER v
-INNER JOIN DIM_LOYALTY_CARD_scd l
-ON v.date_issued BETWEEN l.valid_from AND l.valid_to AND v.loyalty_card_id = l.loyalty_card_id
+INNER JOIN LC_TRANS l
+ON v.date_issued BETWEEN l.from_date AND l.to_date AND v.loyalty_card_id = l.loyalty_card_id
 )
 
 
@@ -65,10 +65,9 @@ SELECT  v.LOYALTY_CARD_ID
        , l.brand
        , l.loyalty_plan_company
        , l.loyalty_plan_name
-       , l.removed
 FROM FACT_VOUCHER v
-INNER JOIN DIM_LOYALTY_CARD_scd l
-ON v.DATE_REDEEMED BETWEEN l.valid_from AND l.valid_to AND v.loyalty_card_id = l.loyalty_card_id
+INNER JOIN LC_TRANS l
+ON v.date_redeemed BETWEEN l.from_date AND l.to_date AND v.loyalty_card_id = l.loyalty_card_id
   
   )
 

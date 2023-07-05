@@ -12,6 +12,12 @@ Parameters:
                     - fact_loyalty_card_removed
 
 */
+
+{{
+    config(
+      enabled = False
+    )
+}}
 with loyalty_add as (
   select * 
   from {{ref('fact_loyalty_card')}} 
