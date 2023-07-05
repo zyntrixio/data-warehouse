@@ -187,7 +187,7 @@ models:
 
     - name: fact_transaction_secure
       description: "Table containing transaction events"
-      schema: 'Bink'
+      schema: 'BINK_SECURE'
       config:
         elementary:
           timestamp_column: inserted_date_time
@@ -252,3 +252,44 @@ models:
                   severity: warn
                   # error_if: ">1000"
                   # warn_if: ">10"
+
+    - name: fact_pll_link_status_change_secure
+      description: "Table containing pll events"
+      schema: 'BINK_SECURE'
+      columns:
+        - name: EVENT_ID
+          description: unique event ID
+          quote: true
+          tests:
+            - unique
+            - not_null
+        - name: 'PAYMENT_ACCOUNT_ID'
+          description: pll payment account
+          quote: true
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_payment_account')
+                field: PAYMENT_ACCOUNT_ID
+        - name: 'LOYALTY_CARD_ID'
+          description: loyalty card id
+          quote: true 
+          tests:
+            - not_null
+            - relationships:
+                to: ref('dim_loyalty_card')
+                field: LOYALTY_CARD_ID
+        - name: 'TO_STATUS'
+          description: status description
+          quote: true 
+          tests:
+            # - not_null
+            - sd_daily_spike:
+                vals: ['INACTIVE']
+                datetime_col: EVENT_DATE_TIME
+                unique_id_col: EVENT_ID
+                max_sd: 2
+                config:
+                  severity: warn
+                  # error_if: ">1000"
+                  # warn_if: ">10"    
