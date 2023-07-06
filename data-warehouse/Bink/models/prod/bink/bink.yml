@@ -458,3 +458,14 @@ models:
 
         - name: valid_to
           description: ""
+
+    - name: fact_pll_link_status_change
+      description: "Table containing pll events"
+      schema: 'Bink'
+      columns:
+        - name: EVENT_ID
+          description: unique event ID
+          quote: true
+          tests:
+            - unique
+            - not_null
