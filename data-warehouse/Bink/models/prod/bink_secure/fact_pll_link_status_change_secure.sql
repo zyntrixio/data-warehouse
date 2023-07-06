@@ -12,6 +12,10 @@ Description:
 
 Parameters:
     ref_object      - transformed_hermes_events
+					- stg_hermes__CLIENT_APPLICATION
+					- stg_hermes__SCHEME_SCHEMEACCOUNT
+					- stg_hermes__SCHEME_SCHEME
+
 */
 
 
