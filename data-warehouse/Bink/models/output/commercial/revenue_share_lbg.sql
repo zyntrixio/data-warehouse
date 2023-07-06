@@ -39,7 +39,6 @@ WITH joins AS (
          , tab
          , channel
          , brand
-         , loyalty_plan_name
          , loyalty_plan_company
          , lc053__successful_loyalty_card_joins__monthly_channel_brand_retailer__dcount_user
          , NULL AS u107__active_users_brand_retailer_monthly__dcount_user
@@ -50,7 +49,6 @@ WITH joins AS (
          , channel
          , brand
          , loyalty_plan_company
-         , NULL AS loyalty_plan_name
          , NULL AS lc053__successful_loyalty_card_joins__monthly_channel_brand_retailer__dcount_user
          , u107__active_users_brand_retailer_monthly__dcount_user
     FROM active)
