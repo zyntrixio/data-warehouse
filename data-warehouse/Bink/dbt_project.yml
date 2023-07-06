@@ -69,7 +69,7 @@ models:
         +schema: "LBG"
         materialized: table
       commercial:
-        +schema: "commercial"
+        +schema: "COMMERCIAL"
         materialized: table
 
 seeds:
