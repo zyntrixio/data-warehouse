@@ -59,11 +59,17 @@ models:
       users:
         +schema: "USERS"
         materialized: table
+      voucher:
+        +schema: "VOUCHER"
+        materialized: table
 
     output:
       +database: "OUTPUT"
       lbg:
         +schema: "LBG"
+        materialized: table
+      commercial:
+        +schema: "COMMERCIAL"
         materialized: table
 
 seeds:

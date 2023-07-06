@@ -12,21 +12,23 @@ Parameters:
                     - fact_loyalty_card_removed
 
 */
-{{ config(
-  enabled= false
-) }}
 
+{{
+    config(
+      enabled = False
+    )
+}}
 with loyalty_add as (
   select * 
-
   from {{ref('fact_loyalty_card')}} 
 
 )
 
 
 , loyalty_removed as (
-select * 
-  from {{ref('fact_loyalty_card_removed')}} 
+  select * 
+  from {{ref('fact_loyalty_card')}}
+  WHERE event_type = 'REMOVED' 
 
 )
 
@@ -37,6 +39,9 @@ select *
          , a.loyalty_card_id
          , a.user_id
          , a.channel
+         , a.brand
+         , a.loyalty_plan_company
+         , a.loyalty_plan_name
          , r.event_id                                                                                                                                 AS remove_id
          , r.event_date_time                                                                                                                          AS remove_time
          , ROW_NUMBER() OVER (PARTITION BY a.channel, a.user_id, a.loyalty_card_id ORDER BY DATEDIFF('second', a.event_date_time, r.event_date_time)) AS closest
@@ -57,6 +62,9 @@ select *
          , loyalty_card_id
          , user_id
          , channel
+         , brand
+         , loyalty_plan_company
+         , loyalty_plan_name
          , remove_id
          , remove_time
          , CASE
@@ -71,6 +79,9 @@ select *
 SELECT loyalty_card_id
      , user_id
      , channel
+     , brand
+     , loyalty_plan_company
+     , loyalty_plan_name
      , removed
      , add_time                                                  AS valid_from
      , COALESCE(remove_time, CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) AS valid_to

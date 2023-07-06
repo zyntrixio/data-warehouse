@@ -1,0 +1,8 @@
+version: 2
+
+models:
+  - name: voucher__counts__daily_channel_brand_retailer
+    description: placeholder
+
+  - name: voucher__times__voucher_level_channel_brand
+    description: placeholder

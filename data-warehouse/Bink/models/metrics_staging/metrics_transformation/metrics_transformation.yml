@@ -3,7 +3,12 @@ version: 2
 models:
   - name: lc_trans
     description: loyalty card metrics transformation layer
+    
   - name: users_trans
     description: loyalty card metrics transformation layer
+
   - name: lc_status_trans
     description: loyalty card error metric transformation layer
+
+  - name: voucher_trans
+    description: placeholder

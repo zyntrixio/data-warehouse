@@ -428,7 +428,7 @@ models:
               expression: '>= 0'
               
 
-    - name: Dim_loyalty_card_active_scd
+    - name: dim_loyalty_card_active_scd
       description: ""
       tests:
         - dbt_utils.unique_combination_of_columns:
