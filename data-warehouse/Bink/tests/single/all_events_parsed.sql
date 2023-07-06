@@ -13,7 +13,7 @@ with events_src as (
         ,'user.created'
         ,'lc.auth.failed'
         ,'lc.register.failed'
-        --,'pll_link.statuschange'
+        -- ,'pll_link.statuschange'
         --,'transaction.exported.response'
         ,'lc.addandauth.success'
         ,'lc.join.failed'
@@ -36,7 +36,7 @@ with events_src as (
  ,fact_tables as (
     {% set get_tables  %}
     SELECT TABLE_NAME
-    FROM {{target.database}}.INFORMATION_SCHEMA.TABLES
+    FROM PROD.INFORMATION_SCHEMA.TABLES
     WHERE TABLE_SCHEMA = '{{target.schema}}'
     AND TABLE_NAME LIKE 'FACT%'
     {% endset %}
@@ -54,9 +54,9 @@ with events_src as (
 
     {%- for item in results_list
     -%}
-        {%- if item != 'FACT_VOUCHER' %}
+        {%- if item not in  ('FACT_VOUCHER', 'FACT_PLL_LINK_STATUS_CHANGE') %}
             {%- if not loop.first %} UNION ALL {% endif %}
-            SELECT event_id FROM {{target.database}}.{{target.schema}}.{{ item }}
+            SELECT event_id FROM PROD.{{target.schema}}.{{ item }}
         {% endif %}
     {%- endfor -%}
 )

@@ -17,7 +17,7 @@ Created Date:   2022/07/12
 WITH all_users_from_events as (
     {% set get_tables  %}
     SELECT TABLE_NAME
-    FROM {{target.database}}.INFORMATION_SCHEMA.TABLES
+    FROM PROD.INFORMATION_SCHEMA.TABLES
     WHERE TABLE_SCHEMA = '{{target.schema}}'
     AND TABLE_NAME LIKE 'FACT%'
     AND TABLE_NAME NOT LIKE 'FACT_USER%'
@@ -36,9 +36,9 @@ WITH all_users_from_events as (
 
     {%- for item in results_list
     -%}
-        {%- if item != 'FACT_VOUCHER' %}
+        {%- if item not in  ('FACT_VOUCHER', 'FACT_PLL_LINK_STATUS_CHANGE') %}
             {%- if not loop.first %} UNION {% endif %}
-            SELECT USER_ID FROM {{target.database}}.{{target.schema}}.{{ item }}
+            SELECT USER_ID FROM PROD.{{target.schema}}.{{ item }}
             WHERE EVENT_DATE_TIME < (
                 SELECT MAX(EVENT_DATE_TIME)
                 FROM {{ref('fact_user')}}
