@@ -13,7 +13,7 @@ Parameters:
 
 with FACT_VOUCHER AS (
     SELECT * 
-    FROM {{ref('src__fact_voucher')}}
+    FROM {{ref('stg_metrics__fact_voucher')}}
 
 )
 

@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: stg_metrics__apistats
+    description: placeholder
+    
+  - name: stg_metrics__dim_date
+    description: placeholder
+
+  - name: stg_metrics__fact_lc_status_change
+    description: placeholder
+
+  - name: stg_metrics__fact_lc
+    description: placeholder
+
+  - name: stg_metrics__fact_transaction
+    description: placeholder
+    
+  - name: stg_metrics__fact_user
+    description: placeholder
+
+  - name: stg_metrics__fact_voucher
+    description: placeholder
+
+  - name: stg_metrics__service_management
+    description: placeholder

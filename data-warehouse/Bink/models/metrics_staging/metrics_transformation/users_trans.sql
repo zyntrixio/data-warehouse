@@ -13,7 +13,7 @@ Parameters:
 
 WITH usr_events AS (
     SELECT *
-    FROM {{ref('src__fact_user')}})
+    FROM {{ref('stg_metrics__fact_user')}})
 
 , usr_stage AS (
     SELECT user_id

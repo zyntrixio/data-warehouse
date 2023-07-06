@@ -22,7 +22,7 @@ WITH lc_events AS (
 
 ,dim_date AS (
     SELECT *
-    FROM {{ref('src__dim_date')}}
+    FROM {{ref('stg_metrics__dim_date')}}
     WHERE
         DATE >= (SELECT MIN(FROM_DATE) FROM lc_events)
         AND DATE <= CURRENT_DATE()
