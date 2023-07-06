@@ -11,3 +11,5 @@ models:
     description: Data source for loyalty cards errors funnel
   - name: vouchers_overview
     description: Data source for vouchers overview
+  - name: data_freshness
+    description: Data source for data freshness
