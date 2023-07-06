@@ -14,7 +14,7 @@ Parameters:
 WITH voucher_daily AS (
     SELECT *
          , 'DAILY' AS tab
-    FROM {{ ref('voucher__daily_channel_brand_retailer') }}
+    FROM {{ ref('voucher__counts__daily_channel_brand_retailer') }}
     WHERE channel = 'LLOYDS'
       AND loyalty_plan_company NOT IN ('Bink Sweet Shop', 'Loyalteas'))
 
