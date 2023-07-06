@@ -17,7 +17,7 @@ Parameters:
 
 WITH user_events AS (
     SELECT *
-    FROM {{ref('src__fact_transaction')}}
+    FROM {{ref('stg_metrics__fact_transaction')}}
 )
 
 ,metrics AS (

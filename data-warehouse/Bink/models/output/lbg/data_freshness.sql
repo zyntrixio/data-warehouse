@@ -10,4 +10,4 @@ Parameters:
     source_object       - src__fact_lc
 */
 
-SELECT MAX(INSERTED_DATE_TIME) AS DATA_FRESHNESS from {{ref('src__fact_lc')}}
+SELECT MAX(INSERTED_DATE_TIME) AS DATA_FRESHNESS from {{ref('stg_metrics__fact_lc')}}

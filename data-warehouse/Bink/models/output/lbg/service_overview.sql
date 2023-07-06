@@ -13,14 +13,14 @@ Parameters:
 WITH apistats AS (
     SELECT *
     ,'API' AS TAB
-    FROM {{ref('src__apistats')}}
+    FROM {{ref('stg_metrics__apistats')}}
     WHERE CHANNEL = 'LLOYDS' 
 )
 
 ,service AS (
         SELECT *
     ,'SERVICE' AS TAB
-    FROM {{ref('src__service_management')}}
+    FROM {{ref('stg_metrics__service_management')}}
     WHERE CHANNEL = 'LLOYDS' 
 )
 

@@ -18,7 +18,7 @@ WITH fact_usr AS (
 
    , dim_date AS (
     SELECT *
-    FROM {{ ref('src__dim_date') }}
+    FROM {{ ref('stg_metrics__dim_date') }}
     WHERE date >= (
         SELECT MIN(DATE(from_date))
         FROM fact_usr)

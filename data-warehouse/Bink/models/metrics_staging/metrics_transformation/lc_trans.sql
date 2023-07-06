@@ -15,7 +15,7 @@ Parameters:
 
 WITH lc_events AS (
     SELECT *
-    FROM {{ref('src__fact_lc')}}
+    FROM {{ref('stg_metrics__fact_lc')}}
 )
 
 ,transforming_deletes AS (

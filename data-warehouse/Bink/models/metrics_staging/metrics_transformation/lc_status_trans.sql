@@ -13,12 +13,12 @@ Parameters:
 
 WITH lc_sc AS (
     SELECT *
-    FROM {{ref('src__fact_lc_status_change')}}
+    FROM {{ref('stg_metrics__fact_lc_status_change')}}
 )
 
 ,lc_lookup AS (
     SELECT *
-    FROM {{ref('src__lookup_status_mapping')}}
+    FROM {{ref('stg_metrics__lookup_status_mapping')}}
 )
 
 ,event_ordering AS ( -- Get Future And previous events per LC & User

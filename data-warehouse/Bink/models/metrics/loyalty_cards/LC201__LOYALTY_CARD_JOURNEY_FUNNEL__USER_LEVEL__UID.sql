@@ -14,7 +14,7 @@ with lc as (
     select
         *
     from
-        {{ref('src__fact_lc')}}
+        {{ref('stg_metrics__fact_lc')}}
     where
         EVENT_TYPE NOT IN ('REQUEST', 'REMOVED')
 ),

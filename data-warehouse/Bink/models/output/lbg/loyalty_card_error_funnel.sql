@@ -18,7 +18,7 @@ WITH funnel AS (
 
 ,model AS (
     SELECT *
-    FROM {{ref('src__lookup_sankey_model')}}
+    FROM {{ref('stg_metrics__lookup_sankey_model')}}
 )
 
 ,combine AS (
