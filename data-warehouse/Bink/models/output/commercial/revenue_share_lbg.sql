@@ -28,18 +28,8 @@ WITH joins AS (
     )
 
     , combine AS (
-        SELECT
-            TAB
-            ,*
-        FROM
-            joins
-        UNION ALL
-
-        SELECT
-            TAB
-            ,*
-        FROM
-            active
+        SELECT *
+        FROM joins
     )
 
 SELECT * FROM combine

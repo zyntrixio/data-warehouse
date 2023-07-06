@@ -68,6 +68,9 @@ models:
       lbg:
         +schema: "LBG"
         materialized: table
+      commercial:
+        +schema: "commercial"
+        materialized: table
 
 seeds:
   Bink:

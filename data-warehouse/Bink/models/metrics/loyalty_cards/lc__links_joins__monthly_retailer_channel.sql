@@ -190,5 +190,3 @@ WITH lc_events AS (
 
 SELECT *
 FROM add_combine_rename
-
-to do update metric numbers
