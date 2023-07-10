@@ -1,6 +1,6 @@
 WITH source AS (
     SELECT * 
-    FROM {{ source('BINK_SECURE', 'FACT_LOYALTY_CARD') }}
+    FROM {{ ref('fact_loyalty_card_secure') }}
 )
 
 ,renamed AS (

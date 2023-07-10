@@ -18,7 +18,7 @@ WITH lc_sc AS (
 
 ,lc_lookup AS (
     SELECT *
-    FROM {{ref('stg_metrics__lookup_status_mapping')}}
+    FROM {{ref('src__lookup_status_mapping')}}
 )
 
 ,event_ordering AS ( -- Get Future And previous events per LC & User
