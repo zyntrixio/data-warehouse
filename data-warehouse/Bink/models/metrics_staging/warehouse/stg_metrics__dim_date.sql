@@ -1,6 +1,6 @@
 WITH source AS (
     SELECT * 
-    FROM {{ source('BINK', 'DIM_DATE') }}
+    FROM {{ ref('dim_date') }}
 )
 
 ,renamed AS (

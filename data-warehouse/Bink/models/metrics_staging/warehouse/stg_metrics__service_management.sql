@@ -3,7 +3,7 @@ source as (
 	SELECT
 		*
 	FROM
-		{{ source('SERVICE_DATA', 'SERVICE_MANAGEMENT') }}
+		{{ ref('service_management') }}
 )
 
 ,renamed as (

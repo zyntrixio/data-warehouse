@@ -1,6 +1,6 @@
 WITH source AS (
     SELECT * 
-    FROM {{ source('BINK_SECURE', 'FACT_TRANSACTION') }}
+    FROM {{ ref('fact_transaction_secure') }}
 )
 
 ,renamed AS (
