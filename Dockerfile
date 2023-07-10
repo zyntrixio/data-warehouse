@@ -15,4 +15,3 @@ RUN pip install \
 
 WORKDIR /app
 ADD data-warehouse /app/data-warehouse
-ADD data-warehouse-dashboards /app/data-warehouse-dashboards
