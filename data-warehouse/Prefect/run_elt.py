@@ -13,12 +13,12 @@ from prefect_snowflake.database import SnowflakeConnector
 def get_dbt_cli_profile(env):
     dbt_connector = SnowflakeConnector(
         schema="BINK",
-        database={"dev": "DEV", "prod": "BINK"}[env],
+        database="SANDBOX",
         warehouse="ENGINEERING",
         credentials=SnowflakeCredentials.load("snowflake-transform-user"),
     )
     dbt_cli_profile = DbtCliProfile(
-        name="Bink",
+        name="Bink_New",
         target="target",
         target_configs=SnowflakeTargetConfigs(connector=dbt_connector),
     )
