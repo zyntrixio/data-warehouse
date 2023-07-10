@@ -11,11 +11,11 @@ Parameters:
 */
 WITH lc_events AS (
     SELECT *
-    FROM metrics_staging.transformation.lc_trans)
+    FROM {{ ref('lc_trans') }})
 
    , dim_date AS (
     SELECT DISTINCT start_of_month, end_of_month
-    FROM prod.bink.dim_date
+    FROM {{ ref('dim_date') }}
     WHERE date >= (
         SELECT MIN(from_date)
         FROM lc_events)
