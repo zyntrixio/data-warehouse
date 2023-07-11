@@ -79,15 +79,14 @@ status_change_events AS (
         ,p.LOYALTY_PLAN_COMPANY
         ,p.LOYALTY_PLAN_NAME
         ,PAYMENT_ACCOUNT_ID
-		-- ,LOYALTY_PLAN_ID
 		,FROM_STATUS_ID
-		,TO_STATUS_ID
 		,CASE FROM_STATUS_ID
             WHEN 0 THEN 'PENDING'
             WHEN 1 THEN 'ACTIVE'
             WHEN 2 THEN 'INACTIVE'
             ELSE NULL
             END AS FROM_STATUS
+		,TO_STATUS_ID
 		,CASE TO_STATUS_ID
             WHEN 0 THEN 'PENDING'
             WHEN 1 THEN 'ACTIVE'
