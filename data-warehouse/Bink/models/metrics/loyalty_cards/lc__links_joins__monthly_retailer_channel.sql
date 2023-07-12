@@ -89,6 +89,47 @@ WITH lc_events AS (
            , u.loyalty_plan_company
     HAVING start_of_month IS NOT NULL)
 
+,   adding_cumulative_abs AS (
+
+    SELECT
+        date
+        ,channel
+        ,brand
+        ,loyalty_plan_name
+        ,loyalty_plan_company
+
+         ,join_requests
+         ,join_fails
+         ,join_successes
+         ,join_successes_mrkt_opt_in
+         ,join_deletes
+         ,link_requests
+         ,link_fails
+         ,link_successes
+         ,link_deletes
+
+         ,SUM(join_requests) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND, LOYALTY_PLAN_NAME, CHANNEL ORDER BY DATE ASC)              AS join_requests_cumulative
+         ,SUM(join_fails) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND, LOYALTY_PLAN_NAME, CHANNEL ORDER BY DATE ASC)                 AS join_fails_cumulative
+         ,SUM(join_successes) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND, LOYALTY_PLAN_NAME, CHANNEL ORDER BY DATE ASC)             AS join_successes_cumulative
+         ,SUM(join_successes_mrkt_opt_in) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND, LOYALTY_PLAN_NAME, CHANNEL ORDER BY DATE ASC) AS join_successes_mrkt_opt_in_cumulative
+         ,SUM(join_deletes) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND, LOYALTY_PLAN_NAME, CHANNEL ORDER BY DATE ASC)               AS join_deletes_cumulative
+         ,SUM(link_requests) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND, LOYALTY_PLAN_NAME, CHANNEL ORDER BY DATE ASC)              AS link_requests_cumulative
+         ,SUM(link_fails) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND, LOYALTY_PLAN_NAME, CHANNEL ORDER BY DATE ASC)                 AS link_fails_cumulative
+         ,SUM(link_successes) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND, LOYALTY_PLAN_NAME, CHANNEL ORDER BY DATE ASC)             AS link_successes_cumulative
+         ,SUM(link_deletes) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND, LOYALTY_PLAN_NAME, CHANNEL ORDER BY DATE ASC)               AS link_deletes_cumulative
+
+         , join_requests_unique_users
+        , join_fails_unique_users
+        , join_successes_unique_users
+        , join_deletes_unique_users
+        , link_requests_unique_users
+        , link_fails_unique_users
+        , link_successes_unique_users
+        , link_deletes_unique_users
+        
+    FROM count_up_abs
+)
+
    , all_together AS (
     SELECT COALESCE(a.date, s.date)                                 date
          , COALESCE(a.brand, s.brand)                               brand
@@ -115,6 +156,16 @@ WITH lc_events AS (
          , COALESCE(a.link_successes, 0)              AS            link_successes
          , COALESCE(a.link_deletes, 0)                AS            link_deletes
 
+        ,COALESCE(a.join_requests_cumulative, 0)                AS join_requests_cumulative
+        ,COALESCE(a.join_fails_cumulative, 0)                   AS join_fails_cumulative
+        ,COALESCE(a.join_successes_cumulative, 0)               AS join_successes_cumulative
+        ,COALESCE(a.join_successes_mrkt_opt_in_cumulative, 0)   AS join_successes_mrkt_opt_in_cumulative
+        ,COALESCE(a.join_deletes_cumulative, 0)                 AS join_deletes_cumulative
+        ,COALESCE(a.link_requests_cumulative, 0)                AS link_requests_cumulative
+        ,COALESCE(a.link_fails_cumulative, 0)                   AS link_fails_cumulative
+        ,COALESCE(a.link_successes_cumulative, 0)               AS link_successes_cumulative
+        ,COALESCE(a.link_deletes_cumulative, 0)                 AS link_deletes_cumulative
+
          , COALESCE(a.join_requests_unique_users, 0)  AS            join_requests_unique_users
          , COALESCE(a.join_fails_unique_users, 0)     AS            join_fails_unique_users
          , COALESCE(a.join_successes_unique_users, 0) AS            join_successes_unique_users
@@ -123,9 +174,10 @@ WITH lc_events AS (
          , COALESCE(a.link_fails_unique_users, 0)     AS            link_fails_unique_users
          , COALESCE(a.link_successes_unique_users, 0) AS            link_successes_unique_users
          , COALESCE(a.link_deletes_unique_users, 0)   AS            link_deletes_unique_users
-    FROM count_up_abs a
+    FROM adding_cumulative_abs a
              FULL OUTER JOIN count_up_snap s
-                             ON a.date = s.date AND a.brand = s.brand AND a.loyalty_plan_name = s.loyalty_plan_name)
+                             ON a.date = s.date AND a.brand = s.brand AND a.loyalty_plan_name = s.loyalty_plan_name
+                             )
 
    , add_combine_rename AS (
     SELECT date
@@ -160,6 +212,16 @@ WITH lc_events AS (
          , join_fails + link_fails                 AS lc039__failed_loyalty_cards__monthly_channel_brand_retailer__count
          , join_successes + link_successes         AS lc037__successful_loyalty_cards__monthly_channel_brand_retailer__count
          , join_deletes + link_deletes             AS lc040__deleted_loyalty_cards__monthly_channel_brand_retailer__count
+
+        , join_requests_cumulative                  AS lc066__requests_loyalty_card_joins__monthly_channel_brand_retailer__csum
+        , join_fails_cumulative                     AS lc067__failed_loyalty_card_joins__monthly_channel_brand_retailer__csum
+        , join_successes_cumulative                 AS lc068__successful_loyalty_card_joins__monthly_channel_brand_retailer__csum
+        , join_successes_mrkt_opt_in_cumulative     AS lc069__successful_loyalty_card_join_mrkt_opt_in__monthly_channel_brand_retailer__csum
+        , join_deletes_cumulative                   AS lc070__deleted_loyalty_card_joins__monthly_channel_brand_retailer__csum
+        , link_requests_cumulative                  AS lc071__requests_loyalty_card_links__monthly_channel_brand_retailer__csum
+        , link_fails_cumulative                     AS lc072__failed_loyalty_card_links__monthly_channel_brand_retailer__csum
+        , link_successes_cumulative                 AS lc073__successful_loyalty_card_links__monthly_channel_brand_retailer__csum
+        , link_deletes_cumulative                   AS lc074__deleted_loyalty_card_links__monthly_channel_brand_retailer__csum
 
          , join_requests_unique_users              AS lc054__requests_loyalty_card_joins__monthly_channel_brand_retailer__dcount_user
          , join_fails_unique_users                 AS lc055__failed_loyalty_card_joins__monthly_channel_brand_retailer__dcount_user
