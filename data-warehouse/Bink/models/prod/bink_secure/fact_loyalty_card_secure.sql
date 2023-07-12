@@ -63,7 +63,9 @@ add_auth_events_unpack AS (
         json :email :: VARCHAR AS email,
         json :loyalty_plan :: VARCHAR AS loyalty_plan,
         json :main_answer :: VARCHAR AS main_answer,
-        json :scheme_account_id :: VARCHAR AS loyalty_card_id
+        json :scheme_account_id :: VARCHAR AS loyalty_card_id,
+        json:consents[0]:slug::VARCHAR AS consent_slug,
+        json:consents[0]:response::BOOLEAN AS consent_response
     FROM
         add_auth_events
 ),
@@ -101,6 +103,8 @@ add_auth_events_select AS (
             '@',
             2
         ) AS email_domain,
+        consent_slug,
+        consent_response,
         SYSDATE() AS inserted_date_time,
         NULL AS updated_date_time
     FROM
@@ -153,6 +157,8 @@ alter_is_most_recent_flag AS (
         external_user_ref,
         email,
         email_domain,
+        consent_slug,
+        consent_response,
         inserted_date_time,
         SYSDATE() AS updated_date_time
     FROM
