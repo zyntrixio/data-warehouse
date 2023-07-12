@@ -20,6 +20,8 @@ WITH source AS (
         ,USER_ID
         ,EXTERNAL_USER_REF
         ,EMAIL_DOMAIN
+        ,CONSENT_SLUG
+        ,CONSENT_RESPONSE        
         ,INSERTED_DATE_TIME
         ,UPDATED_DATE_TIME
     FROM source
