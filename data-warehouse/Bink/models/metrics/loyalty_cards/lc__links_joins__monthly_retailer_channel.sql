@@ -54,48 +54,30 @@ WITH lc_events AS (
          , u.loyalty_plan_name
          , u.loyalty_plan_company
          , COALESCE(SUM(CASE WHEN event_type = 'REQUEST' AND add_journey = 'JOIN' THEN 1 END), 0) AS join_requests
-         , COALESCE(SUM(CASE WHEN event_type = 'FAILED' AND add_journey = 'JOIN' THEN 1 END),
-                    0)                                                                            AS join_fails
-         , COALESCE(SUM(CASE WHEN event_type = 'SUCCESS' AND add_journey = 'JOIN' THEN 1 END),
-                    0)                                                                            AS join_successes
-         , COALESCE(SUM(CASE WHEN event_type = 'REMOVED' AND add_journey = 'JOIN' THEN 1 END),
-                    0)                                                                            AS join_deletes
+         , COALESCE(SUM(CASE WHEN event_type = 'FAILED' AND add_journey = 'JOIN' THEN 1 END),0)                                                                            AS join_fails
+         , COALESCE(SUM(CASE WHEN event_type = 'SUCCESS' AND add_journey = 'JOIN' THEN 1 END),0)                                                                            AS join_successes
+         , COALESCE(SUM(CASE WHEN event_type = 'REMOVED' AND add_journey = 'JOIN' THEN 1 END),0)                                                                            AS join_deletes
+         , COALESCE(SUM(CASE WHEN event_type = 'SUCCESS' AND add_journey = 'JOIN' AND CONSENT_RESPONSE THEN 1 END),0)                                                        AS join_successes_mrkt_opt_in
 
-         , COALESCE(SUM(CASE WHEN event_type = 'REQUEST' AND add_journey = 'LINK' THEN 1 END),
-                    0)                                                                            AS link_requests
-         , COALESCE(SUM(CASE WHEN event_type = 'FAILED' AND add_journey = 'LINK' THEN 1 END),
-                    0)                                                                            AS link_fails
-         , COALESCE(SUM(CASE WHEN event_type = 'SUCCESS' AND add_journey = 'LINK' THEN 1 END),
-                    0)                                                                            AS link_successes
-         , COALESCE(SUM(CASE WHEN event_type = 'REMOVED' AND add_journey = 'LINK' THEN 1 END),
-                    0)                                                                            AS link_deletes
+         , COALESCE(SUM(CASE WHEN event_type = 'REQUEST' AND add_journey = 'LINK' THEN 1 END),0)                                                                            AS link_requests
+         , COALESCE(SUM(CASE WHEN event_type = 'FAILED' AND add_journey = 'LINK' THEN 1 END),0)                                                                            AS link_fails
+         , COALESCE(SUM(CASE WHEN event_type = 'SUCCESS' AND add_journey = 'LINK' THEN 1 END),0)                                                                            AS link_successes
+         , COALESCE(SUM(CASE WHEN event_type = 'REMOVED' AND add_journey = 'LINK' THEN 1 END),0)                                                                            AS link_deletes
 
-         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'REQUEST' AND add_journey = 'JOIN' THEN u.user_ref END),
-                    0)                                                                            AS join_requests_unique_users
-         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'FAILED' AND add_journey = 'JOIN' THEN u.user_ref END),
-                    0)                                                                            AS join_fails_unique_users
-         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'SUCCESS' AND add_journey = 'JOIN' THEN u.user_ref END),
-                    0)                                                                            AS join_successes_unique_users
-         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'REMOVED' AND add_journey = 'JOIN' THEN u.user_ref END),
-                    0)                                                                            AS join_deletes_unique_users
+         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'REQUEST' AND add_journey = 'JOIN' THEN u.user_ref END),0)                                        AS join_requests_unique_users
+         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'FAILED' AND add_journey = 'JOIN' THEN u.user_ref END),0)                                         AS join_fails_unique_users
+         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'SUCCESS' AND add_journey = 'JOIN' THEN u.user_ref END),0)                                        AS join_successes_unique_users
+         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'REMOVED' AND add_journey = 'JOIN' THEN u.user_ref END),0)                                        AS join_deletes_unique_users
 
-         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'REQUEST' AND add_journey = 'LINK' THEN u.user_ref END),
-                    0)                                                                            AS link_requests_unique_users
-         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'FAILED' AND add_journey = 'LINK' THEN u.user_ref END),
-                    0)                                                                            AS link_fails_unique_users
-         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'SUCCESS' AND add_journey = 'LINK' THEN u.user_ref END),
-                    0)                                                                            AS link_successes_unique_users
-         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'REMOVED' AND add_journey = 'LINK' THEN u.user_ref END),
-                    0)                                                                            AS link_deletes_unique_users
+         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'REQUEST' AND add_journey = 'LINK' THEN u.user_ref END),0)                                        AS link_requests_unique_users
+         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'FAILED' AND add_journey = 'LINK' THEN u.user_ref END),0)                                         AS link_fails_unique_users
+         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'SUCCESS' AND add_journey = 'LINK' THEN u.user_ref END),0)                                        AS link_successes_unique_users
+         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'REMOVED' AND add_journey = 'LINK' THEN u.user_ref END),0)                                        AS link_deletes_unique_users
 
-         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'REQUEST' THEN u.user_ref END),
-                    0)                                                                            AS requests_unique_users
-         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'FAILED' THEN u.user_ref END),
-                    0)                                                                            AS fails_unique_users
-         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'SUCCESS' THEN u.user_ref END),
-                    0)                                                                            AS successes_unique_users
-         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'REMOVED' THEN u.user_ref END),
-                    0)                                                                            AS deletes_unique_users
+         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'REQUEST' THEN u.user_ref END),0)                                                                            AS requests_unique_users
+         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'FAILED' THEN u.user_ref END),0)                                                                            AS fails_unique_users
+         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'SUCCESS' THEN u.user_ref END),0)                                                                            AS successes_unique_users
+         , COALESCE(COUNT(DISTINCT CASE WHEN event_type = 'REMOVED' THEN u.user_ref END),0)                                                                            AS deletes_unique_users
 
     FROM lc_events u
              LEFT JOIN dim_date d
@@ -126,6 +108,7 @@ WITH lc_events AS (
          , COALESCE(a.join_requests, 0)               AS            join_requests
          , COALESCE(a.join_fails, 0)                  AS            join_fails
          , COALESCE(a.join_successes, 0)              AS            join_successes
+         , COALESCE(a.join_successes_mrkt_opt_in, 0)  AS            join_successes_mrkt_opt_in
          , COALESCE(a.join_deletes, 0)                AS            join_deletes
          , COALESCE(a.link_requests, 0)               AS            link_requests
          , COALESCE(a.link_fails, 0)                  AS            link_fails
@@ -167,6 +150,7 @@ WITH lc_events AS (
          , join_requests                           AS lc046__requests_loyalty_card_joins__monthly_channel_brand_retailer__count
          , join_fails                              AS lc047__failed_loyalty_card_joins__monthly_channel_brand_retailer__count
          , join_successes                          AS lc045__successful_loyalty_card_joins__monthly_channel_brand_retailer__count
+         , join_successes_mrkt_opt_in              AS lc065__successful_loyalty_card_join_mrkt_opt_in__monthly_channel_brand_retailer__count
          , join_deletes                            AS lc048__deleted_loyalty_card_joins__monthly_channel_brand_retailer__count
          , link_requests                           AS lc042__requests_loyalty_card_links__monthly_channel_brand_retailer__count
          , link_fails                              AS lc043__failed_loyalty_card_links__monthly_channel_brand_retailer__count
