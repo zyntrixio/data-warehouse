@@ -17,7 +17,7 @@ WITH joins AS (
          , brand
          , loyalty_plan_name
          , loyalty_plan_company
-         , lc053__successful_loyalty_card_joins__monthly_channel_brand_retailer__dcount_user
+         , LC328__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
          , 'JOINS' AS tab
     FROM {{ ref('lc__links_joins__monthly_retailer_channel') }}
     WHERE channel = 'LLOYDS'
@@ -40,7 +40,7 @@ WITH joins AS (
          , channel
          , brand
          , loyalty_plan_company
-         , lc053__successful_loyalty_card_joins__monthly_channel_brand_retailer__dcount_user
+         , LC328__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
          , NULL AS u107__active_users_brand_retailer_monthly__dcount_user
     FROM joins
     UNION ALL
@@ -49,7 +49,7 @@ WITH joins AS (
          , channel
          , brand
          , loyalty_plan_company
-         , NULL AS lc053__successful_loyalty_card_joins__monthly_channel_brand_retailer__dcount_user
+         , NULL AS LC328__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
          , u107__active_users_brand_retailer_monthly__dcount_user
     FROM active)
 
