@@ -23,8 +23,6 @@ WITH lc_events AS (
 
    , count_up_snap AS (
     SELECT d.start_of_month                                                                       AS date
-         , u.channel
-         , u.brand
          , u.loyalty_plan_name
          , u.loyalty_plan_company
          , COALESCE(SUM(CASE WHEN event_type = 'SUCCESS' AND add_journey = 'JOIN' THEN 1 END), 0) AS join_success_state
@@ -41,16 +39,12 @@ WITH lc_events AS (
                        ON d.end_of_month >= DATE(u.from_date)
                            AND d.end_of_month < COALESCE(DATE(u.to_date), '9999-12-31')
     GROUP BY d.start_of_month
-           , u.brand
-           , u.channel
            , u.loyalty_plan_name
            , u.loyalty_plan_company
     HAVING date IS NOT NULL)
 
    , count_up_abs AS (
     SELECT d.start_of_month                                                                       AS date
-         , u.channel
-         , u.brand
          , u.loyalty_plan_name
          , u.loyalty_plan_company
          , COALESCE(SUM(CASE WHEN event_type = 'REQUEST' AND add_journey = 'JOIN' THEN 1 END), 0) AS join_requests
@@ -83,8 +77,6 @@ WITH lc_events AS (
              LEFT JOIN dim_date d
                        ON d.start_of_month = DATE_TRUNC('month', u.from_date)
     GROUP BY d.start_of_month
-           , u.brand
-           , u.channel
            , u.loyalty_plan_name
            , u.loyalty_plan_company
     HAVING start_of_month IS NOT NULL)
@@ -93,8 +85,6 @@ WITH lc_events AS (
 
     SELECT
         date
-        ,channel
-        ,brand
         ,loyalty_plan_name
         ,loyalty_plan_company
 
@@ -108,15 +98,15 @@ WITH lc_events AS (
          ,link_successes
          ,link_deletes
 
-         ,SUM(join_requests) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND, LOYALTY_PLAN_NAME, CHANNEL ORDER BY DATE ASC)              AS join_requests_cumulative
-         ,SUM(join_fails) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND, LOYALTY_PLAN_NAME, CHANNEL ORDER BY DATE ASC)                 AS join_fails_cumulative
-         ,SUM(join_successes) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND, LOYALTY_PLAN_NAME, CHANNEL ORDER BY DATE ASC)             AS join_successes_cumulative
-         ,SUM(join_successes_mrkt_opt_in) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND, LOYALTY_PLAN_NAME, CHANNEL ORDER BY DATE ASC) AS join_successes_mrkt_opt_in_cumulative
-         ,SUM(join_deletes) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND, LOYALTY_PLAN_NAME, CHANNEL ORDER BY DATE ASC)               AS join_deletes_cumulative
-         ,SUM(link_requests) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND, LOYALTY_PLAN_NAME, CHANNEL ORDER BY DATE ASC)              AS link_requests_cumulative
-         ,SUM(link_fails) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND, LOYALTY_PLAN_NAME, CHANNEL ORDER BY DATE ASC)                 AS link_fails_cumulative
-         ,SUM(link_successes) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND, LOYALTY_PLAN_NAME, CHANNEL ORDER BY DATE ASC)             AS link_successes_cumulative
-         ,SUM(link_deletes) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND, LOYALTY_PLAN_NAME, CHANNEL ORDER BY DATE ASC)               AS link_deletes_cumulative
+         ,SUM(join_requests) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, LOYALTY_PLAN_NAME ORDER BY DATE ASC)              AS join_requests_cumulative
+         ,SUM(join_fails) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, LOYALTY_PLAN_NAME ORDER BY DATE ASC)                 AS join_fails_cumulative
+         ,SUM(join_successes) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, LOYALTY_PLAN_NAME ORDER BY DATE ASC)             AS join_successes_cumulative
+         ,SUM(join_successes_mrkt_opt_in) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, LOYALTY_PLAN_NAME ORDER BY DATE ASC) AS join_successes_mrkt_opt_in_cumulative
+         ,SUM(join_deletes) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, LOYALTY_PLAN_NAME ORDER BY DATE ASC)               AS join_deletes_cumulative
+         ,SUM(link_requests) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, LOYALTY_PLAN_NAME ORDER BY DATE ASC)              AS link_requests_cumulative
+         ,SUM(link_fails) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, LOYALTY_PLAN_NAME ORDER BY DATE ASC)                 AS link_fails_cumulative
+         ,SUM(link_successes) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, LOYALTY_PLAN_NAME ORDER BY DATE ASC)             AS link_successes_cumulative
+         ,SUM(link_deletes) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, LOYALTY_PLAN_NAME ORDER BY DATE ASC)               AS link_deletes_cumulative
 
          , join_requests_unique_users
         , join_fails_unique_users
@@ -132,8 +122,6 @@ WITH lc_events AS (
 
    , all_together AS (
     SELECT COALESCE(a.date, s.date)                                 date
-         , COALESCE(a.brand, s.brand)                               brand
-         , COALESCE(a.channel, s.channel)                           channel
          , COALESCE(a.loyalty_plan_name, s.loyalty_plan_name)       loyalty_plan_name
          , COALESCE(a.loyalty_plan_company, s.loyalty_plan_company) loyalty_plan_company
 
@@ -176,63 +164,61 @@ WITH lc_events AS (
          , COALESCE(a.link_deletes_unique_users, 0)   AS            link_deletes_unique_users
     FROM adding_cumulative_abs a
              FULL OUTER JOIN count_up_snap s
-                             ON a.date = s.date AND a.brand = s.brand AND a.loyalty_plan_name = s.loyalty_plan_name
+                             ON a.date = s.date AND a.loyalty_plan_name = s.loyalty_plan_name
                              )
 
    , add_combine_rename AS (
-    SELECT date
-         , channel
-         , brand
+    SELECT 
+            date
          , loyalty_plan_name
          , loyalty_plan_company
 
-         , join_success_state + link_success_state AS LC300__SUCCESSFUL_LOYALTY_CARDS__MONTHLY_CHANNEL_BRAND_RETAILER__PIT
-         , join_pending_state + link_pending_state AS LC301__REQUESTS_LOYALTY_CARDS__MONTHLY_CHANNEL_BRAND_RETAILER__PIT
-         , join_failed_state + link_failed_state   AS LC302__FAILED_LOYALTY_CARDS__MONTHLY_CHANNEL_BRAND_RETAILER__PIT
-         , link_removed_state + join_removed_state AS LC303__DELETED_LOYALTY_CARDS__MONTHLY_CHANNEL_BRAND_RETAILER__PIT
-         , link_success_state                      AS LC304__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__PIT
-         , link_pending_state                      AS LC305__REQUESTS_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__PIT
-         , link_failed_state                       AS LC306__FAILED_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__PIT
-         , link_removed_state                      AS LC307__DELETED_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__PIT
-         , join_success_state                      AS LC308__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__PIT
-         , join_pending_state                      AS LC309__REQUESTS_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__PIT
-         , join_failed_state                       AS LC310__FAILED_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__PIT
-         , join_removed_state                      AS LC311__DELETED_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__PIT
+         , join_success_state + link_success_state AS LC335__SUCCESSFUL_LOYALTY_CARDS__MONTHLY_CHANNEL_BRAND_RETAILER__PIT
+         , join_pending_state + link_pending_state AS LC336__REQUESTS_LOYALTY_CARDS__MONTHLY_CHANNEL_BRAND_RETAILER__PIT
+         , join_failed_state + link_failed_state   AS LC337__FAILED_LOYALTY_CARDS__MONTHLY_CHANNEL_BRAND_RETAILER__PIT
+         , link_removed_state + join_removed_state AS LC338__DELETED_LOYALTY_CARDS__MONTHLY_CHANNEL_BRAND_RETAILER__PIT
+         , link_success_state                      AS LC359__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__PIT
+         , link_pending_state                      AS LC360__REQUESTS_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__PIT
+         , link_failed_state                       AS LC361__FAILED_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__PIT
+         , link_removed_state                      AS LC362__DELETED_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__PIT
+         , join_success_state                      AS LC363__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_RETAILER__PIT
+         , join_pending_state                      AS LC364__REQUESTS_LOYALTY_CARD_JOINS__MONTHLY_RETAILER__PIT
+         , join_failed_state                       AS LC365__FAILED_LOYALTY_CARD_JOINS__MONTHLY_RETAILER__PIT
+         , join_removed_state                      AS LC366__DELETED_LOYALTY_CARD_JOINS__MONTHLY_RETAILER__PIT
 
+         , join_successes + link_successes         AS LC339__SUCCESSFUL_LOYALTY_CARDS__MONTHLY_RETAILER__COUNT
+         , join_requests + link_requests           AS LC340__REQUESTS_LOYALTY_CARDS__MONTHLY_RETAILER__COUNT
+         , join_fails + link_fails                 AS LC341__FAILED_LOYALTY_CARDS__MONTHLY_RETAILER__COUNT
+         , join_deletes + link_deletes             AS LC342__DELETED_LOYALTY_CARDS__MONTHLY_RETAILER__COUNT
+         , link_successes                          AS LC343__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__COUNT
+         , link_requests                           AS LC344__REQUESTS_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__COUNT
+         , link_fails                              AS LC345__FAILED_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__COUNT
+         , link_deletes                            AS LC346__DELETED_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__COUNT
+         , join_successes                          AS LC347__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_RETAILER__COUNT
+         , join_requests                           AS LC348__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_RETAILER__COUNT
+         , join_fails                              AS LC349__REQUESTS_LOYALTY_CARD_JOINS__MONTHLY_RETAILER__COUNT
+         , join_deletes                            AS LC350__FAILED_LOYALTY_CARD_JOINS__MONTHLY_RETAILER__COUNT
 
-         , join_successes + link_successes         AS LC312__SUCCESSFUL_LOYALTY_CARDS__MONTHLY_CHANNEL_BRAND_RETAILER__COUNT
-         , join_requests + link_requests           AS LC313__REQUESTS_LOYALTY_CARDS__MONTHLY_CHANNEL_BRAND_RETAILER__COUNT
-         , join_fails + link_fails                 AS LC314__FAILED_LOYALTY_CARDS__MONTHLY_CHANNEL_BRAND_RETAILER__COUNT
-         , join_deletes + link_deletes             AS LC315__DELETED_LOYALTY_CARDS__MONTHLY_CHANNEL_BRAND_RETAILER__COUNT
-         , link_successes                          AS LC316__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__COUNT
-         , link_requests                           AS LC317__REQUESTS_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__COUNT
-         , link_fails                              AS LC318__FAILED_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__COUNT
-         , link_deletes                            AS LC319__DELETED_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__COUNT
-         , join_successes                          AS LC320__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__COUNT
-         , join_requests                           AS LC321__REQUESTS_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__COUNT
-         , join_fails                              AS LC322__FAILED_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__COUNT
-         , join_deletes                            AS LC323__DELETED_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__COUNT
+        , join_successes_cumulative                 AS LC375__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__CSUM
+        , join_requests_cumulative                  AS LC376__REQUESTS_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__CSUM
+        , join_fails_cumulative                     AS LC377__FAILED_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__CSUM
+        , join_deletes_cumulative                   AS LC378__DELETED_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__CSUM
+        , link_successes_cumulative                 AS LC379__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_RETAILER__CSUM
+        , link_requests_cumulative                  AS LC380__REQUESTS_LOYALTY_CARD_JOINS__MONTHLY_RETAILER__CSUM
+        , link_fails_cumulative                     AS LC381__FAILED_LOYALTY_CARD_JOINS__MONTHLY_RETAILER__CSUM
+        , link_deletes_cumulative                   AS LC382__DELETED_LOYALTY_CARD_JOINS__MONTHLY_RETAILER__CSUM
 
-         , link_successes_unique_users             AS LC324__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-         , link_requests_unique_users              AS LC325__REQUESTS_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-         , link_fails_unique_users                 AS LC326__FAILED_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-         , link_deletes_unique_users               AS LC327__DELETED_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-         , join_successes_unique_users             AS LC328__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-         , join_requests_unique_users              AS LC329__REQUESTS_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-         , join_fails_unique_users                 AS LC330__FAILED_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-         , join_deletes_unique_users               AS LC331__DELETED_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
+         , join_successes_unique_users             AS LC351__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__DCOUNT_USER
+         , join_requests_unique_users              AS LC352__REQUESTS_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__DCOUNT_USER
+         , join_fails_unique_users                 AS LC353__FAILED_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__DCOUNT_USER
+         , join_deletes_unique_users               AS LC354__DELETED_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__DCOUNT_USER
+         , link_successes_unique_users             AS LC355__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_RETAILER__DCOUNT_USER
+         , link_requests_unique_users              AS LC356__REQUESTS_LOYALTY_CARD_JOINS__MONTHLY_RETAILER__DCOUNT_USER
+         , link_fails_unique_users                 AS LC357__FAILED_LOYALTY_CARD_JOINS__MONTHLY_RETAILER__DCOUNT_USER
+         , link_deletes_unique_users               AS LC358__DELETED_LOYALTY_CARD_JOINS__MONTHLY_RETAILER__DCOUNT_USER
 
-        , join_successes_cumulative                 AS  LC367__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__CSUM
-        , join_requests_cumulative                  AS  LC368__REQUESTS_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__CSUM
-        , join_fails_cumulative                     AS  LC369__FAILED_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__CSUM
-        , join_deletes_cumulative                   AS  LC370__DELETED_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__CSUM
-        , link_successes_cumulative                 AS  LC371__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__CSUM
-        , link_requests_cumulative                  AS  LC372__REQUESTS_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__CSUM
-        , link_fails_cumulative                     AS  LC373__FAILED_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__CSUM
-        , link_deletes_cumulative                   AS  LC374__DELETED_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__CSUM
-
-         , join_successes_mrkt_opt_in_cumulative     AS LC383__SUCESSFUL_LOYALTY_CARD_JOIN_MRKT_OPT_IN__MONTHLY_CHANNEL_BRAND_RETAILER__CSUM
-         , join_successes_mrkt_opt_in                AS LC384__SUCESSFUL_LOYALTY_CARD_JOIN_MRKT_OPT_IN__MONTHLY_CHANNEL_BRAND_RETAILER__COUNT
+         , join_successes_mrkt_opt_in              AS LC333__SUCESSFUL_LOYALTY_CARD_JOIN_MRKT_OPT_IN__MONTHLY_RETAILER__COUNT
+        , join_successes_mrkt_opt_in_cumulative     AS LC332__SUCESSFUL_LOYALTY_CARD_JOIN_MRKT_OPT_IN__MONTHLY_RETAILER__CSUM
 
     FROM all_together)
 

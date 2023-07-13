@@ -12,3 +12,6 @@ models:
 
   - name: voucher_trans
     description: placeholder
+
+  - name: pll_status_trans
+    description: placeholder
