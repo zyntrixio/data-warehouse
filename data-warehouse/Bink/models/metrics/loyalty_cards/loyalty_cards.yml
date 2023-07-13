@@ -12,3 +12,6 @@ models:
 
   - name: LC201__LOYALTY_CARD_JOURNEY_FUNNEL__USER_LEVEL__UID
     description: Loyalty card error journeys broken down into 5 steps for each user and loyalty plan. This model shows the movement of users between attempts and across journey types, attempt 5 is replaced with the users final attempt.
+
+  - name: lc__pll__monthly_retailer
+    description: Loyalty card metrics relating to pll links
