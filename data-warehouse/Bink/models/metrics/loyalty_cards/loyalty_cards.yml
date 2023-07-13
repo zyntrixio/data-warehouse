@@ -7,6 +7,9 @@ models:
   - name: lc__links_joins__monthly_retailer_channel
     description: placeholder
 
+  - name: lc__links_joins__monthly_retailer
+    description: placeholder
+
   - name: lc__errors__daily_status_rollup_user_level
     description: Loyalty card error metrics broken down by date, status groups and user level aggregation
 
