@@ -81,12 +81,12 @@ WITH voucher_trans AS (
             , brand
             , loyalty_plan_company
             , loyalty_plan_name
-            , daily_issued_vouchers    AS V004__issued_vouchers__daily_channel_brand_retailer__count
-            , daily_redeemed_vouchers   AS V005__redeemed_vouchers__daily_channel_brand_retailer__count
-            , daily_expired_vouchers    AS V006__expired_vouchers__daily_channel_brand_retailer__count
-            ,SUM(daily_issued_vouchers) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND ORDER BY DATE ASC) AS V001__issued_vouchers__daily_channel_brand_retailer__cdsum_voucher
+            , daily_issued_vouchers                                                                         AS V004__issued_vouchers__daily_channel_brand_retailer__count
+            , daily_redeemed_vouchers                                                                       AS V005__redeemed_vouchers__daily_channel_brand_retailer__count
+            , daily_expired_vouchers                                                                        AS V006__expired_vouchers__daily_channel_brand_retailer__count
+            ,SUM(daily_issued_vouchers) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND ORDER BY DATE ASC)   AS V001__issued_vouchers__daily_channel_brand_retailer__cdsum_voucher
             ,SUM(daily_redeemed_vouchers) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND ORDER BY DATE ASC) AS V002__redeemed_vouchers__daily_channel_brand_retailer__cdsum_voucher
-            ,SUM(daily_expired_vouchers) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND ORDER BY DATE ASC) AS V003__expired_vouchers__daily_channel_brand_retailer__cdsum_voucher
+            ,SUM(daily_expired_vouchers) OVER (PARTITION BY LOYALTY_PLAN_COMPANY, BRAND ORDER BY DATE ASC)  AS V003__expired_vouchers__daily_channel_brand_retailer__cdsum_voucher
         FROM
             voucher_metrics
         WHERE CHANNEL IS NOT NULL
