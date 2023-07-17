@@ -15,3 +15,6 @@ models:
 
   - name: pll_status_trans
     description: placeholder
+
+  - name: trans_trans
+    description: to and from dates for fact transactions

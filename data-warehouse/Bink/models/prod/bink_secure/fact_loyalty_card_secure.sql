@@ -72,14 +72,16 @@ add_auth_events_unpack AS (
 add_auth_events_select AS (
     SELECT
         event_id,
-        event_date_time,CASE
+        event_date_time,
+        CASE
             WHEN event_type LIKE 'lc.addandauth%' THEN 'ADD AUTH'
             WHEN event_type LIKE 'lc.auth%' THEN 'AUTH'
             WHEN event_type LIKE 'lc.join%' THEN 'JOIN'
             WHEN event_type LIKE 'lc.register%' THEN 'REGISTER'
             WHEN event_type LIKE 'lc.remove%' THEN 'REMOVED'
             ELSE 'NO MATCH'
-        END AS auth_type,CASE
+        END AS auth_type,
+        CASE
             WHEN event_type LIKE '%request' THEN 'REQUEST'
             WHEN event_type LIKE '%success' THEN 'SUCCESS'
             WHEN event_type LIKE '%failed' THEN 'FAILED'
