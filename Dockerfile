@@ -1,17 +1,9 @@
+FROM ghcr.io/binkhq/python:3.11-poetry as build
+ADD data-warehouse /build/data-warehouse
+WORKDIR /build/data-warehouse/Bink
+RUN poetry export --without-hashes --format=requirements.txt > requirements.txt
+
 FROM ghcr.io/binkhq/python:3.11
-
-RUN apt-get update && apt-get -y install make && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN pip install \
-            adlfs \
-            dbt-snowflake \
-            prefect-dbt \
-            prefect-snowflake \
-            prefect-airbyte \
-            prefect-dask \
-            prefect \
-            prefect-shell
-
 WORKDIR /app
-ADD data-warehouse /app/data-warehouse
+COPY --from=build /build /app/
+RUN pip install -r /app/data-warehouse/Bink/requirements.txt
