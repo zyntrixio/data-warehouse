@@ -6,12 +6,25 @@ authors = ["Anand Bhakta <abhakta@bink.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.11"
 dbt-snowflake = "^1.2.0"
+adlfs = "^2023.4.0"
+prefect-dbt = "^0.3.1"
+prefect-snowflake = "^0.26.1"
+prefect-airbyte = "^0.2.0"
+prefect-dask = "^0.2.4"
+prefect = "2.10.21"
+prefect-shell = "^0.1.5"
 
-[tool.poetry.dev-dependencies]
-pydantic = "^1.10.6"
-ipykernel = "^6.21.3"
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.0.278"
+black = "^23.7.0"
+
+[tool.black]
+line-length = 120
+
+[tool.ruff]
+line-length = 120
 
 [build-system]
 requires = ["poetry-core"]
