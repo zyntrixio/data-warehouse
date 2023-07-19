@@ -72,5 +72,6 @@ WITH txn_events AS (
          , COALESCE(p.refund_amount_period, 0)                      AS T009_REFUND__MONTHLY_RETAILER__COUNT
     FROM txn_snap s
              FULL OUTER JOIN txn_period p ON s.date = p.date AND s.loyalty_plan_company = p.loyalty_plan_company)
+             
 SELECT *
 FROM combine_all

@@ -34,6 +34,16 @@ WITH trans_events AS (
          // , payment_account_id
     FROM trans_events)
 
+    , status_update AS (
+    SELECT *
+         , CASE
+               WHEN spend_amount > 1 THEN 'TXNS'
+               WHEN spend_amount = 1 OR spend_amount = -1 THEN 'BNPL'
+               WHEN spend_amount < -1 THEN 'REFUND'
+               ELSE 'OTHER'
+        END AS status
+    FROM transforming_deletes)
+
    , to_from_dates AS (
     SELECT channel
          , brand
@@ -44,12 +54,13 @@ WITH trans_events AS (
          , transaction_date
          , spend_amount
          , loyalty_card_id
+         , status
          , date AS from_date
          , COALESCE(
             LEAD(date, 1) OVER (PARTITION BY user_ref, loyalty_plan_name ORDER BY date)
         , CURRENT_TIMESTAMP
         )       AS to_date
-    FROM transforming_deletes)
+    FROM status_update)
 
 SELECT *
 FROM to_from_dates
