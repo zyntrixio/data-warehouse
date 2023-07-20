@@ -7,30 +7,38 @@ Last modified date:
 Description:
     Rewrite of metrics for transactions at a monthly agg
 Notes:
-    source_object       - trans__trans__monthly
-                        - dim_date?
+    source_object       - trans__trans__monthly_retailer
+                        - user__transactions__monthly_retailer
 */
-
-WITH avg_events AS (
+WITH trans_events AS (
     SELECT *
-    FROM {{ ref('trans_trans') }})
+    FROM {{ ref('trans__trans__monthly_retailer') }})
 
-   , stage AS (
-    SELECT DATE(date)                                 AS date
-         , loyalty_plan_company
-         , t005_spend__monthly_retailer__sum          AS period_spend
-         , period_user
-         , t004_transactions__monthly_retailer__count AS period_txn
-         , t009_refund__monthly_retailer__count       AS period_refund
-    FROM avg_events)
+   , user_events AS (
+    SELECT *
+    FROM {{ ref('user__transactions__monthly_retailer') }})
 
-   , agg AS (
+   , joins AS (
+    SELECT t.date
+         , t.loyalty_plan_company
+         , t.t009__spend__monthly_retailer__sum
+         , t.t010__refund__monthly_retailer__sum
+         , t.t011__txns__monthly_retailer__dcount
+         , t.t012__refund__monthly_retailer__dcount
+         , t.t013__bnpl_txns__monthly_retailer__dcount
+         , u.u107_active_users_brand_retailer_monthly__dcount_user
+    FROM trans_events t
+             LEFT JOIN user_events u ON u.loyalty_plan_company = t.loyalty_plan_company AND u.date = t.date)
+
+   , aggs AS (
     SELECT date
          , loyalty_plan_company
-         , DIV0(period_spend, period_user) AS arpu
-         , DIV0(period_txn, period_user)   AS atf
-         , DIV0(period_spend, period_txn)  AS aov
-    FROM stage)
+         , DIV0(t009__spend__monthly_retailer__sum, t011__txns__monthly_retailer__dcount) AS t014__aov__monthly_retailer
+         , DIV0(t009__spend__monthly_retailer__sum,
+                u107_active_users_brand_retailer_monthly__dcount_user)                    AS t015__arpu__monthly_retailer
+         , DIV0(t011__txns__monthly_retailer__dcount,
+                u107_active_users_brand_retailer_monthly__dcount_user)                    AS t016__atf__monthly_retailer
+    FROM joins)
 
 SELECT *
-FROM agg
+FROM aggs

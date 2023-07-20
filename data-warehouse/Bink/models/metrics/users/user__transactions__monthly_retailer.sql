@@ -15,7 +15,7 @@ Parameters:
 
 WITH user_events AS (
     SELECT *
-    FROM {{ ref('trans_trans') }})
+    FROM {{ ref('txns_trans') }})
 
    , dim_date AS (
     SELECT DISTINCT start_of_month, end_of_month
