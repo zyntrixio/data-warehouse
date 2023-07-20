@@ -34,7 +34,7 @@ WITH trans_events AS (
          // , payment_account_id
     FROM trans_events)
 
-    , status_update AS (
+    , txn_flag AS (
     SELECT *
          , CASE
                WHEN spend_amount > 1 THEN 'TXNS'
@@ -47,20 +47,19 @@ WITH trans_events AS (
    , to_from_dates AS (
     SELECT channel
          , brand
-         , user_ref
          , transaction_id
          , loyalty_plan_name
          , loyalty_plan_company
+         , status
+         , user_ref
          , transaction_date
          , spend_amount
          , loyalty_card_id
-         , status
-         , date AS from_date
+         , date              AS from_date
          , COALESCE(
             LEAD(date, 1) OVER (PARTITION BY user_ref, loyalty_plan_name ORDER BY date)
-        , CURRENT_TIMESTAMP
-        )       AS to_date
-    FROM status_update)
+        , CURRENT_TIMESTAMP) AS to_date
+    FROM txn_flag)
 
 SELECT *
 FROM to_from_dates
