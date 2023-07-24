@@ -89,3 +89,6 @@ WITH lc_metric AS (
 
 SELECT *
 FROM combine_all
+WHERE loyalty_plan_name IN ('Together Rewards', 'The Works
+')
+   OR loyalty_plan_company IN ('Together Rewards', 'The Works')
