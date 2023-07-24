@@ -1,3 +1,18 @@
+/*
+Created by:         Christopher Mitchell
+Created date:       2023-07-05
+Last modified by:    
+Last modified date: 
+
+Description:
+    Datasource to produce tableau dashboard for The Works
+Parameters:
+    source_object       - lc__links_joins__monthly_retailer
+                        - trans__trans__monthly_retailer
+                        - trans__avg__monthly_retailer
+                        - user__transactions__monthly_retailer
+*/
+
 WITH lc_metric AS (
     SELECT *, 'LC_METRIC' AS tab
     FROM {{ ref('lc__links_joins__monthly_retailer') }})
@@ -89,6 +104,5 @@ WITH lc_metric AS (
 
 SELECT *
 FROM combine_all
-WHERE loyalty_plan_name IN ('Together Rewards', 'The Works
-')
+WHERE loyalty_plan_name IN ('Together Rewards', 'The Works')
    OR loyalty_plan_company IN ('Together Rewards', 'The Works')
