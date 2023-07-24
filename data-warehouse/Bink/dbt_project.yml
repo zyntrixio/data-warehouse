@@ -71,6 +71,9 @@ models:
       commercial:
         +schema: "COMMERCIAL"
         materialized: table
+      retailer:
+        +schema: "RETAILER"
+        materialized: table
 
 seeds:
   Bink:
