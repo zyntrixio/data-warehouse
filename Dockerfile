@@ -7,3 +7,6 @@ FROM ghcr.io/binkhq/python:3.11
 WORKDIR /app
 COPY --from=build /build /app/
 RUN pip install -r /app/data-warehouse/Bink/requirements.txt
+RUN apt-get update && \
+    apt-get -y --no-install-recommends install make && \
+    apt-get clean
