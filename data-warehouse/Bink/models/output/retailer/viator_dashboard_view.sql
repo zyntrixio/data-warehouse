@@ -5,7 +5,7 @@ Last modified by:
 Last modified date: 
 
 Description:
-    Datasource to produce tableau dashboard for The Works
+    Datasource to produce tableau dashboard for Viator - THIS IS A TEST
 Parameters:
     source_object       - lc__links_joins__monthly_retailer
                         - trans__trans__monthly_retailer
@@ -15,19 +15,19 @@ Parameters:
 
 WITH lc_metric AS (
     SELECT *, 'LC_METRIC' AS tab
-    FROM {{ ref('lc__links_joins__monthly_retailer') }} WHERE loyalty_plan_company = 'The Works')
+    FROM {{ ref('lc__links_joins__monthly_retailer') }} WHERE loyalty_plan_company = 'Viator')
 
    , txn_metrics AS (
     SELECT *, 'TXN METRIC' AS tab
-    FROM {{ ref('trans__trans__monthly_retailer') }} WHERE loyalty_plan_company = 'The Works')
+    FROM {{ ref('trans__trans__monthly_retailer') }} WHERE loyalty_plan_company = 'Viator')
 
    , txn_avg AS (
     SELECT *, 'TXN_AVG' AS tab
-    FROM {{ ref('trans__avg__monthly_retailer') }} WHERE loyalty_plan_company = 'The Works')
+    FROM {{ ref('trans__avg__monthly_retailer') }} WHERE loyalty_plan_company = 'Viator')
 
    , user_metrics AS (
     SELECT *, 'USER_METRIC' AS tab
-    FROM {{ ref('user__transactions__monthly_retailer') }} WHERE loyalty_plan_company = 'The Works')
+    FROM {{ ref('user__transactions__monthly_retailer') }} WHERE loyalty_plan_company = 'Viator')
 
    , combine_all AS (
     SELECT date
