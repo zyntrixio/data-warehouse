@@ -173,10 +173,10 @@ WITH lc_events AS (
          , loyalty_plan_name
          , loyalty_plan_company
 
-         , join_success_state + link_success_state AS LC335__SUCCESSFUL_LOYALTY_CARDS__MONTHLY_CHANNEL_BRAND_RETAILER__PIT
-         , join_pending_state + link_pending_state AS LC336__REQUESTS_LOYALTY_CARDS__MONTHLY_CHANNEL_BRAND_RETAILER__PIT
-         , join_failed_state + link_failed_state   AS LC337__FAILED_LOYALTY_CARDS__MONTHLY_CHANNEL_BRAND_RETAILER__PIT
-         , link_removed_state + join_removed_state AS LC338__DELETED_LOYALTY_CARDS__MONTHLY_CHANNEL_BRAND_RETAILER__PIT
+         , join_success_state + link_success_state AS LC335__SUCCESSFUL_LOYALTY_CARDS__MONTHLY_RETAILER__PIT
+         , join_pending_state + link_pending_state AS LC336__REQUESTS_LOYALTY_CARDS__MONTHLY_RETAILER__PIT
+         , join_failed_state + link_failed_state   AS LC337__FAILED_LOYALTY_CARDS__MONTHLY_RETAILER__PIT
+         , link_removed_state + join_removed_state AS LC338__DELETED_LOYALTY_CARDS__MONTHLY_RETAILER__PIT
          , link_success_state                      AS LC359__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__PIT
          , link_pending_state                      AS LC360__REQUESTS_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__PIT
          , link_failed_state                       AS LC361__FAILED_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__PIT
