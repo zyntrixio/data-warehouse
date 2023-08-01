@@ -14,24 +14,24 @@ Parameters:
 */
 
 WITH lc_metric AS (
-    SELECT *, 'LC_METRIC' AS tab
+    SELECT *, 'JOINS' AS CATEGORY
     FROM {{ ref('lc__links_joins__monthly_retailer') }} WHERE loyalty_plan_company = 'The Works')
 
    , txn_metrics AS (
-    SELECT *, 'TXN METRIC' AS tab
+    SELECT *, 'SPEND' AS CATEGORY
     FROM {{ ref('trans__trans__monthly_retailer') }} WHERE loyalty_plan_company = 'The Works')
 
    , txn_avg AS (
-    SELECT *, 'TXN_AVG' AS tab
+    SELECT *, 'SPEND' AS CATEGORY
     FROM {{ ref('trans__avg__monthly_retailer') }} WHERE loyalty_plan_company = 'The Works')
 
    , user_metrics AS (
-    SELECT *, 'USER_METRIC' AS tab
+    SELECT *, 'USERS' AS CATEGORY
     FROM {{ ref('user__transactions__monthly_retailer') }} WHERE loyalty_plan_company = 'The Works')
 
    , combine_all AS (
     SELECT date
-         , tab
+         , CATEGORY
          , loyalty_plan_company
          , loyalty_plan_name
          , lc335__successful_loyalty_cards__monthly_channel_brand_retailer__pit
@@ -94,7 +94,7 @@ WITH lc_metric AS (
     FROM lc_metric
     UNION ALL
     SELECT date
-         , tab
+         , CATEGORY
          , NULL AS loyalty_plan_name
          , loyalty_plan_company
          , NULL AS lc335__successful_loyalty_cards__monthly_channel_brand_retailer__pit
@@ -157,7 +157,7 @@ WITH lc_metric AS (
     FROM txn_metrics
     UNION ALL
     SELECT date
-         , tab
+         , CATEGORY
          , NULL AS loyalty_plan_name
          , loyalty_plan_company
          , NULL AS lc335__successful_loyalty_cards__monthly_channel_brand_retailer__pit
@@ -220,7 +220,7 @@ WITH lc_metric AS (
     FROM txn_avg
     UNION ALL
     SELECT date
-         , tab
+         , CATEGORY
          , NULL AS loyalty_plan_name
          , loyalty_plan_company
          , NULL AS lc335__successful_loyalty_cards__monthly_channel_brand_retailer__pit
