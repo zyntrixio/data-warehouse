@@ -3,6 +3,3 @@ version: 2
 models:
   - name: the_works_dashboard_view
     description: Data source for the works overview
-
-  - name: viator_dashboard_view
-    description: Data source for testing Viator Overview
