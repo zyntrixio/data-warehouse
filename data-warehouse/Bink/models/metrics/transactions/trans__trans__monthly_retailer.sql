@@ -16,9 +16,9 @@ WITH txn_events AS (
 
    , dim_date AS (
     SELECT DISTINCT start_of_month, end_of_month
-    FROM {{ ref('stg_metrics__dim_date') }}
+    FROM {{ ref('dim_date') }}
     WHERE date >= (
-        SELECT MIN(from_date)
+        SELECT MIN(transaction_date)
         FROM txn_events)
       AND date <= CURRENT_DATE())
 
@@ -28,26 +28,10 @@ WITH txn_events AS (
          , loyalty_plan_name
          , loyalty_plan_company
          , status
-         , transaction_date
+         , DATE_TRUNC('month', transaction_date) AS transaction_date
          , spend_amount
          , loyalty_card_id
-         , from_date
-         , to_date
     FROM txn_events)
-
-   , txn_snap AS (
-    SELECT d.start_of_month                                                                 AS date
-         , s.loyalty_plan_company
-         , SUM(CASE WHEN status = 'TXNS' THEN s.spend_amount END)                           AS spend_amount_snap_positive
-         , SUM(CASE WHEN status = 'REFUND' THEN s.spend_amount END)                         AS refund_amount_snap
-         , COALESCE(COUNT(DISTINCT CASE WHEN status = 'BNPL' THEN transaction_id END), 0)   AS count_bnpl_snap
-         , COALESCE(COUNT(DISTINCT CASE WHEN status = 'TXNS' THEN transaction_id END), 0)   AS count_transaction_snap
-         , COALESCE(COUNT(DISTINCT CASE WHEN status = 'REFUND' THEN transaction_id END), 0) AS count_refund_snap
-    FROM stage s
-             LEFT JOIN dim_date d ON d.end_of_month >= DATE(s.from_date)
-        AND d.end_of_month < COALESCE(DATE(s.to_date), '9999-12-31')
-    GROUP BY d.start_of_month, s.loyalty_plan_company
-    HAVING date IS NOT NULL)
 
    , txn_period AS (
     SELECT d.start_of_month                                                                 AS date
@@ -58,23 +42,35 @@ WITH txn_events AS (
          , COALESCE(COUNT(DISTINCT CASE WHEN status = 'TXNS' THEN transaction_id END), 0)   AS count_transaction_period
          , COALESCE(COUNT(DISTINCT CASE WHEN status = 'REFUND' THEN transaction_id END), 0) AS count_refund_period
     FROM stage s
-             LEFT JOIN dim_date d ON d.start_of_month = DATE_TRUNC('month', s.from_date)
+             LEFT JOIN dim_date d ON d.start_of_month = DATE_TRUNC('month', s.transaction_date)
     GROUP BY d.start_of_month, s.loyalty_plan_company)
+
+   , txn_cumulative AS (
+    SELECT date
+         , loyalty_plan_company
+         , SUM(spend_amount_period_positive) OVER (PARTITION BY loyalty_plan_company ORDER BY date) AS cumulative_spend
+         , SUM(refund_amount_period) OVER (PARTITION BY loyalty_plan_company ORDER BY date)         AS cumulative_refund
+         , SUM(count_bnpl_period)
+               OVER (PARTITION BY loyalty_plan_company ORDER BY date)                               AS cumulative_bnpl_txns
+         , SUM(count_transaction_period) OVER (PARTITION BY loyalty_plan_company ORDER BY date)     AS cumulative_txns
+         , SUM(count_refund_period)
+               OVER (PARTITION BY loyalty_plan_company ORDER BY date)                               AS cumulative_refund_txns
+    FROM txn_period)
 
    , combine_all AS (
     SELECT COALESCE(s.date, p.date)                                 AS date
          , COALESCE(s.loyalty_plan_company, p.loyalty_plan_company) AS loyalty_plan_company
-         , COALESCE(s.spend_amount_snap_positive, 0)                AS t004__spend__monthly_retailer__pit
-         , COALESCE(s.refund_amount_snap, 0)                        AS t005__refund__monthly_retailer__pit
-         , COALESCE(s.count_transaction_snap, 0)                    AS t006__txns__monthly_retailer__pit
-         , COALESCE(s.count_refund_snap, 0)                         AS t007__refund__monthly_retailer__pit
-         , COALESCE(s.count_bnpl_snap, 0)                           AS t008__bnpl_txns__monthly_retailer__pit
+         , COALESCE(s.cumulative_spend, 0)                          AS t004__spend__monthly_retailer__csum
+         , COALESCE(s.cumulative_refund, 0)                         AS t005__refund__monthly_retailer__csum
+         , COALESCE(s.cumulative_txns, 0)                           AS t006__txns__monthly_retailer__csum
+         , COALESCE(s.cumulative_refund_txns, 0)                    AS t007__refund__monthly_retailer__csum
+         , COALESCE(s.cumulative_bnpl_txns, 0)                      AS t008__bnpl_txns__monthly_retailer__csum
          , COALESCE(p.spend_amount_period_positive, 0)              AS t009__spend__monthly_retailer__sum
          , COALESCE(p.refund_amount_period, 0)                      AS t010__refund__monthly_retailer__sum
          , COALESCE(p.count_transaction_period, 0)                  AS t011__txns__monthly_retailer__dcount
          , COALESCE(p.count_refund_period, 0)                       AS t012__refund__monthly_retailer__dcount
          , COALESCE(p.count_bnpl_period, 0)                         AS t013__bnpl_txns__monthly_retailer__dcount
-    FROM txn_snap s
+    FROM txn_cumulative s
              FULL OUTER JOIN txn_period p ON s.date = p.date AND s.loyalty_plan_company = p.loyalty_plan_company)
 
 SELECT *

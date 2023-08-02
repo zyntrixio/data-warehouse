@@ -15,13 +15,13 @@ Parameters:
 
 WITH user_events AS (
     SELECT *
-    FROM {{ ref('txns_trans') }})
+    FROM {{ ref('txns_trans') }} )
 
    , dim_date AS (
     SELECT DISTINCT start_of_month, end_of_month
-    FROM {{ ref('stg_metrics__dim_date') }}
+    FROM {{ ref('dim_date') }}
     WHERE date >= (
-        SELECT MIN(from_date)
+        SELECT MIN(date)
         FROM user_events)
       AND date <= CURRENT_DATE())
 
@@ -31,10 +31,8 @@ WITH user_events AS (
          , COUNT(DISTINCT user_ref) AS u108_active_users_brand_retailer_monthly__pit
     FROM user_events u
              LEFT JOIN dim_date d
-                       ON d.end_of_month >= DATE(u.from_date)
-                           AND d.end_of_month < COALESCE(DATE(u.to_date), '9999-12-31')
-    GROUP BY d.start_of_month, u.loyalty_plan_company
-    HAVING date IS NOT NULL)
+                       ON DATE(u.date) <= d.end_of_month
+    GROUP BY d.start_of_month, u.loyalty_plan_company)
 
    , user_period AS (
     SELECT d.start_of_month                      AS date
@@ -42,7 +40,7 @@ WITH user_events AS (
          , COALESCE(COUNT(DISTINCT user_ref), 0) AS u107_active_users_brand_retailer_monthly__dcount_user
     FROM user_events u
              LEFT JOIN dim_date d
-                       ON d.start_of_month = DATE_TRUNC('month', u.from_date)
+                       ON d.start_of_month = DATE_TRUNC('month', u.date)
     GROUP BY d.start_of_month, u.loyalty_plan_company)
 
    , combine_all AS (
