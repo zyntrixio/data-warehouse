@@ -36,9 +36,9 @@ WITH lc_metric AS (
 
     , combine_all AS (
     SELECT date
-         , category
-         , loyalty_plan_company
+         , category 
          , loyalty_plan_name
+         , loyalty_plan_company
          , lc347__successful_loyalty_card_joins__monthly_retailer__count
          , lc333__sucessful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count
          , NULL AS lc201__loyalty_card_active_pll__monthly_retailer__pit
