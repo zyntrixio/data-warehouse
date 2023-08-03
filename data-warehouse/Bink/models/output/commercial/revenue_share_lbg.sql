@@ -28,7 +28,7 @@ WITH joins AS (
          , channel
          , brand
          , loyalty_plan_company
-         , u107__active_users_brand_retailer_monthly__dcount_user
+         , U109__ACTIVE_USERS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_UID
          , 'ACTIVE' AS tab
     FROM {{ ref('user__transactions__monthly_user_level') }}
     WHERE channel = 'LLOYDS'
@@ -41,7 +41,7 @@ WITH joins AS (
          , brand
          , loyalty_plan_company
          , LC328__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-         , NULL AS u107__active_users_brand_retailer_monthly__dcount_user
+         , NULL AS U109__ACTIVE_USERS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_UID
     FROM joins
     UNION ALL
     SELECT date
@@ -50,7 +50,7 @@ WITH joins AS (
          , brand
          , loyalty_plan_company
          , NULL AS LC328__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-         , u107__active_users_brand_retailer_monthly__dcount_user
+         , U109__ACTIVE_USERS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_UID
     FROM active)
 
 SELECT *

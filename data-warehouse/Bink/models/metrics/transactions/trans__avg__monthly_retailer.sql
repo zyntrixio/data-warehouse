@@ -35,11 +35,11 @@ WITH trans_events AS (
     SELECT date
          , loyalty_plan_company
          , loyalty_plan_name
-         , DIV0(t009__spend__monthly_retailer__sum, t011__txns__monthly_retailer__dcount) AS t014__aov__monthly_retailer
+         , DIV0(t009__spend__monthly_retailer__sum, t011__txns__monthly_retailer__dcount) AS T014__AOV__MONTHLY_RETAILER__AVG
          , DIV0(t009__spend__monthly_retailer__sum,
-                U107_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__DCOUNT_UID)                    AS t015__arpu__monthly_retailer
+                U107_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__DCOUNT_UID)                    AS T015__ARPU__MONTHLY_RETAILER__AVG
          , DIV0(t011__txns__monthly_retailer__dcount,
-                U107_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__DCOUNT_UID)                    AS t016__atf__monthly_retailer
+                U107_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__DCOUNT_UID)                    AS T016__ATF__MONTHLY_RETAILER__AVG
     FROM joins)
 
 SELECT *

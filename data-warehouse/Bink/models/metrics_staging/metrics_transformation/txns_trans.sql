@@ -17,7 +17,7 @@ WITH trans_events AS (
 
    , transforming_refs AS (
     SELECT date
-         // , user_id
+         , user_id
          // , external_user_ref
          , channel
          , brand

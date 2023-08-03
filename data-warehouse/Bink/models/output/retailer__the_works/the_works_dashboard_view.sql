@@ -46,9 +46,9 @@ WITH lc_metric AS (
          , NULL AS U108_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__CDCOUNT_UID
          , NULL AS t011__txns__monthly_retailer__dcount
          , NULL AS t009__spend__monthly_retailer__sum
-         , NULL AS t014__aov__monthly_retailer
-         , NULL AS t016__atf__monthly_retailer
-         , NULL AS t015__arpu__monthly_retailer
+         , NULL AS T014__AOV__MONTHLY_RETAILER__AVG__AVG
+         , NULL AS T016__ATF__MONTHLY_RETAILER__AVG
+         , NULL AS T015__ARPU__MONTHLY_RETAILER__AVG
     FROM lc_metric
     UNION ALL
     SELECT date
@@ -62,9 +62,9 @@ WITH lc_metric AS (
          , NULL AS U108_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__CDCOUNT_UID
          , t011__txns__monthly_retailer__dcount
          , t009__spend__monthly_retailer__sum
-         , NULL AS t014__aov__monthly_retailer
-         , NULL AS t016__atf__monthly_retailer
-         , NULL AS t015__arpu__monthly_retailer
+         , NULL AS T014__AOV__MONTHLY_RETAILER__AVG
+         , NULL AS T016__ATF__MONTHLY_RETAILER__AVG
+         , NULL AS T015__ARPU__MONTHLY_RETAILER__AVG
     FROM txn_metrics
     UNION ALL
     SELECT date
@@ -78,9 +78,9 @@ WITH lc_metric AS (
          , NULL AS U108_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__CDCOUNT_UID
          , NULL AS t011__txns__monthly_retailer__dcount
          , NULL AS t009__spend__monthly_retailer__sum
-         , t014__aov__monthly_retailer
-         , t016__atf__monthly_retailer
-         , t015__arpu__monthly_retailer
+         , T014__AOV__MONTHLY_RETAILER__AVG
+         , T016__ATF__MONTHLY_RETAILER__AVG
+         , T015__ARPU__MONTHLY_RETAILER__AVG
     FROM txn_avg
     UNION ALL
     SELECT date
@@ -94,9 +94,9 @@ WITH lc_metric AS (
          , U108_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__CDCOUNT_UID
          , NULL AS t011__txns__monthly_retailer__dcount
          , NULL AS t009__spend__monthly_retailer__sum
-         , NULL AS t014__aov__monthly_retailer
-         , NULL AS t016__atf__monthly_retailer
-         , NULL AS t015__arpu__monthly_retailer
+         , NULL AS T014__AOV__MONTHLY_RETAILER__AVG
+         , NULL AS T016__ATF__MONTHLY_RETAILER__AVG
+         , NULL AS T015__ARPU__MONTHLY_RETAILER__AVG
     FROM user_metrics
     UNION ALL
     SELECT date
@@ -110,9 +110,9 @@ WITH lc_metric AS (
          , NULL AS U108_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__CDCOUNT_UID
          , NULL AS t011__txns__monthly_retailer__dcount
          , NULL AS t009__spend__monthly_retailer__sum
-         , NULL AS t014__aov__monthly_retailer
-         , NULL AS t016__atf__monthly_retailer
-         , NULL AS t015__arpu__monthly_retailer
+         , NULL AS T014__AOV__MONTHLY_RETAILER__AVG
+         , NULL AS T016__ATF__MONTHLY_RETAILER__AVG
+         , NULL AS T015__ARPU__MONTHLY_RETAILER__AVG
     FROM pll_metrics)
 
 SELECT *
