@@ -18,7 +18,7 @@ WITH txn_events AS (
     SELECT DISTINCT start_of_month, end_of_month
     FROM {{ ref('dim_date') }}
     WHERE date >= (
-        SELECT MIN(transaction_date)
+        SELECT MIN(date)
         FROM txn_events)
       AND date <= CURRENT_DATE())
 
@@ -28,7 +28,7 @@ WITH txn_events AS (
          , loyalty_plan_name
          , loyalty_plan_company
          , status
-         , DATE_TRUNC('month', transaction_date) AS transaction_date
+         , DATE_TRUNC('month', date) AS date
          , spend_amount
          , loyalty_card_id
     FROM txn_events)
@@ -36,13 +36,13 @@ WITH txn_events AS (
    , txn_period AS (
     SELECT d.start_of_month                                                                 AS date
          , s.loyalty_plan_company
-         , SUM(CASE WHEN status = 'TXNS' OR status = 'OTHER' THEN s.spend_amount END)       AS spend_amount_period_positive
+         , SUM(CASE WHEN status = 'TXNS' THEN s.spend_amount END)                           AS spend_amount_period_positive
          , SUM(CASE WHEN status = 'REFUND' THEN s.spend_amount END)                         AS refund_amount_period
-         , COALESCE(COUNT(DISTINCT CASE WHEN status = 'BNPL' THEN transaction_id END), 0)   AS count_bnpl_period
-         , COALESCE(COUNT(DISTINCT CASE WHEN status = 'TXNS' THEN transaction_id END), 0)   AS count_transaction_period
-         , COALESCE(COUNT(DISTINCT CASE WHEN status = 'REFUND' THEN transaction_id END), 0) AS count_refund_period
+         , COUNT(DISTINCT CASE WHEN status = 'BNPL' THEN transaction_id END)                AS count_bnpl_period
+         , COUNT(DISTINCT CASE WHEN status = 'TXNS' THEN transaction_id END)                AS count_transaction_period
+         , COUNT(DISTINCT CASE WHEN status = 'REFUND' THEN transaction_id END)              AS count_refund_period
     FROM stage s
-             LEFT JOIN dim_date d ON d.start_of_month = DATE_TRUNC('month', s.transaction_date)
+             LEFT JOIN dim_date d ON d.start_of_month = DATE_TRUNC('month', s.date)
     GROUP BY d.start_of_month, s.loyalty_plan_company)
 
    , txn_cumulative AS (
