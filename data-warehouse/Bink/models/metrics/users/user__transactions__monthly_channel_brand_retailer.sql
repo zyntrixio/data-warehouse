@@ -31,7 +31,7 @@ WITH user_events AS (
          , loyalty_plan_name
          , COUNT(DISTINCT u109__active_users__monthly_Channel_brand_retailer__dcount_uid) as U109__ACTIVE_USERS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_UID
     FROM metrics
-    GROUP BY date, channel, brand, loyalty_plan_company)
+    GROUP BY date, channel, brand, loyalty_plan_company, loyalty_plan_name)
 
 SELECT *
 FROM agg

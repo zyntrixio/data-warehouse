@@ -33,7 +33,7 @@ WITH user_events AS (
     FROM user_events u
              LEFT JOIN dim_date d
                        ON DATE(u.date) <= d.end_of_month
-    GROUP BY d.start_of_month, u.loyalty_plan_company)
+    GROUP BY d.start_of_month, u.loyalty_plan_company, u.loyalty_plan_name)
 
    , user_period AS (
     SELECT d.start_of_month                      AS date
@@ -43,7 +43,7 @@ WITH user_events AS (
     FROM user_events u
              LEFT JOIN dim_date d
                        ON d.start_of_month = DATE_TRUNC('month', u.date)
-    GROUP BY d.start_of_month, u.loyalty_plan_company)
+    GROUP BY d.start_of_month, u.loyalty_plan_company, u.loyalty_plan_name)
 
    , combine_all AS (
     SELECT COALESCE(s.date, p.date)                                             AS date

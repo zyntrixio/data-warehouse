@@ -44,7 +44,7 @@ WITH txn_events AS (
          , COUNT(DISTINCT CASE WHEN status = 'REFUND' THEN transaction_id END)              AS count_refund_period
     FROM stage s
              LEFT JOIN dim_date d ON d.start_of_month = DATE_TRUNC('month', s.date)
-    GROUP BY d.start_of_month, s.loyalty_plan_company)
+    GROUP BY d.start_of_month, s.loyalty_plan_company, s.loyalty_plan_name)
 
    , txn_cumulative AS (
     SELECT date

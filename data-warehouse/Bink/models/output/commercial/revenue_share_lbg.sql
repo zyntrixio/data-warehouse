@@ -30,7 +30,7 @@ WITH joins AS (
          , loyalty_plan_company
          , U109__ACTIVE_USERS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_UID
          , 'ACTIVE' AS tab
-    FROM {{ ref('user__transactions__monthly_user_level') }}
+    FROM {{ ref('user__transactions__monthly_channel_brand_retailer') }}
     WHERE channel = 'LLOYDS'
       AND loyalty_plan_company NOT IN ('Loyalteas', 'Bink Sweet Shop'))
 

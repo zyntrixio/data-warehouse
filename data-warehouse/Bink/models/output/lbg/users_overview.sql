@@ -52,7 +52,7 @@ WITH lc_metrics_retailer AS (
     SELECT
         *
         ,'USERS' AS TAB
-    FROM {{ref('user__registrations__daily__channel_brand')}}
+    FROM {{ref('user__registrations__daily_channel_brand')}}
     WHERE CHANNEL = 'LLOYDS'
 )
 
