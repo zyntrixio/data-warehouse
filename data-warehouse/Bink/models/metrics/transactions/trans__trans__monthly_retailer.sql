@@ -16,7 +16,7 @@ WITH txn_events AS (
 
    , dim_date AS (
     SELECT DISTINCT start_of_month, end_of_month
-    FROM {{ ref('dim_date') }}
+    FROM {{ ref('stg_metrics__dim_date') }}
     WHERE date >= (
         SELECT MIN(date)
         FROM txn_events)
