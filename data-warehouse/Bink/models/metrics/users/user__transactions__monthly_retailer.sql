@@ -28,7 +28,8 @@ WITH user_events AS (
    , user_snap AS (
     SELECT d.start_of_month         AS date
          , u.loyalty_plan_company
-         , COUNT(DISTINCT user_ref) AS u108_active_users_brand_retailer_monthly__pit
+         , u.loyalty_plan_name
+         , COUNT(DISTINCT user_ref) AS U108_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__CDCOUNT_UID
     FROM user_events u
              LEFT JOIN dim_date d
                        ON DATE(u.date) <= d.end_of_month
@@ -37,7 +38,8 @@ WITH user_events AS (
    , user_period AS (
     SELECT d.start_of_month                      AS date
          , u.loyalty_plan_company
-         , COALESCE(COUNT(DISTINCT user_ref), 0) AS u107_active_users_brand_retailer_monthly__dcount_user
+         , u.loyalty_plan_name
+         , COALESCE(COUNT(DISTINCT user_ref), 0) AS u107_active_users_brand_retailer_monthly__dcount_uid
     FROM user_events u
              LEFT JOIN dim_date d
                        ON d.start_of_month = DATE_TRUNC('month', u.date)
@@ -46,8 +48,9 @@ WITH user_events AS (
    , combine_all AS (
     SELECT COALESCE(s.date, p.date)                                             AS date
          , COALESCE(s.loyalty_plan_company, p.loyalty_plan_company)             AS loyalty_plan_company
-         , COALESCE(s.u108_active_users_brand_retailer_monthly__pit, 0)         AS u108_active_users_brand_retailer_monthly__pit
-         , COALESCE(p.u107_active_users_brand_retailer_monthly__dcount_user, 0) AS u107_active_users_brand_retailer_monthly__dcount_user
+         , COALESCE(s.loyalty_plan_name, p.loyalty_plan_name)                   AS loyalty_plan_name
+         , COALESCE(s.U108_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__CDCOUNT_UID, 0) AS U108_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__CDCOUNT_UID
+         , COALESCE(p.u107_active_users_brand_retailer_monthly__dcount_uid, 0)  AS U107_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__DCOUNT_UID
     FROM user_snap s
              FULL OUTER JOIN user_period p ON s.date = p.date AND s.loyalty_plan_company = p.loyalty_plan_company)
 

@@ -42,8 +42,8 @@ WITH lc_metric AS (
          , lc347__successful_loyalty_card_joins__monthly_retailer__count
          , lc333__sucessful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count
          , NULL AS lc201__loyalty_card_active_pll__monthly_retailer__pit
-         , NULL AS u107_active_users_brand_retailer_monthly__dcount_user
-         , NULL AS u108_active_users_brand_retailer_monthly__pit
+         , NULL AS U107_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__DCOUNT_UID
+         , NULL AS U108_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__CDCOUNT_UID
          , NULL AS t011__txns__monthly_retailer__dcount
          , NULL AS t009__spend__monthly_retailer__sum
          , NULL AS t014__aov__monthly_retailer
@@ -53,13 +53,13 @@ WITH lc_metric AS (
     UNION ALL
     SELECT date
          , category
-         , NULL AS loyalty_plan_name
+         , loyalty_plan_name
          , loyalty_plan_company
          , NULL AS lc347__successful_loyalty_card_joins__monthly_retailer__count
          , NULL AS lc333__sucessful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count
          , NULL AS lc201__loyalty_card_active_pll__monthly_retailer__pit
-         , NULL AS u107_active_users_brand_retailer_monthly__dcount_user
-         , NULL AS u108_active_users_brand_retailer_monthly__pit
+         , NULL AS U107_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__DCOUNT_UID
+         , NULL AS U108_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__CDCOUNT_UID
          , t011__txns__monthly_retailer__dcount
          , t009__spend__monthly_retailer__sum
          , NULL AS t014__aov__monthly_retailer
@@ -69,13 +69,13 @@ WITH lc_metric AS (
     UNION ALL
     SELECT date
          , category
-         , NULL AS loyalty_plan_name
+         , loyalty_plan_name
          , loyalty_plan_company
          , NULL AS lc347__successful_loyalty_card_joins__monthly_retailer__count
          , NULL AS lc333__sucessful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count
          , NULL AS lc201__loyalty_card_active_pll__monthly_retailer__pit
-         , NULL AS u107_active_users_brand_retailer_monthly__dcount_user
-         , NULL AS u108_active_users_brand_retailer_monthly__pit
+         , NULL AS U107_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__DCOUNT_UID
+         , NULL AS U108_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__CDCOUNT_UID
          , NULL AS t011__txns__monthly_retailer__dcount
          , NULL AS t009__spend__monthly_retailer__sum
          , t014__aov__monthly_retailer
@@ -85,13 +85,13 @@ WITH lc_metric AS (
     UNION ALL
     SELECT date
          , category
-         , NULL AS loyalty_plan_name
+         , loyalty_plan_name
          , loyalty_plan_company
          , NULL AS lc347__successful_loyalty_card_joins__monthly_retailer__count
          , NULL AS lc333__sucessful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count
          , NULL AS lc201__loyalty_card_active_pll__monthly_retailer__pit
-         , u107_active_users_brand_retailer_monthly__dcount_user
-         , u108_active_users_brand_retailer_monthly__pit
+         , U107_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__DCOUNT_UID
+         , U108_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__CDCOUNT_UID
          , NULL AS t011__txns__monthly_retailer__dcount
          , NULL AS t009__spend__monthly_retailer__sum
          , NULL AS t014__aov__monthly_retailer
@@ -101,13 +101,13 @@ WITH lc_metric AS (
     UNION ALL
     SELECT date
          , category
-         , NULL AS loyalty_plan_name
+         , loyalty_plan_name
          , loyalty_plan_company
          , NULL AS lc347__successful_loyalty_card_joins__monthly_retailer__count
          , NULL AS lc333__sucessful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count
          , lc201__loyalty_card_active_pll__monthly_retailer__pit
-         , NULL AS u107_active_users_brand_retailer_monthly__dcount_user
-         , NULL AS u108_active_users_brand_retailer_monthly__pit
+         , NULL AS U107_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__DCOUNT_UID
+         , NULL AS U108_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__CDCOUNT_UID
          , NULL AS t011__txns__monthly_retailer__dcount
          , NULL AS t009__spend__monthly_retailer__sum
          , NULL AS t014__aov__monthly_retailer

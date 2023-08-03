@@ -36,6 +36,7 @@ WITH txn_events AS (
    , txn_period AS (
     SELECT d.start_of_month                                                                 AS date
          , s.loyalty_plan_company
+         , s.loyalty_plan_name
          , SUM(CASE WHEN status = 'TXNS' THEN s.spend_amount END)                           AS spend_amount_period_positive
          , SUM(CASE WHEN status = 'REFUND' THEN s.spend_amount END)                         AS refund_amount_period
          , COUNT(DISTINCT CASE WHEN status = 'BNPL' THEN transaction_id END)                AS count_bnpl_period
@@ -48,6 +49,7 @@ WITH txn_events AS (
    , txn_cumulative AS (
     SELECT date
          , loyalty_plan_company
+         , loyalty_plan_name
          , SUM(spend_amount_period_positive) OVER (PARTITION BY loyalty_plan_company ORDER BY date) AS cumulative_spend
          , SUM(refund_amount_period) OVER (PARTITION BY loyalty_plan_company ORDER BY date)         AS cumulative_refund
          , SUM(count_bnpl_period)
@@ -60,6 +62,7 @@ WITH txn_events AS (
    , combine_all AS (
     SELECT COALESCE(s.date, p.date)                                 AS date
          , COALESCE(s.loyalty_plan_company, p.loyalty_plan_company) AS loyalty_plan_company
+         , COALESCE(s.loyalty_plan_name, p.loyalty_plan_name)       AS loyalty_plan_name
          , COALESCE(s.cumulative_spend, 0)                          AS t004__spend__monthly_retailer__csum
          , COALESCE(s.cumulative_refund, 0)                         AS t005__refund__monthly_retailer__csum
          , COALESCE(s.cumulative_txns, 0)                           AS t006__txns__monthly_retailer__csum

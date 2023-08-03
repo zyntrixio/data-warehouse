@@ -19,6 +19,7 @@ WITH user_events AS (
          , channel
          , brand
          , loyalty_plan_company
+         , loyalty_plan_name
          , COALESCE(NULLIF(external_user_ref, ''), user_id) AS u107__active_users_brand_retailer_monthly__dcount_user
     FROM user_events)
 
@@ -27,6 +28,7 @@ WITH user_events AS (
          , channel
          , brand
          , loyalty_plan_company
+         , loyalty_plan_name
          , COUNT(DISTINCT u107__active_users_brand_retailer_monthly__dcount_user) as u107__active_users_brand_retailer_monthly__dcount_user
     FROM metrics
     GROUP BY date, channel, brand, loyalty_plan_company)
