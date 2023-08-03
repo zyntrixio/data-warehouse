@@ -53,7 +53,7 @@ WITH lc_metric AS (
     UNION ALL
     SELECT date
          , category
-         , NULL AS loyalty_plan_name
+         , loyalty_plan_name
          , loyalty_plan_company
          , NULL AS lc347__successful_loyalty_card_joins__monthly_retailer__count
          , NULL AS lc333__sucessful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count
