@@ -15,9 +15,9 @@ WITH trans_events AS (
     SELECT *
     FROM {{ ref('stg_metrics__fact_transaction') }})
 
-   , transforming_deletes AS (
+   , transforming_refs AS (
     SELECT date
-         // , user_id
+         , user_id
          // , external_user_ref
          , channel
          , brand
@@ -34,22 +34,15 @@ WITH trans_events AS (
          // , payment_account_id
     FROM trans_events)
 
-   , to_from_dates AS (
-    SELECT channel
-         , brand
-         , user_ref
-         , transaction_id
-         , loyalty_plan_name
-         , loyalty_plan_company
-         , transaction_date
-         , spend_amount
-         , loyalty_card_id
-         , date AS from_date
-         , COALESCE(
-            LEAD(date, 1) OVER (PARTITION BY user_ref, loyalty_plan_name ORDER BY date)
-        , CURRENT_TIMESTAMP
-        )       AS to_date
-    FROM transforming_deletes)
+    , txn_flag AS (
+    SELECT *
+         , CASE
+               WHEN spend_amount > 1 THEN 'TXNS'
+               WHEN spend_amount = 1 OR spend_amount = -1 THEN 'BNPL'
+               WHEN spend_amount < -1 THEN 'REFUND'
+               ELSE 'OTHER'
+        END AS status
+    FROM transforming_refs)
 
 SELECT *
-FROM to_from_dates
+FROM txn_flag

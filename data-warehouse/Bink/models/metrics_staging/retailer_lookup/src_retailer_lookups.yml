@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+ 
+  - name: RETAILER_LOOKUP
+    description: Bink retailer lookup tables schema
+    database: RAW
+    schema: RETAILER_LOOKUP
+    tags: ['source']
+
+    tables:
+      - name: VIATOR_REF_FILE
+        identifier: VIATOR_REF_FILE
+        description: Reference for naming convention 
+
+      - name: THE_WORKS_REF_FILE
+        identifier: THE_WORKS_REF_FILE
+        description: Reference for naming convention 

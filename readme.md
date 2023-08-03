@@ -6,6 +6,16 @@ LOTS OF TECHNICAL DEBT, PLEASE BE CAREFUL.
 
 ## Installation
 
+Firstly, any users of this repository will require DBT to be installed locally. Please follow the link below:
+
+[DBT Installation Instructions](https://docs.getdbt.com/docs/core/homebrew-install)
+
+You will then need a copy of the company ```profiles.yaml``` to provide you with the correct data warehouse locations, environments, and passwords.
+
+Once this is installed, you can follow the commands below to get the repository up and running.
+
+### DBT
+
 ```shell
 git clone {url/ssh}
 cd data-warehouse && cd bink
@@ -15,12 +25,21 @@ dbt deps
 ```
 And you are ready to go.
 
-## Usage
+#### Usage
 
 ```shell
 dbt run -t uat # for UAT
 dbt run -t prod # for prod
-dbt run -t --select {name of model} # for a specific model
+dbt run -t uat --select {name of model} # for a specific model
+```
+
+### Prefect Orchestration
+
+```shell
+git clone {url/ssh}
+cd data-warehouse && cd prefect
+
+# to do dockerfile guide to host prefect locally for development
 ```
 
 ## Contributing

@@ -1,0 +1,7 @@
+version: 2
+
+models:
+  - name: viator_dashboard_view
+    description: Data source for testing Viator Overview
+  - name: viator_12_month
+    description: Data source for Viator 12 month rolling

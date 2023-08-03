@@ -45,6 +45,8 @@ models:
         +schema: "WAREHOUSE"      
       lookup:
         +schema: "LOOKUP"
+      retailer_lookup:
+        +schema: "RETAILER_LOOKUP"
       metrics_transformation:
         +schema: "TRANSFORMATION"
 
@@ -71,11 +73,21 @@ models:
       commercial:
         +schema: "COMMERCIAL"
         materialized: table
+      retailer__the_works:
+        +schema: "RETAILER__THE_WORKS"
+        materialized: table
+      retailer__viator:
+        +schema: "RETAILER__VIATOR"
+        materialized: table
 
 seeds:
   Bink:
-    +database: "ANALYTICS"
-    +schema: "BINK_LOOKUP"
+    lookup:
+      +database: "ANALYTICS" #to be moved to raw eventually
+      +schema: "BINK_LOOKUP"
+    retailer:
+      +database: "RAW"
+      +schema: "RETAILER_LOOKUP"
         
   elementary:
     +database: 'MONITORING'
