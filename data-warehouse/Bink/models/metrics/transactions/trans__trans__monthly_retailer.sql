@@ -36,7 +36,7 @@ WITH txn_events AS (
    , txn_period AS (
     SELECT d.start_of_month                                                                 AS date
          , s.loyalty_plan_company
-         , SUM(CASE WHEN status = 'TXNS' THEN s.spend_amount END)                           AS spend_amount_period_positive
+         , SUM(CASE WHEN status = 'TXNS' OR status = 'OTHER' THEN s.spend_amount END)       AS spend_amount_period_positive
          , SUM(CASE WHEN status = 'REFUND' THEN s.spend_amount END)                         AS refund_amount_period
          , COALESCE(COUNT(DISTINCT CASE WHEN status = 'BNPL' THEN transaction_id END), 0)   AS count_bnpl_period
          , COALESCE(COUNT(DISTINCT CASE WHEN status = 'TXNS' THEN transaction_id END), 0)   AS count_transaction_period
