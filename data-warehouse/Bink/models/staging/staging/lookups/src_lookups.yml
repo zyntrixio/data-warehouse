@@ -30,11 +30,11 @@ sources:
               - not_null
 
       - name: PAYMENT_STATUS
-        identifier: PAYMENT_ACCOUNT_STATUS_MAPPING
+        identifier: PAYMENT_CARD_ACCOUNT_STATUS_MAPPING
         description: Mapping for status id for payment account dimension
         columns:
           - name: 'ID'
-            description: ID for PAYMENT_ACCOUNT_STATUS_MAPPING table
+            description: ID for PAYMENT_CARD_ACCOUNT_STATUS_MAPPING table
             tests:
               - unique
               - not_null
