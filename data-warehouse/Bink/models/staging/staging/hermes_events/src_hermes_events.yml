@@ -1,10 +1,10 @@
 version: 2
 
 sources:
-  - name: hermes_events
+  - name: snowstorm
     description: Heremes events schema
     database: RAW
-    schema: SERVICE_DATA #This needs to be changed once new structrue is created
+    schema: SNOWSTORM #This needs to be changed once new structrue is created
     tags: ['source']
 
     tables:

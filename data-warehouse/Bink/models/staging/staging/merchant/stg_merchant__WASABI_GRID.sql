@@ -1,3 +1,5 @@
+{{ config(enabled = false)}}
+
 WITH wasabi_grid AS (
     SELECT *
     FROM {{source('MERCHANT','WASABI_GRID')}}

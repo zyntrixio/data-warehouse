@@ -83,7 +83,7 @@ models:
 seeds:
   Bink:
     lookup:
-      +database: "ANALYTICS" #to be moved to raw eventually
+      +database: "RAW" #to be moved to raw eventually
       +schema: "BINK_LOOKUP"
     retailer:
       +database: "RAW"

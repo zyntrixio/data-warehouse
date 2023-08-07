@@ -1,10 +1,10 @@
 version: 2
 
 sources:
-  - name: service_data
+  - name: snowstorm
     description: operational data for SLAs and APIs
     database: RAW
-    schema: SERVICE_DATA
+    schema: SNOWSTORM
     tags: ['source']
 
     tables:
