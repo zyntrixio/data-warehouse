@@ -8,7 +8,7 @@ Description:
     Stages the apistats table
 
 Parameters:
-    source_object      - SERVICE_DATA.APISTATS
+    source_object      - SNOWSTORM.APISTATS
 */
 
 {{
@@ -23,7 +23,7 @@ all_events as (
 	SELECT
 		*
 	FROM
-		{{ source('service_data', 'apistats') }}
+		{{ source('snowstorm', 'apistats') }}
 	{% if is_incremental() %}
   	WHERE _AIRBYTE_EMITTED_AT >= (SELECT MAX(_AIRBYTE_EMITTED_AT) from {{ this }})
 	{% endif %}

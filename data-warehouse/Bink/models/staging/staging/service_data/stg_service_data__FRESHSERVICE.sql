@@ -8,7 +8,7 @@ Description:
     Stages the freshservice table
 
 Parameters:
-    source_object      - SERVICE_DATA.FRESHSERVICE
+    source_object      - SNOWSTORM.FRESHSERVICE
 */
 
 
@@ -17,7 +17,7 @@ all_data as (
 	SELECT
 		*
 	FROM
-		{{ source('service_data', 'freshservice') }}
+		{{ source('snowstorm', 'freshservice') }}
 )
 
 ,all_data_select as (

@@ -24,6 +24,8 @@ WITH trans_events AS (
          , COALESCE(NULLIF(external_user_ref, ''), user_id) AS user_ref
          , transaction_id
          // , provider_slug
+         ,DUPLICATE_TRANSACTION
+         ,FEED_TYPE
          , loyalty_plan_name
          , loyalty_plan_company
          , transaction_date
@@ -36,11 +38,12 @@ WITH trans_events AS (
 
     , txn_flag AS (
     SELECT *
-         , CASE
-               WHEN spend_amount > 1 THEN 'TXNS'
-               WHEN spend_amount = 1 OR spend_amount = -1 THEN 'BNPL'
-               WHEN spend_amount < -1 THEN 'REFUND'
-               ELSE 'OTHER'
+         ,CASE 
+            WHEN DUPLICATE_TRANSACTION THEN 'DUPLICATE'
+            WHEN loyalty_plan_company = 'Viator' AND (spend_amount = 1 OR spend_amount = -1) THEN 'BNPL'
+            WHEN spend_amount > 0 THEN 'TXNS'
+            WHEN spend_amount < 0 THEN 'REFUND'
+            ELSE 'OTHER'
         END AS status
     FROM transforming_refs)
 
