@@ -23,7 +23,7 @@ WITH
 transaction_events AS (
 	SELECT *
 	FROM {{ ref('transformed_hermes_events')}}
-	WHERE EVENT_TYPE = 'transaction.exported'
+	WHERE EVENT_TYPE IN ('transaction.exported', 'transaction.duplicate')
 	{% if is_incremental() %}
   	AND _AIRBYTE_NORMALIZED_AT>= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
 	{% endif %}
@@ -88,6 +88,7 @@ transaction_events AS (
 		,TRANSACTION_ID
 		,PROVIDER_SLUG
 		,FEED_TYPE
+		,EVENT_TYPE = 'transaction.duplicate' AS DUPLICATE_TRANSACTION
 		,lp.LOYALTY_PLAN_NAME
 		,lp.LOYALTY_PLAN_COMPANY
 		,TRANSACTION_DATE
