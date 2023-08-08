@@ -40,7 +40,7 @@ WITH trans_events AS (
     SELECT *
          ,CASE 
             WHEN DUPLICATE_TRANSACTION THEN 'DUPLICATE'
-            WHEN loyalty_plan_company = 'Viator' AND spend_amount = 1 OR spend_amount = -1 THEN 'BNPL'
+            WHEN loyalty_plan_company = 'Viator' AND (spend_amount = 1 OR spend_amount = -1) THEN 'BNPL'
             WHEN spend_amount > 0 THEN 'TXNS'
             WHEN spend_amount < 0 THEN 'REFUND'
             ELSE 'OTHER'
