@@ -31,8 +31,7 @@ with events_src as (
         ,'lc.removed'
         ,'lc.addandauth.failed'
         ,'lc.register.request'
-        ,'transaction.duplicate'
-        ,'pll_link.statuschange')
+        ,'transaction.duplicate')
 )
 
  ,fact_tables as (
@@ -66,13 +65,13 @@ with events_src as (
 ,events_minus_facts as (
     SELECT EVENT_ID FROM events_src
     EXCEPT 
-    SELECT EVENT_ID FROM fact_tables
+    SELECT EVENT_ID  FROM fact_tables
 )
 
 ,facts_minus_events as (
-    SELECT EVENT_ID FROM fact_tables
+    SELECT EVENT_ID  FROM fact_tables
     EXCEPT
-    SELECT EVENT_ID FROM events_src
+    SELECT EVENT_ID  FROM events_src
 )
 
 ,sum_except_all as (
