@@ -3,3 +3,18 @@ version: 2
 models:
   - name: the_works_dashboard_view
     description: Data source for the works overview
+    columns:
+     - name: 'LOYALTY_PLAN_COMPANY'
+       tests:
+        - not_null  
+        - accepted_values:
+            values: ['The Works']
+
+  - name: the_works_12_month
+    description: Data source for the works overview
+    columns:
+     - name: 'LOYALTY_PLAN_COMPANY'
+       tests:
+        - not_null  
+        - accepted_values:
+            values: ['The Works']

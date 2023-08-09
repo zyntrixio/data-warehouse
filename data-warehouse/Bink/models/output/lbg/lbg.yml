@@ -3,13 +3,48 @@ version: 2
 models:
   - name: users_overview
     description: Data source for user overview
+    columns:
+     - name: 'CHANNEL'
+       tests:
+        - not_null  
+        - accepted_values:
+            values: ['LLOYDS']
+
   - name: loyalty_cards_overview
     description: Data source for loyalty cards overview
+    columns:
+     - name: 'CHANNEL'
+       tests:
+        - not_null  
+        - accepted_values:
+            values: ['LLOYDS']
+
   - name: errors_overview
     description: Data source for loyalty cards errors overview
+    columns:
+     - name: 'CHANNEL'
+       tests:
+        - not_null  
+        - accepted_values:
+            values: ['LLOYDS']
+            
   - name: loyalty_card_error_funnel
     description: Data source for loyalty cards errors funnel
+    columns:
+     - name: 'CHANNEL'
+       tests:
+        - not_null  
+        - accepted_values:
+            values: ['LLOYDS']
+            
   - name: vouchers_overview
     description: Data source for vouchers overview
+    columns:
+     - name: 'CHANNEL'
+       tests:
+        - not_null  
+        - accepted_values:
+            values: ['LLOYDS']    
+
   - name: data_freshness
     description: Data source for data freshness

@@ -30,7 +30,9 @@ with events_src as (
         ,'transaction.exported'
         ,'lc.removed'
         ,'lc.addandauth.failed'
-        ,'lc.register.request')
+        ,'lc.register.request'
+        ,'transaction.duplicate'
+        ,'pll_link.statuschange')
 )
 
  ,fact_tables as (
