@@ -3,6 +3,7 @@
  
  Created By:     Chris Mitchell
  Created Date:   2023-08-09
+ force git update
  */
 
 {{ config(
