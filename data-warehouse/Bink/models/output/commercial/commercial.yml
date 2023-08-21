@@ -2,3 +2,9 @@ version: 2
 
 models:
   - name: revenue_share_lbg
+    columns:
+     - name: 'CHANNEL'
+       tests:
+        - not_null  
+        - accepted_values:
+            values: ['LLOYDS']

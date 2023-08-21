@@ -10,27 +10,29 @@ with events_src as (
     WHERE EVENT_TYPE IN
         ('lc.addandauth.request'
         ,'lc.auth.request'
-        ,'user.created'
         ,'lc.auth.failed'
+        ,'lc.statuschange'
+        ,'lc.join.request'
+        ,'lc.join.success'
         ,'lc.register.failed'
-        -- ,'pll_link.statuschange'
-        --,'transaction.exported.response'
         ,'lc.addandauth.success'
         ,'lc.join.failed'
         ,'lc.register.success'
-        ,'user.deleted'
         ,'lc.auth.success'
+        ,'lc.removed'
+        ,'lc.addandauth.failed'
+        ,'lc.register.request'
         ,'payment.account.added'
         ,'payment.account.status.change'
         ,'payment.account.removed'
-        ,'lc.statuschange'
-        ,'lc.join.request'
-        ,'user.session.start'
-        ,'lc.join.success'
         ,'transaction.exported'
-        ,'lc.removed'
-        ,'lc.addandauth.failed'
-        ,'lc.register.request')
+        ,'transaction.duplicate'
+        ,'user.created'
+        ,'user.session.start'
+        ,'user.deleted'
+        -- ,'pll_link.statuschange'
+        --,'transaction.exported.response'
+        )
 )
 
  ,fact_tables as (
@@ -64,13 +66,13 @@ with events_src as (
 ,events_minus_facts as (
     SELECT EVENT_ID FROM events_src
     EXCEPT 
-    SELECT EVENT_ID FROM fact_tables
+    SELECT EVENT_ID  FROM fact_tables
 )
 
 ,facts_minus_events as (
-    SELECT EVENT_ID FROM fact_tables
+    SELECT EVENT_ID  FROM fact_tables
     EXCEPT
-    SELECT EVENT_ID FROM events_src
+    SELECT EVENT_ID  FROM events_src
 )
 
 ,sum_except_all as (
