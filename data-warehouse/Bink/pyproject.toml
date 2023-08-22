@@ -30,7 +30,7 @@ line-length = 120
 
 [tool.sqlfmt]
 exclude = ["target/**/*", "dbt_packages/**/*"]
-line_length = 99
+line_length = 120
 check = true
 
 [build-system]
