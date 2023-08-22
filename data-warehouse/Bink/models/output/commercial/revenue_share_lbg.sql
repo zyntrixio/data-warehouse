@@ -10,48 +10,59 @@ Parameters:
     source_object       - lc__links_joins__monthly_retailer_channel
                         - User__transactions__monthly_user_level
 */
+with
+    joins as (
+        select
+            date,
+            channel,
+            brand,
+            loyalty_plan_name,
+            loyalty_plan_company,
+            lc328__successful_loyalty_card_joins__monthly_channel_brand_retailer__dcount_user
+            ,
+            'JOINS' as tab
+        from {{ ref("lc__links_joins__monthly_retailer_channel") }}
+        where
+            channel = 'LLOYDS'
+            and loyalty_plan_company not in ('Loyalteas', 'Bink Sweet Shop')
+    ),
+    active as (
+        select
+            date,
+            channel,
+            brand,
+            loyalty_plan_company,
+            u109__active_users__monthly_channel_brand_retailer__dcount_uid,
+            'ACTIVE' as tab
+        from {{ ref("user__transactions__monthly_channel_brand_retailer") }}
+        where
+            channel = 'LLOYDS'
+            and loyalty_plan_company not in ('Loyalteas', 'Bink Sweet Shop')
+    ),
+    combine as (
+        select
+            date,
+            tab,
+            channel,
+            brand,
+            loyalty_plan_company,
+            lc328__successful_loyalty_card_joins__monthly_channel_brand_retailer__dcount_user
+            ,
+            null as u109__active_users__monthly_channel_brand_retailer__dcount_uid
+        from joins
+        union all
+        select
+            date,
+            tab,
+            channel,
+            brand,
+            loyalty_plan_company,
+            null
+            as lc328__successful_loyalty_card_joins__monthly_channel_brand_retailer__dcount_user
+            ,
+            u109__active_users__monthly_channel_brand_retailer__dcount_uid
+        from active
+    )
 
-WITH joins AS (
-    SELECT date
-         , channel
-         , brand
-         , loyalty_plan_name
-         , loyalty_plan_company
-         , LC328__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-         , 'JOINS' AS tab
-    FROM {{ ref('lc__links_joins__monthly_retailer_channel') }}
-    WHERE channel = 'LLOYDS'
-      AND loyalty_plan_company NOT IN ('Loyalteas', 'Bink Sweet Shop'))
-
-   , active AS (
-    SELECT date
-         , channel
-         , brand
-         , loyalty_plan_company
-         , U109__ACTIVE_USERS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_UID
-         , 'ACTIVE' AS tab
-    FROM {{ ref('user__transactions__monthly_channel_brand_retailer') }}
-    WHERE channel = 'LLOYDS'
-      AND loyalty_plan_company NOT IN ('Loyalteas', 'Bink Sweet Shop'))
-
-   , combine AS (
-    SELECT date
-         , tab
-         , channel
-         , brand
-         , loyalty_plan_company
-         , LC328__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-         , NULL AS U109__ACTIVE_USERS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_UID
-    FROM joins
-    UNION ALL
-    SELECT date
-         , tab
-         , channel
-         , brand
-         , loyalty_plan_company
-         , NULL AS LC328__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-         , U109__ACTIVE_USERS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_UID
-    FROM active)
-
-SELECT *
-FROM combine
+select *
+from combine
