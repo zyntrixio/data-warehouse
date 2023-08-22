@@ -1,28 +1,29 @@
 with
-    source as (select * from {{ ref("fact_loyalty_card_secure") }}),
-    renamed as (
-        select
-            event_id,
-            event_date_time,
-            auth_type,
-            event_type,
-            loyalty_card_id,
-            loyalty_plan,
-            loyalty_plan_name,
-            loyalty_plan_company,
-            is_most_recent,
-            channel,
-            origin,
-            brand,
-            user_id,
-            external_user_ref,
-            email_domain,
-            consent_slug,
-            consent_response,
-            inserted_date_time,
-            updated_date_time
-        from source
-    )
+source as (select * from {{ ref("fact_loyalty_card_secure") }}),
+
+renamed as (
+    select
+        event_id,
+        event_date_time,
+        auth_type,
+        event_type,
+        loyalty_card_id,
+        loyalty_plan,
+        loyalty_plan_name,
+        loyalty_plan_company,
+        is_most_recent,
+        channel,
+        origin,
+        brand,
+        user_id,
+        external_user_ref,
+        email_domain,
+        consent_slug,
+        consent_response,
+        inserted_date_time,
+        updated_date_time
+    from source
+)
 
 select *
 from renamed

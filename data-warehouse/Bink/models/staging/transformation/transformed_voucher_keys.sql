@@ -1,40 +1,41 @@
 with
-    vouchers as (select * from {{ ref("stg_hermes__VOUCHERS") }}),
-    de_dupe as (
-        select
-            loyalty_card_id,
-            loyalty_plan_id,
-            created,
-            code as voucher_code,
-            barcode_type,
-            body_text,
-            burn_currency,
-            burn_prefix,
-            burn_suffix,
-            burn_type,
-            burn_value,
-            earn_currency,
-            earn_prefix,
-            earn_suffix,
-            earn_target_value,
-            earn_type,
-            earn_value,
-            headline,
-            state,
-            subtext,
-            terms_and_conditions_url,
-            date_redeemed,
-            date_issued,
-            expiry_date,
-            row_number() over (
-                partition by loyalty_card_id, code order by created desc
-            ) as voucher_rank,
-            row_number() over (
-                partition by code order by created desc
-            ) as voucher_rank_rev
-        from vouchers
-        where code not like 'Due:%'
-    )
+vouchers as (select * from {{ ref("stg_hermes__VOUCHERS") }}),
+
+de_dupe as (
+    select
+        loyalty_card_id,
+        loyalty_plan_id,
+        created,
+        code as voucher_code,
+        barcode_type,
+        body_text,
+        burn_currency,
+        burn_prefix,
+        burn_suffix,
+        burn_type,
+        burn_value,
+        earn_currency,
+        earn_prefix,
+        earn_suffix,
+        earn_target_value,
+        earn_type,
+        earn_value,
+        headline,
+        state,
+        subtext,
+        terms_and_conditions_url,
+        date_redeemed,
+        date_issued,
+        expiry_date,
+        row_number() over (
+            partition by loyalty_card_id, code order by created desc
+        ) as voucher_rank,
+        row_number() over (
+            partition by code order by created desc
+        ) as voucher_rank_rev
+    from vouchers
+    where code not like 'Due:%'
+)
 
 select distinct
     d1.loyalty_card_id,
