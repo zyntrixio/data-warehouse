@@ -10,26 +10,22 @@ Description:
 Parameters:
     source_object      - HERMES.PAYMENT_CARD_PROVIDERSTATUSMAPPING
 */
+with
+    payment_card as (
+        select
+            id,
+            url,
+            name,
+            slug,
+            type,
+            system,
+            is_active,
+            input_label,
+            scan_message,
+            token_method,
+            formatted_images
+        from {{ source("Hermes", "PAYMENT_CARD") }}
+    )
 
-WITH payment_card AS (
-	SELECT
-		ID
-		,URL
-		,NAME
-		,SLUG
-		,TYPE
-		,SYSTEM
-		,IS_ACTIVE
-		,INPUT_LABEL
-		,SCAN_MESSAGE
-		,TOKEN_METHOD
-		,FORMATTED_IMAGES
-	FROM
-		{{ source('Hermes', 'PAYMENT_CARD') }}
-)
-
-SELECT
-	*
-FROM
-	payment_card
-	
+select *
+from payment_card

@@ -10,41 +10,37 @@ Description:
 Parameters:
     source_object      - HERMES.PAYMENT_CARD_PAYMENTCARDACCOUNT
 */
+with
+    payment_account as (
+        select
+            id::varchar as payment_account_id,
+            hash,
+            token,
+            status,
+            country,
+            created,
+            pan_end,
+            updated,
+            consents,
+            issuer_id,
+            pan_start,
+            pll_links,
+            psp_token,
+            agent_data,
+            is_deleted,
+            start_year,
+            expiry_year,
+            fingerprint,
+            issuer_name,
+            start_month,
+            expiry_month,
+            name_on_card,
+            card_nickname,
+            currency_code,
+            payment_card_id,
+            formatted_images
+        from {{ source("Hermes", "PAYMENT_ACCOUNT") }}
+    )
 
-WITH payment_account AS (
-	SELECT
-		ID :: VARCHAR AS PAYMENT_ACCOUNT_ID
-		,HASH
-		,TOKEN
-		,STATUS
-		,COUNTRY
-		,CREATED
-		,PAN_END
-		,UPDATED
-		,CONSENTS
-		,ISSUER_ID
-		,PAN_START
-		,PLL_LINKS
-		,PSP_TOKEN
-		,AGENT_DATA
-		,IS_DELETED
-		,START_YEAR
-		,EXPIRY_YEAR
-		,FINGERPRINT
-		,ISSUER_NAME
-		,START_MONTH
-		,EXPIRY_MONTH
-		,NAME_ON_CARD
-		,CARD_NICKNAME
-		,CURRENCY_CODE
-		,PAYMENT_CARD_ID
-		,FORMATTED_IMAGES
-	FROM
-		{{ source('Hermes', 'PAYMENT_ACCOUNT') }}
-)
-
-SELECT
-	*
-FROM
-	payment_account
-	
+select *
+from payment_account

@@ -1,24 +1,22 @@
-WITH source AS (
-    SELECT * 
-    FROM {{ ref('fact_user_secure') }}
-    WHERE EVENT_TYPE iS NOT NULL
-)
+with
+    source as (
+        select * from {{ ref("fact_user_secure") }} where event_type is not null
+    ),
+    renamed as (
+        select
+            event_id,
+            event_date_time,
+            user_id,
+            external_user_ref,
+            event_type,
+            is_most_recent,
+            origin,
+            channel,
+            brand,
+            inserted_date_time,
+            updated_date_time
+        from source
+    )
 
-,renamed AS (
-    SELECT
-        EVENT_ID
-        ,EVENT_DATE_TIME
-        ,USER_ID
-        ,EXTERNAL_USER_REF
-        ,EVENT_TYPE
-        ,IS_MOST_RECENT
-        ,ORIGIN
-        ,CHANNEL
-        ,BRAND
-        ,INSERTED_DATE_TIME
-        ,UPDATED_DATE_TIME
-    FROM source
-)
-
-SELECT *
-FROM renamed
+select *
+from renamed

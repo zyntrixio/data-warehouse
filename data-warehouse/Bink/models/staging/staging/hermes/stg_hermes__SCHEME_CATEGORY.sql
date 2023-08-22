@@ -10,29 +10,20 @@ Description:
 Parameters:
     source_object      - Hermes.SCHEME_CATEGORY
 */
+with
+    source as (select * from {{ source("Hermes", "SCHEME_CATEGORY") }}),
+    renaming as (
 
-WITH
-source  as (
-	SELECT	*
-	FROM {{ source('Hermes', 'SCHEME_CATEGORY') }}
-)
+        select
+            _airbyte_normalized_at,
+            _airbyte_ab_id,
+            name as loyalty_plan_category,
+            _airbyte_emitted_at,
+            id as loyalty_plan_category_id,
+            _airbyte_scheme_category_hashid
+        from source
 
+    )
 
-,renaming  as (
-
-
-
-select 
-_AIRBYTE_NORMALIZED_AT,
-_AIRBYTE_AB_ID,
-NAME as LOYALTY_PLAN_CATEGORY,
-_AIRBYTE_EMITTED_AT,
-ID as LOYALTY_PLAN_CATEGORY_ID,
-_AIRBYTE_SCHEME_CATEGORY_HASHID
-from source
-	
-)
-
-SELECT
-	*
-FROM renaming
+select *
+from renaming

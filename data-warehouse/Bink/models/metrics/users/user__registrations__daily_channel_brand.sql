@@ -11,63 +11,71 @@ Parameters:
     source_object       - user_trans
                         - src__dim_date
 */
+with
+    fact_usr as (select * from {{ ref("users_trans") }}),
+    dim_date as (
+        select *
+        from {{ ref("stg_metrics__dim_date") }}
+        where
+            date >= (select min(date(from_date)) from fact_usr)
+            and date <= current_date()
+    ),
+    usr_staging as (
+        select
+            d.date,
+            u.channel,
+            u.brand,
+            coalesce(
+                count(case when event_type = 'CREATED' then 1 end), 0
+            ) as daily_registrations,  -- WHEN CREATE EVENT
+            coalesce(
+                count(case when event_type = 'DELETED' then 1 end), 0
+            ) as daily_deregistrations  -- WHEN DELETE EVENT
+        from fact_usr u
+        left join dim_date d on d.date = date(u.from_date)
+        group by d.date, u.channel, u.brand
+    ),
+    usr_staging_snap as (
+        select
+            d.date,
+            u.channel,
+            u.brand,
+            coalesce(
+                count(case when event_type = 'CREATED' then 1 end), 0
+            ) as snap_user_registrations,
+            coalesce(
+                count(case when event_type = 'DELETED' then 1 end), 0
+            ) as snap_user_deregistrations
+        from fact_usr u
+        left join dim_date d on d.date >= date(from_date) and d.date < date(u.to_date)
+        group by d.date, u.channel, u.brand
+    ),
+    combine_all as (
+        select
+            coalesce(a.date, s.date) as date,
+            coalesce(a.channel, s.channel) as channel,
+            coalesce(a.brand, s.brand) as brand,
+            -- AUTH_TYPES
+            coalesce(a.daily_registrations, 0) as daily_registrations,
+            coalesce(a.daily_deregistrations, 0) as daily_deregistrations,
+            coalesce(s.snap_user_registrations, 0) as snap_user_registrations,
+            coalesce(s.snap_user_deregistrations, 0) as snap_user_deregistrations
+        from usr_staging a
+        full outer join usr_staging_snap s on a.date = s.date and a.brand = s.brand
+    ),
+    rename as (
+        select
+            date,
+            channel,
+            brand,
+            daily_registrations as u005__registered_users__daily_channel_brand__count,
+            daily_deregistrations
+            as u006__deregistered_users__daily_channel_brand__count,
+            snap_user_registrations as u001__registered_users__daily_channel_brand__pit,
+            snap_user_deregistrations
+            as u002__deregistered_users__daily_channel_brand__pit
+        from combine_all
+    )
 
-WITH fact_usr AS (
-    SELECT *
-    FROM {{ ref('users_trans') }})
-
-   , dim_date AS (
-    SELECT *
-    FROM {{ ref('stg_metrics__dim_date') }}
-    WHERE date >= (
-        SELECT MIN(DATE(from_date))
-        FROM fact_usr)
-      AND date <= CURRENT_DATE())
-
-   , usr_staging AS (
-    SELECT d.date
-         , u.channel
-         , u.brand
-         , COALESCE(COUNT(CASE WHEN event_type = 'CREATED' THEN 1 END), 0) AS daily_registrations  -- WHEN CREATE EVENT
-         , COALESCE(COUNT(CASE WHEN event_type = 'DELETED' THEN 1 END), 0) AS daily_deregistrations-- WHEN DELETE EVENT
-    FROM fact_usr u
-             LEFT JOIN dim_date d
-                       ON d.date = DATE(u.from_date)
-    GROUP BY d.date, u.channel, u.brand)
-
-   , usr_staging_snap AS (
-    SELECT d.date
-         , u.channel
-         , u.brand
-         , COALESCE(COUNT(CASE WHEN event_type = 'CREATED' THEN 1 END), 0) AS snap_user_registrations
-         , COALESCE(COUNT(CASE WHEN event_type = 'DELETED' THEN 1 END), 0) AS snap_user_deregistrations
-FROM fact_usr u
-             LEFT JOIN dim_date d
-                       ON d.date >= DATE(from_date) AND d.date < DATE(u.to_date)
-    GROUP BY d.date, u.channel, u.brand)
-
-   , combine_all AS (
-    SELECT COALESCE(a.date, s.date)                 AS date
-         , COALESCE(a.channel, s.channel)           AS channel
-         , COALESCE(a.brand, s.brand)               AS brand
-         -- AUTH_TYPES
-         , COALESCE(a.daily_registrations, 0)       AS daily_registrations
-         , COALESCE(a.daily_deregistrations, 0)     AS daily_deregistrations
-         , COALESCE(s.snap_user_registrations, 0)   AS snap_user_registrations
-         , COALESCE(s.snap_user_deregistrations, 0) AS snap_user_deregistrations
-    FROM usr_staging a
-             FULL OUTER JOIN usr_staging_snap s
-                             ON a.date = s.date AND a.brand = s.brand)
-
-   , rename AS (
-    SELECT date
-         , channel
-         , brand
-         , daily_registrations       AS U005__REGISTERED_USERS__DAILY_CHANNEL_BRAND__COUNT
-         , daily_deregistrations     AS U006__DEREGISTERED_USERS__DAILY_CHANNEL_BRAND__COUNT
-         , snap_user_registrations   AS U001__REGISTERED_USERS__DAILY_CHANNEL_BRAND__PIT
-         , snap_user_deregistrations AS U002__DEREGISTERED_USERS__DAILY_CHANNEL_BRAND__PIT
-    FROM combine_all)
-
-SELECT *
-FROM rename
+select *
+from rename

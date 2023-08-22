@@ -10,68 +10,62 @@ Description:
 Parameters:
     ref_object      - stg_harmonia__merchant_identifier
 */
+with
+    merchant_identifier as (
+        select * from {{ ref("stg_harmonia__merchant_identifier") }}
+    ),
+    payment_provider as (select * from {{ ref("stg_harmonia__payment_provider") }}),
+    loyalty_scheme as (select * from {{ ref("stg_harmonia__loyalty_scheme") }}),
+    consolidate_multiple_locations as (
+        select
+            m.merchant_id,
+            last_value(m.location) over (
+                partition by m.merchant_id order by m.id
+            ) as location,
+            last_value(m.postcode) over (
+                partition by m.merchant_id order by m.id
+            ) as postcode,
+            last_value(m.location_id) over (
+                partition by m.merchant_id order by m.id
+            ) as location_id,
+            m.loyalty_scheme_id,
+            m.payment_provider_id
+        from merchant_identifier m
+    ),
+    merchant_select as (
+        select
+            m.merchant_id,
+            m.location,
+            m.postcode,
+            m.location_id,
+            m.loyalty_scheme_id,
+            l.slug as loyalty_scheme_slug,
+            case
+                when array_contains('visa'::variant, array_agg(p.slug))
+                then true
+                else false
+            end as payment_provider_visa,
+            case
+                when array_contains('mastercard'::variant, array_agg(p.slug))
+                then true
+                else false
+            end as payment_provider_mastercard,
+            case
+                when array_contains('amex'::variant, array_agg(p.slug))
+                then true
+                else false
+            end as payment_provider_amex
+        from consolidate_multiple_locations m
+        left join payment_provider p on m.payment_provider_id = p.id
+        left join loyalty_scheme l on m.loyalty_scheme_id = l.id
+        group by
+            m.merchant_id,
+            m.location,
+            m.postcode,
+            m.location_id,
+            m.loyalty_scheme_id,
+            l.slug
+    )
 
-WITH
-merchant_identifier AS (
-    SELECT * 
-    FROM {{ref('stg_harmonia__merchant_identifier')}}
-)
-
-,payment_provider AS (
-	SELECT * 
-    FROM {{ref('stg_harmonia__payment_provider')}}
-)
-
-,loyalty_scheme AS (
-	SELECT * 
-    FROM {{ref('stg_harmonia__loyalty_scheme')}}
-)
-
-,consolidate_multiple_locations as (
-    SELECT
-        m.MERCHANT_ID
-        ,LAST_VALUE(M.LOCATION) OVER (PARTITION BY m.MERCHANT_ID ORDER BY m.ID)     AS LOCATION
-        ,LAST_VALUE(M.POSTCODE) OVER (PARTITION BY m.MERCHANT_ID ORDER BY m.ID)     AS POSTCODE
-        ,LAST_VALUE(M.LOCATION_ID) OVER (PARTITION BY m.MERCHANT_ID ORDER BY m.ID)  AS LOCATION_ID
-        ,m.LOYALTY_SCHEME_ID
-        ,m.PAYMENT_PROVIDER_ID
-  FROM merchant_identifier m
-)
-
-,merchant_select AS (
-SELECT
-    m.MERCHANT_ID
-    ,m.LOCATION
-    ,m.POSTCODE
-    ,m.LOCATION_ID
-    ,m.LOYALTY_SCHEME_ID
-	,l.slug AS LOYALTY_SCHEME_SLUG
-    ,CASE WHEN array_contains('visa'::variant, array_agg(p.slug))
-		THEN true 
-		ELSE false
-		END AS payment_provider_visa
-	,CASE WHEN array_contains('mastercard'::variant, array_agg(p.slug))
-		THEN true 
-		ELSE false
-		END AS payment_provider_mastercard
-	,CASE WHEN array_contains('amex'::variant, array_agg(p.slug))
-		THEN true 
-		ELSE false
-		END AS payment_provider_amex
-FROM
-	consolidate_multiple_locations m
-LEFT JOIN payment_provider p
-	ON m.PAYMENT_PROVIDER_ID = p.id
-LEFT JOIN loyalty_scheme l
-	ON m.LOYALTY_SCHEME_ID = l.id
-GROUP BY
-    m.MERCHANT_ID
-    ,m.LOCATION
-    ,m.POSTCODE
-    ,m.LOCATION_ID
-    ,m.LOYALTY_SCHEME_ID
-	,l.slug
-)
-
-SELECT *
-FROM merchant_select
+select *
+from merchant_select

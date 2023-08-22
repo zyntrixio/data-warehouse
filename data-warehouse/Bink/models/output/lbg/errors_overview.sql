@@ -10,58 +10,55 @@ Parameters:
     source_object       - lc__errors__daily_user_level
                         - lc__links_joins__daily_retailer_channel
 */
+with
+    lc_errors as (
+        select *, 'ERRORS' as tab
+        from {{ ref("lc__errors__daily_status_rollup_user_level") }}
+        where
+            channel = 'LLOYDS'
+            and status_rollup != 'System Issue'
+            and loyalty_plan_company not in ('Loyalteas', 'Bink Sweet Shop')
+    ),
+    lc_core as (
+        select *, 'LC_LINKS_JOINS' as tab
+        from {{ ref("lc__links_joins__daily_retailer_channel") }}
+        where
+            channel = 'LLOYDS'
+            and loyalty_plan_company not in ('Loyalteas', 'Bink Sweet Shop')
+    ),
+    combine as (
+        select
+            date,
+            tab,
+            channel,
+            brand,
+            loyalty_plan_company,
+            status_rollup,
+            lc101__error_loyalty_cards__daily_user_level__uid,
+            lc102__resolved_error_loyalty_cards__daily_user_level__uid,
+            lc103__error_visits__daily_user_level__count,
+            lc104__unresolved_error_loyalty_cards__daily_user_level__uid,
+            null as lc006__requests_loyalty_cards__daily_channel_brand_retailer__count,
+            null as lc007__failed_loyalty_cards__daily_channel_brand_retailer__count
+        from lc_errors
 
-WITH lc_errors AS (
-    SELECT *
-    ,'ERRORS' AS TAB
-    FROM {{ref('lc__errors__daily_status_rollup_user_level')}}
-    WHERE CHANNEL = 'LLOYDS' 
-        AND STATUS_ROLLUP != 'System Issue' 
-        AND LOYALTY_PLAN_COMPANY NOT IN ('Loyalteas', 'Bink Sweet Shop')
-)
+        union all
 
-,lc_core AS (
-    SELECT *
-    ,'LC_LINKS_JOINS' AS TAB
-    FROM {{ref('lc__links_joins__daily_retailer_channel')}}
-    WHERE CHANNEL = 'LLOYDS'
-        AND LOYALTY_PLAN_COMPANY NOT IN ('Loyalteas', 'Bink Sweet Shop')
-)
+        select
+            date,
+            tab,
+            channel,
+            brand,
+            loyalty_plan_company,
+            null as status_rollup,
+            null as lc101__error_loyalty_cards__daily_user_level__uid,
+            null as lc102__resolved_error_loyalty_cards__daily_user_level__uid,
+            null as lc103__error_visits__daily_user_level__count,
+            null as lc104__unresolved_error_loyalty_cards__daily_user_level__uid,
+            lc006__requests_loyalty_cards__daily_channel_brand_retailer__count,
+            lc007__failed_loyalty_cards__daily_channel_brand_retailer__count
+        from lc_core
+    )
 
-,combine AS (
-    SELECT
-        DATE
-        ,TAB
-        ,CHANNEL
-        ,BRAND
-        ,LOYALTY_PLAN_COMPANY
-        ,STATUS_ROLLUP
-        ,LC101__ERROR_LOYALTY_CARDS__DAILY_USER_LEVEL__UID
-        ,LC102__RESOLVED_ERROR_LOYALTY_CARDS__DAILY_USER_LEVEL__UID
-        ,LC103__ERROR_VISITS__DAILY_USER_LEVEL__COUNT
-        ,LC104__UNRESOLVED_ERROR_LOYALTY_CARDS__DAILY_USER_LEVEL__UID
-        ,NULL AS LC006__REQUESTS_LOYALTY_CARDS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,NULL AS LC007__FAILED_LOYALTY_CARDS__DAILY_CHANNEL_BRAND_RETAILER__COUNT       
-    FROM
-        lc_errors
-
-    UNION ALL
-
-    SELECT
-        DATE
-        ,TAB
-        ,CHANNEL
-        ,BRAND
-        ,LOYALTY_PLAN_COMPANY
-        ,NULL AS STATUS_ROLLUP
-        ,NULL AS LC101__ERROR_LOYALTY_CARDS__DAILY_USER_LEVEL__UID
-        ,NULL AS LC102__RESOLVED_ERROR_LOYALTY_CARDS__DAILY_USER_LEVEL__UID
-        ,NULL AS LC103__ERROR_VISITS__DAILY_USER_LEVEL__COUNT
-        ,NULL AS LC104__UNRESOLVED_ERROR_LOYALTY_CARDS__DAILY_USER_LEVEL__UID
-        ,LC006__REQUESTS_LOYALTY_CARDS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,LC007__FAILED_LOYALTY_CARDS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-    FROM
-        lc_core   
-)
-
-select * from combine
+select *
+from combine

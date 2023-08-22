@@ -10,110 +10,100 @@ Description:
 Parameters:
     ref_object      - transformed_transactions
 */
-
 {{
     config(
-		alias='fact_transaction'
-        ,materialized='incremental'
-		,unique_key='EVENT_ID'
+        alias="fact_transaction", materialized="incremental", unique_key="EVENT_ID"
     )
 }}
 
-WITH
-transaction_events AS (
-	SELECT *
-	FROM {{ ref('transformed_hermes_events')}}
-	WHERE EVENT_TYPE IN ('transaction.exported', 'transaction.duplicate')
-	{% if is_incremental() %}
-  	AND _AIRBYTE_NORMALIZED_AT>= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
-	{% endif %}
-)
+with
+    transaction_events as (
+        select *
+        from {{ ref("transformed_hermes_events") }}
+        where
+            event_type in ('transaction.exported', 'transaction.duplicate')
+            {% if is_incremental() %}
+            and _airbyte_normalized_at
+            >= (select max(inserted_date_time) from {{ this }})
+            {% endif %}
+    ),
+    loyalty_plan as (select * from {{ ref("stg_hermes__SCHEME_SCHEME") }}),
+    dim_user as (select * from {{ ref("stg_hermes__USER") }}),
+    dim_channel as (select * from {{ ref("stg_hermes__CLIENT_APPLICATION") }}),
+    transaction_events_unpack as (
+        select
+            event_id,
+            event_type,
+            event_date_time,
+            json:internal_user_ref::varchar as user_id,
+            json:transaction_id::varchar as transaction_id,
+            json:provider_slug::varchar as provider_slug,
+            json:feed_type::varchar as feed_type,
+            json:transaction_date::datetime as transaction_date,
+            json:spend_amount / 100::number(12, 2) as spend_amount,
+            json:spend_currency::varchar as spend_currency,
+            json:loyalty_id::varchar as loyalty_id,
+            json:scheme_account_id::varchar as loyalty_card_id,
+            json:mid::varchar as merchant_id / /,
+            json:location_id::varchar as location_id
+            / / joins to harmonia merchant data
+            / /,
+            json:merchant_internal_id::varchar as merchant_internal_id
+            / / joins to harmonia merchant data,
+            json:payment_card_account_id::varchar as payment_account_id,
+            json:settlement_key::varchar as settlement_key,
+            json:authorisation_code::varchar as auth_code,
+            json:approval_code::varchar as approval_code
 
-,loyalty_plan AS (
-	SELECT *
-	FROM {{ ref('stg_hermes__SCHEME_SCHEME')}}
-)
+        from transaction_events
+    ),
+    select_transactions as (
+        select
+            event_id,
+            event_date_time,
+            t.user_id,
+            u.external_id as external_user_ref,
+            case
+                when c.channel_name in ('Bank of Scotland', 'Lloyds', 'Halifax')
+                then 'LLOYDS'
+                when c.channel_name = 'Barclays Mobile Banking'
+                then 'BARCLAYS'
+                when c.channel_name = 'Bink'
+                then 'BINK'
+                else null
+            end as channel,
+            case
+                when c.channel_name in ('Bink', 'Lloyds', 'Halifax')
+                then upper(c.channel_name)
+                when c.channel_name = 'Barclays Mobile Banking'
+                then 'BARCLAYS'
+                when c.channel_name = 'Bank of Scotland'
+                then 'BOS'
+                else null
+            end as brand,
+            transaction_id,
+            provider_slug,
+            feed_type,
+            event_type = 'transaction.duplicate' as duplicate_transaction,
+            lp.loyalty_plan_name,
+            lp.loyalty_plan_company,
+            transaction_date,
+            spend_amount,
+            spend_currency,
+            loyalty_id,
+            loyalty_card_id,
+            merchant_id,
+            payment_account_id,
+            settlement_key,
+            auth_code,
+            approval_code,
+            sysdate() as inserted_date_time,
+            sysdate() as updated_date_time
+        from transaction_events_unpack t
+        left join loyalty_plan lp on lp.loyalty_plan_slug = t.provider_slug
+        left join dim_user u on u.user_id = t.user_id
+        left join dim_channel c on u.channel_id = c.channel_id
+    )
 
-,dim_user AS (
-	SELECT *
-	FROM {{ref('stg_hermes__USER')}}
-)
-
-,dim_channel AS (
-	SELECT *
-	FROM {{ref('stg_hermes__CLIENT_APPLICATION')}}
-)
-
-,transaction_events_unpack AS (
-	SELECT
-		EVENT_ID
-		,EVENT_TYPE
-		,EVENT_DATE_TIME
-		,JSON:internal_user_ref :: VARCHAR AS USER_ID
-		,JSON:transaction_id :: VARCHAR AS TRANSACTION_ID
-		,JSON:provider_slug :: VARCHAR AS PROVIDER_SLUG
-		,JSON:feed_type :: VARCHAR AS FEED_TYPE
-		,JSON:transaction_date :: DATETIME AS TRANSACTION_DATE
-		,JSON:spend_amount / 100 :: NUMBER(12,2) AS SPEND_AMOUNT
-		,JSON:spend_currency :: VARCHAR AS SPEND_CURRENCY
-		,JSON:loyalty_id :: VARCHAR AS LOYALTY_ID
-		,JSON:scheme_account_id :: VARCHAR AS LOYALTY_CARD_ID
-		,JSON:mid :: VARCHAR AS MERCHANT_ID 
-		// ,JSON:location_id :: VARCHAR AS LOCATION_ID // Joins to Harmonia merchant data
-		// ,JSON:merchant_internal_id :: VARCHAR AS MERCHANT_INTERNAL_ID // Joins to Harmonia merchant data
-		,JSON:payment_card_account_id :: VARCHAR AS PAYMENT_ACCOUNT_ID
-		,JSON:settlement_key :: VARCHAR AS SETTLEMENT_KEY
-		,JSON:authorisation_code :: VARCHAR AS AUTH_CODE
-		,JSON:approval_code :: VARCHAR AS APPROVAL_CODE
-
-	FROM transaction_events
-)
-
-,select_transactions as (
-	SELECT
-		EVENT_ID
-		,EVENT_DATE_TIME
-		,t.USER_ID
-		,u.EXTERNAL_ID AS EXTERNAL_USER_REF
-		,CASE WHEN c.CHANNEL_NAME IN ('Bank of Scotland', 'Lloyds', 'Halifax')  THEN 'LLOYDS'
-        	WHEN c.CHANNEL_NAME = 'Barclays Mobile Banking' THEN 'BARCLAYS'
-        	WHEN c.CHANNEL_NAME = 'Bink' THEN 'BINK'
-        	ELSE NULL
-        	END AS CHANNEL
-    	,CASE WHEN c.CHANNEL_NAME IN ('Bink', 'Lloyds', 'Halifax') THEN UPPER(c.CHANNEL_NAME)
-			WHEN c.CHANNEL_NAME = 'Barclays Mobile Banking' THEN 'BARCLAYS'
-			WHEN c.CHANNEL_NAME = 'Bank of Scotland' THEN 'BOS'
-			ELSE NULL
-			END AS BRAND
-		,TRANSACTION_ID
-		,PROVIDER_SLUG
-		,FEED_TYPE
-		,EVENT_TYPE = 'transaction.duplicate' AS DUPLICATE_TRANSACTION
-		,lp.LOYALTY_PLAN_NAME
-		,lp.LOYALTY_PLAN_COMPANY
-		,TRANSACTION_DATE
-		,SPEND_AMOUNT
-		,SPEND_CURRENCY
-		,LOYALTY_ID
-		,LOYALTY_CARD_ID
-		,MERCHANT_ID
-		,PAYMENT_ACCOUNT_ID
-		,SETTLEMENT_KEY
-		,AUTH_CODE
-		,APPROVAL_CODE
-		,SYSDATE() AS INSERTED_DATE_TIME
-		,SYSDATE() AS UPDATED_DATE_TIME
-	FROM
-		transaction_events_unpack t
-	LEFT JOIN
-		loyalty_plan lp ON lp.LOYALTY_PLAN_SLUG = t.PROVIDER_SLUG
-	LEFT JOIN
-		dim_user u ON u.USER_ID	= t.USER_ID
-	LEFT JOIN
-		dim_channel c ON u.CHANNEL_ID = c.CHANNEL_ID
-)
-
-SELECT
-    *
-FROM
-    select_transactions
+select *
+from select_transactions

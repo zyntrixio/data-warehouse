@@ -11,34 +11,29 @@ Parameters:
     sources   - lookup.date
 
 */
-with source as (
-
-    select *
-    from {{source('LOOKUP','DATE')}}
-)
-
-
-,renaming as (
-SELECT  DATE(DATE) as DATE
-       ,YEAR
-       ,QUARTER
-       ,MONTH
-       ,MONTHNAME
-       ,DAYOFMONTH
-       ,DAYOFWEEK
-       ,WEEKOFYEAR
-       ,DAYOFYEAR
-       ,DAYNAME
-       ,WEEKPART
-       ,DAYNUMBER
-       ,YEARNUMBER
-       ,QUARTERNUMBER
-       ,monthNUMBER
-       ,year_QUARTER
-       ,year_month
-          from source
-)
-
+with
+    source as (select * from {{ source("LOOKUP", "DATE") }}),
+    renaming as (
+        select
+            date(date) as date,
+            year,
+            quarter,
+            month,
+            monthname,
+            dayofmonth,
+            dayofweek,
+            weekofyear,
+            dayofyear,
+            dayname,
+            weekpart,
+            daynumber,
+            yearnumber,
+            quarternumber,
+            monthnumber,
+            year_quarter,
+            year_month
+        from source
+    )
 
 select *
- from renaming 
+from renaming

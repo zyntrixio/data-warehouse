@@ -1,7 +1,4 @@
-WITH source AS (
-    SELECT * 
-    FROM {{ source('RAW_BINK_LOOKUP', 'SANKEY_MODEL') }}
-)
+with source as (select * from {{ source("RAW_BINK_LOOKUP", "SANKEY_MODEL") }})
 
-SELECT *
-FROM source
+select *
+from source

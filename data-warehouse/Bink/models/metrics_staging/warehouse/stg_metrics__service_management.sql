@@ -1,31 +1,21 @@
-WITH
-source as (
-	SELECT
-		*
-	FROM
-		{{ ref('service_management') }}
-)
+with
+    source as (select * from {{ ref("service_management") }}),
+    renamed as (
+        select
+            id,
+            ticket_id,
+            mi,
+            status,
+            channel,
+            service,
+            created_at as date,
+            updated_at,
+            sla_breached,
+            is_most_recent / /,
+            _airbyte_emitted_at,
+            inserted_date_time
+        from source
+    )
 
-,renamed as (
-	SELECT
-		ID
-		,TICKET_ID
-		,MI
-		,STATUS
-		,CHANNEL
-		,SERVICE
-		,CREATED_AT AS DATE
-		,UPDATED_AT
-		,SLA_BREACHED
-		,IS_MOST_RECENT
-		//,_AIRBYTE_EMITTED_AT
-		,INSERTED_DATE_TIME
-	FROM
-		source
-)
-
-
-SELECT
-	*
-FROM
-	renamed
+select *
+from renamed

@@ -11,16 +11,11 @@ Parameters:
     sources   - harmonia.loyalty_scheme
 
 */
+with
+    source as (
+        select id, slug::varchar as slug, created_at, updated_at
+        from {{ source("HARMONIA", "LOYALTY_SCHEME") }}
+    )
 
-WITH source AS (
-    SELECT
-        ID
-        ,SLUG::VARCHAR AS SLUG
-        ,CREATED_AT
-        ,UPDATED_AT
-    FROM {{source('HARMONIA','LOYALTY_SCHEME')}}
-)
-
-
-SELECT *
-FROM source 
+select *
+from source

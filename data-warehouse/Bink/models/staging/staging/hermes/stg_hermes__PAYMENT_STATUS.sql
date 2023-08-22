@@ -10,19 +10,11 @@ Description:
 Parameters:
     source_object      - HERMES.PAYMENT_CARD_PROVIDERSTATUSMAPPING
 */
+with
+    payment_status as (
+        select id, provider_id, bink_status_code, provider_status_code
+        from {{ source("Hermes", "PAYMENT_STATUS") }}
+    )
 
-WITH payment_status AS (
-	SELECT
-		ID
-		,PROVIDER_ID
-		,BINK_STATUS_CODE
-		,PROVIDER_STATUS_CODE
-	FROM
-		{{ source('Hermes', 'PAYMENT_STATUS') }}
-)
-
-SELECT
-	*
-FROM
-	payment_status
-	
+select *
+from payment_status

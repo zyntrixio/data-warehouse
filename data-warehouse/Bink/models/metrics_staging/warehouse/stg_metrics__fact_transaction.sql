@@ -1,34 +1,31 @@
-WITH source AS (
-    SELECT * 
-    FROM {{ ref('fact_transaction_secure') }}
-)
+with
+    source as (select * from {{ ref("fact_transaction_secure") }}),
+    renamed as (
+        select
+            / / event_id
+            event_date_time as date,
+            user_id,
+            external_user_ref,
+            channel,
+            brand,
+            transaction_id,
+            provider_slug,
+            feed_type,
+            duplicate_transaction,
+            loyalty_plan_name,
+            loyalty_plan_company,
+            transaction_date,
+            spend_amount / /,
+            spend_currency,
+            loyalty_id,
+            loyalty_card_id,
+            merchant_id,
+            payment_account_id / /,
+            settlement_key / /,
+            inserted_date_time / /,
+            updated_date_time
+        from source
+    )
 
-,renamed AS (
-    SELECT
-        // EVENT_ID
-        EVENT_DATE_TIME AS DATE
-        ,USER_ID
-        ,EXTERNAL_USER_REF
-        ,CHANNEL
-        ,BRAND
-        ,TRANSACTION_ID
-        ,PROVIDER_SLUG
-		,FEED_TYPE
-		,DUPLICATE_TRANSACTION
-        ,LOYALTY_PLAN_NAME
-        ,LOYALTY_PLAN_COMPANY
-        ,TRANSACTION_DATE
-        ,SPEND_AMOUNT
-        // ,SPEND_CURRENCY
-        ,LOYALTY_ID
-        ,LOYALTY_CARD_ID
-        ,MERCHANT_ID
-        ,PAYMENT_ACCOUNT_ID
-        // ,SETTLEMENT_KEY
-        // ,INSERTED_DATE_TIME
-        // ,UPDATED_DATE_TIME
-    FROM source
-)
-
-SELECT *
-FROM renamed
+select *
+from renamed

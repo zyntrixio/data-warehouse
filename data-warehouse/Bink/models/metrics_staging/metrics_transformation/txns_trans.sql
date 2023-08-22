@@ -10,42 +10,48 @@ Description:
 Parameters:
     ref_object      - stg_metrics__fact_transaction
 */
+with
+    trans_events as (select * from {{ ref("stg_metrics__fact_transaction") }}),
+    transforming_refs as (
+        select
+            date,
+            user_id / /,
+            external_user_ref,
+            channel,
+            brand,
+            coalesce(nullif(external_user_ref, ''), user_id) as user_ref,
+            transaction_id / /,
+            provider_slug,
+            duplicate_transaction,
+            feed_type,
+            loyalty_plan_name,
+            loyalty_plan_company,
+            transaction_date,
+            spend_amount / /,
+            loyalty_id,
+            loyalty_card_id / /,
+            merchant_id / /,
+            payment_account_id
+        from trans_events
+    ),
+    txn_flag as (
+        select
+            *,
+            case
+                when duplicate_transaction
+                then 'DUPLICATE'
+                when
+                    loyalty_plan_company = 'Viator'
+                    and (spend_amount = 1 or spend_amount = -1)
+                then 'BNPL'
+                when spend_amount > 0
+                then 'TXNS'
+                when spend_amount < 0
+                then 'REFUND'
+                else 'OTHER'
+            end as status
+        from transforming_refs
+    )
 
-WITH trans_events AS (
-    SELECT *
-    FROM {{ ref('stg_metrics__fact_transaction') }})
-
-   , transforming_refs AS (
-    SELECT date
-         , user_id
-         // , external_user_ref
-         , channel
-         , brand
-         , COALESCE(NULLIF(external_user_ref, ''), user_id) AS user_ref
-         , transaction_id
-         // , provider_slug
-         ,DUPLICATE_TRANSACTION
-         ,FEED_TYPE
-         , loyalty_plan_name
-         , loyalty_plan_company
-         , transaction_date
-         , spend_amount
-         // , loyalty_id
-         , loyalty_card_id
-         // , merchant_id
-         // , payment_account_id
-    FROM trans_events)
-
-    , txn_flag AS (
-    SELECT *
-         ,CASE 
-            WHEN DUPLICATE_TRANSACTION THEN 'DUPLICATE'
-            WHEN loyalty_plan_company = 'Viator' AND (spend_amount = 1 OR spend_amount = -1) THEN 'BNPL'
-            WHEN spend_amount > 0 THEN 'TXNS'
-            WHEN spend_amount < 0 THEN 'REFUND'
-            ELSE 'OTHER'
-        END AS status
-    FROM transforming_refs)
-
-SELECT *
-FROM txn_flag
+select *
+from txn_flag

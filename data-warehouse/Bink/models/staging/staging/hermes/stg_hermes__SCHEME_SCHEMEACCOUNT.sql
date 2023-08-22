@@ -10,41 +10,34 @@ Description:
 Parameters:
     source_object      - Hermes.SCHEME_SCHEMEACCOUNT
 */
+with
+    source as (select * from {{ source("Hermes", "SCHEME_SCHEMEACCOUNT") }}),
+    renaming as (
 
-WITH
-source  as (
-	SELECT	*
-	FROM {{ source('Hermes', 'SCHEME_SCHEMEACCOUNT') }}
-)
+        select
+            balances,
+            id as loyalty_card_id,
+            link_date::timestamp as link_date,
+            scheme_id as loyalty_plan_id,
+            _airbyte_ab_id,
+            _airbyte_scheme_schemeaccount_hashid,
+            join_date::timestamp as join_date,
+            card_number,
+            updated::timestamp as updated,
+            barcode,
+            vouchers,
+            created::timestamp as created,
+            "order" as orders,
+            transactions,
+            originating_journey,
+            pll_links,
+            _airbyte_emitted_at,
+            formatted_images,
+            is_deleted,
+            _airbyte_normalized_at
+        from source
 
-,renaming  as (
+    )
 
-
-
-SELECT  BALANCES
-       ,ID                   AS LOYALTY_CARD_ID
-       ,LINK_DATE::timestamp as LINK_DATE
-       ,SCHEME_ID            AS LOYALTY_PLAN_ID
-       ,_AIRBYTE_AB_ID
-       ,_AIRBYTE_SCHEME_SCHEMEACCOUNT_HASHID
-       ,JOIN_DATE::timestamp AS JOIN_DATE
-       ,CARD_NUMBER
-       ,UPDATED::timestamp   AS UPDATED
-       ,BARCODE
-       ,VOUCHERS
-       ,CREATED::timestamp   AS CREATED
-       ,"order"              AS ORDERS
-       ,TRANSACTIONS
-       ,ORIGINATING_JOURNEY
-       ,PLL_LINKS
-       ,_AIRBYTE_EMITTED_AT
-       ,FORMATTED_IMAGES
-       ,IS_DELETED
-       ,_AIRBYTE_NORMALIZED_AT
-FROM source
-	
-)
-
-SELECT
-	*
-FROM renaming
+select *
+from renaming

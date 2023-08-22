@@ -10,19 +10,16 @@ Description:
 Parameters:
     source_object      - HERMES.USER_CLIENTAPPLICATION
 */
+with
+    client_application as (
+        select
+            client_id::varchar as channel_id,
+            name as channel_name,
+            secret,
+            organisation_id
 
-WITH client_application AS (
-	SELECT
-		CLIENT_ID :: VARCHAR AS CHANNEL_ID
-		,NAME AS CHANNEL_NAME
-		,SECRET
-		,ORGANISATION_ID
+        from {{ source("Hermes", "CLIENT_APPLICATION") }}
+    )
 
-	FROM
-		{{ source('Hermes', 'CLIENT_APPLICATION') }}
-)
-
-SELECT
-	*
-FROM
-	client_application
+select *
+from client_application

@@ -12,47 +12,56 @@ Parameters:
     source_object       - trans_trans
                         - stg_metrics__dim_date
 */
+with
+    user_events as (select * from {{ ref("txns_trans") }}),
+    dim_date as (
+        select distinct start_of_month, end_of_month
+        from {{ ref("stg_metrics__dim_date") }}
+        where date >= (select min(date) from user_events) and date <= current_date()
+    ),
+    user_snap as (
+        select
+            d.start_of_month as date,
+            u.loyalty_plan_company,
+            u.loyalty_plan_name,
+            count(
+                distinct user_ref
+            ) as u108_active_users_brand_retailer_monthly__cdcount_uid
+        from user_events u
+        left join dim_date d on date(u.date) <= d.end_of_month
+        group by d.start_of_month, u.loyalty_plan_company, u.loyalty_plan_name
+    ),
+    user_period as (
+        select
+            d.start_of_month as date,
+            u.loyalty_plan_company,
+            u.loyalty_plan_name,
+            coalesce(
+                count(distinct user_ref), 0
+            ) as u107_active_users_brand_retailer_monthly__dcount_uid
+        from user_events u
+        left join dim_date d on d.start_of_month = date_trunc('month', u.date)
+        group by d.start_of_month, u.loyalty_plan_company, u.loyalty_plan_name
+    ),
+    combine_all as (
+        select
+            coalesce(s.date, p.date) as date,
+            coalesce(
+                s.loyalty_plan_company, p.loyalty_plan_company
+            ) as loyalty_plan_company,
+            coalesce(s.loyalty_plan_name, p.loyalty_plan_name) as loyalty_plan_name,
+            coalesce(
+                s.u108_active_users_brand_retailer_monthly__cdcount_uid, 0
+            ) as u108_active_users_brand_retailer_monthly__cdcount_uid,
+            coalesce(
+                p.u107_active_users_brand_retailer_monthly__dcount_uid, 0
+            ) as u107_active_users_brand_retailer_monthly__dcount_uid
+        from user_snap s
+        full outer join
+            user_period p
+            on s.date = p.date
+            and s.loyalty_plan_company = p.loyalty_plan_company
+    )
 
-WITH user_events AS (
-    SELECT *
-    FROM {{ ref('txns_trans') }} )
-
-   , dim_date AS (
-    SELECT DISTINCT start_of_month, end_of_month
-    FROM {{ ref('stg_metrics__dim_date') }}
-    WHERE date >= (
-        SELECT MIN(date)
-        FROM user_events)
-      AND date <= CURRENT_DATE())
-
-   , user_snap AS (
-    SELECT d.start_of_month         AS date
-         , u.loyalty_plan_company
-         , u.loyalty_plan_name
-         , COUNT(DISTINCT user_ref) AS U108_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__CDCOUNT_UID
-    FROM user_events u
-             LEFT JOIN dim_date d
-                       ON DATE(u.date) <= d.end_of_month
-    GROUP BY d.start_of_month, u.loyalty_plan_company, u.loyalty_plan_name)
-
-   , user_period AS (
-    SELECT d.start_of_month                      AS date
-         , u.loyalty_plan_company
-         , u.loyalty_plan_name
-         , COALESCE(COUNT(DISTINCT user_ref), 0) AS u107_active_users_brand_retailer_monthly__dcount_uid
-    FROM user_events u
-             LEFT JOIN dim_date d
-                       ON d.start_of_month = DATE_TRUNC('month', u.date)
-    GROUP BY d.start_of_month, u.loyalty_plan_company, u.loyalty_plan_name)
-
-   , combine_all AS (
-    SELECT COALESCE(s.date, p.date)                                             AS date
-         , COALESCE(s.loyalty_plan_company, p.loyalty_plan_company)             AS loyalty_plan_company
-         , COALESCE(s.loyalty_plan_name, p.loyalty_plan_name)                   AS loyalty_plan_name
-         , COALESCE(s.U108_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__CDCOUNT_UID, 0) AS U108_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__CDCOUNT_UID
-         , COALESCE(p.u107_active_users_brand_retailer_monthly__dcount_uid, 0)  AS U107_ACTIVE_USERS_BRAND_RETAILER_MONTHLY__DCOUNT_UID
-    FROM user_snap s
-             FULL OUTER JOIN user_period p ON s.date = p.date AND s.loyalty_plan_company = p.loyalty_plan_company)
-
-SELECT *
-FROM combine_all
+select *
+from combine_all

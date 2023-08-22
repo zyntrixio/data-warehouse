@@ -28,6 +28,11 @@ line-length = 120
 [tool.ruff]
 line-length = 120
 
+[tool.sqlfmt]
+exclude = ["target/**/*", "dbt_packages/**/*"]
+line_length = 99
+check = true
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

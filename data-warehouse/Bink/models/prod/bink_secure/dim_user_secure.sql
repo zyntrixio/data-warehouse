@@ -10,65 +10,56 @@ Description:
 Parameters:
     ref_object      - stg_hermes__user
 */
+{{ config(alias="dim_user") }}
 
-{{ config(alias='dim_user') }}
+with
+    users as (select * from {{ ref("stg_hermes__USER") }}),
+    users_select as (
+        select
+            u.user_id / /,
+            uid,
+            external_id,
+            channel_id,
+            date_joined / /,
+            delete_token,
+            email,
+            is_active,
+            is_staff,
+            is_superuser,
+            is_tester,
+            last_login / /,
+            password / /,
+            reset_token,
+            marketing_code_id,
+            salt,
+            apple,
+            facebook,
+            twitter,
+            magic_link_verified  -- Not sure what this is
+        from users u
+    ),
+    users_na_unions as (
+        select
+            'NOT_APPLICABLE' as user_id,
+            null as external_id,
+            null as channel_id,
+            null as date_joined,
+            null as email,
+            null as is_active,
+            null as is_staff,
+            null as is_superuser,
+            null as is_tester,
+            null as last_login,
+            null as marketing_code_id,
+            null as salt,
+            null as apple,
+            null as facebook,
+            null as twitter,
+            null as magic_link_verified
+        union all
+        select *
+        from users_select
+    )
 
-WITH
-users AS (
-	SELECT *
-	FROM {{ref('stg_hermes__USER')}}
-)
-
-,users_select AS (
-    SELECT
-		u.USER_ID
-		// ,UID
-		,EXTERNAL_ID				
-		,CHANNEL_ID			
-		,DATE_JOINED
-		// ,DELETE_TOKEN		
-		,EMAIL					
-		,IS_ACTIVE			
-		,IS_STAFF			
-		,IS_SUPERUSER		
-		,IS_TESTER			
-		,LAST_LOGIN			
-		// ,PASSWORD			
-		// ,RESET_TOKEN
-		,MARKETING_CODE_ID			
-		,SALT
-		,APPLE
-		,FACEBOOK						
-		,TWITTER									
-		,MAGIC_LINK_VERIFIED -- Not sure what this is
-    FROM
-		users u
-)
-
-,users_na_unions AS (
-	SELECT
-		'NOT_APPLICABLE' AS USER_ID
-		,NULL AS EXTERNAL_ID				
-		,NULL AS CHANNEL_ID			
-		,NULL AS DATE_JOINED
-		,NULL AS EMAIL					
-		,NULL AS IS_ACTIVE			
-		,NULL AS IS_STAFF			
-		,NULL AS IS_SUPERUSER		
-		,NULL AS IS_TESTER			
-		,NULL AS LAST_LOGIN			
-		,NULL AS MARKETING_CODE_ID			
-		,NULL AS SALT
-		,NULL AS APPLE
-		,NULL AS FACEBOOK						
-		,NULL AS TWITTER									
-		,NULL AS MAGIC_LINK_VERIFIED
-	UNION ALL
-	SELECT *
-	FROM users_select
-)
-
-SELECT
-    *
-FROM
-    users_na_unions
+select *
+from users_na_unions

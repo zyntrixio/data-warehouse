@@ -9,72 +9,105 @@ Description:
 Notes:
     source_object       - fact transaction
 */
+with
+    txn_events as (select * from {{ ref("txns_trans") }}),
+    dim_date as (
+        select distinct start_of_month, end_of_month
+        from {{ ref("stg_metrics__dim_date") }}
+        where date >= (select min(date) from txn_events) and date <= current_date()
+    ),
+    stage as (
+        select
+            user_ref,
+            transaction_id,
+            loyalty_plan_name,
+            loyalty_plan_company,
+            status,
+            date_trunc('month', date) as date,
+            spend_amount,
+            loyalty_card_id
+        from txn_events
+    ),
+    txn_period as (
+        select
+            d.start_of_month as date,
+            s.loyalty_plan_company,
+            s.loyalty_plan_name,
+            sum(
+                case when status = 'TXNS' then s.spend_amount end
+            ) as spend_amount_period_positive,
+            sum(
+                case when status = 'REFUND' then s.spend_amount end
+            ) as refund_amount_period,
+            count(
+                distinct case when status = 'BNPL' then transaction_id end
+            ) as count_bnpl_period,
+            count(
+                distinct case when status = 'TXNS' then transaction_id end
+            ) as count_transaction_period,
+            count(
+                distinct case when status = 'REFUND' then transaction_id end
+            ) as count_refund_period
+        from stage s
+        left join dim_date d on d.start_of_month = date_trunc('month', s.date)
+        group by d.start_of_month, s.loyalty_plan_company, s.loyalty_plan_name
+    ),
+    txn_cumulative as (
+        select
+            date,
+            loyalty_plan_company,
+            loyalty_plan_name,
+            sum(spend_amount_period_positive) over (
+                partition by loyalty_plan_company order by date
+            ) as cumulative_spend,
+            sum(refund_amount_period) over (
+                partition by loyalty_plan_company order by date
+            ) as cumulative_refund,
+            sum(count_bnpl_period) over (
+                partition by loyalty_plan_company order by date
+            ) as cumulative_bnpl_txns,
+            sum(count_transaction_period) over (
+                partition by loyalty_plan_company order by date
+            ) as cumulative_txns,
+            sum(count_refund_period) over (
+                partition by loyalty_plan_company order by date
+            ) as cumulative_refund_txns
+        from txn_period
+    ),
+    combine_all as (
+        select
+            coalesce(s.date, p.date) as date,
+            coalesce(
+                s.loyalty_plan_company, p.loyalty_plan_company
+            ) as loyalty_plan_company,
+            coalesce(s.loyalty_plan_name, p.loyalty_plan_name) as loyalty_plan_name,
+            coalesce(s.cumulative_spend, 0) as t004__spend__monthly_retailer__csum,
+            coalesce(s.cumulative_refund, 0) as t005__refund__monthly_retailer__csum,
+            coalesce(s.cumulative_txns, 0) as t006__txns__monthly_retailer__csum,
+            coalesce(
+                s.cumulative_refund_txns, 0
+            ) as t007__refund__monthly_retailer__csum,
+            coalesce(
+                s.cumulative_bnpl_txns, 0
+            ) as t008__bnpl_txns__monthly_retailer__csum,
+            coalesce(
+                p.spend_amount_period_positive, 0
+            ) as t009__spend__monthly_retailer__sum,
+            coalesce(p.refund_amount_period, 0) as t010__refund__monthly_retailer__sum,
+            coalesce(
+                p.count_transaction_period, 0
+            ) as t011__txns__monthly_retailer__dcount,
+            coalesce(p.count_refund_period, 0) as t012__refund__monthly_retailer__dcount
+            ,
+            coalesce(
+                p.count_bnpl_period, 0
+            ) as t013__bnpl_txns__monthly_retailer__dcount
+        from txn_cumulative s
+        full outer join
+            txn_period p
+            on s.date = p.date
+            and s.loyalty_plan_company = p.loyalty_plan_company
+    )
 
-WITH txn_events AS (
-    SELECT *
-    FROM {{ ref('txns_trans') }})
-
-   , dim_date AS (
-    SELECT DISTINCT start_of_month, end_of_month
-    FROM {{ ref('stg_metrics__dim_date') }}
-    WHERE date >= (
-        SELECT MIN(date)
-        FROM txn_events)
-      AND date <= CURRENT_DATE())
-
-   , stage AS (
-    SELECT user_ref
-         , transaction_id
-         , loyalty_plan_name
-         , loyalty_plan_company
-         , status
-         , DATE_TRUNC('month', date) AS date
-         , spend_amount
-         , loyalty_card_id
-    FROM txn_events)
-
-   , txn_period AS (
-    SELECT d.start_of_month                                                                 AS date
-         , s.loyalty_plan_company
-         , s.loyalty_plan_name
-         , SUM(CASE WHEN status = 'TXNS' THEN s.spend_amount END)                           AS spend_amount_period_positive
-         , SUM(CASE WHEN status = 'REFUND' THEN s.spend_amount END)                         AS refund_amount_period
-         , COUNT(DISTINCT CASE WHEN status = 'BNPL' THEN transaction_id END)                AS count_bnpl_period
-         , COUNT(DISTINCT CASE WHEN status = 'TXNS' THEN transaction_id END)                AS count_transaction_period
-         , COUNT(DISTINCT CASE WHEN status = 'REFUND' THEN transaction_id END)              AS count_refund_period
-    FROM stage s
-             LEFT JOIN dim_date d ON d.start_of_month = DATE_TRUNC('month', s.date)
-    GROUP BY d.start_of_month, s.loyalty_plan_company, s.loyalty_plan_name)
-
-   , txn_cumulative AS (
-    SELECT date
-         , loyalty_plan_company
-         , loyalty_plan_name
-         , SUM(spend_amount_period_positive) OVER (PARTITION BY loyalty_plan_company ORDER BY date) AS cumulative_spend
-         , SUM(refund_amount_period) OVER (PARTITION BY loyalty_plan_company ORDER BY date)         AS cumulative_refund
-         , SUM(count_bnpl_period)
-               OVER (PARTITION BY loyalty_plan_company ORDER BY date)                               AS cumulative_bnpl_txns
-         , SUM(count_transaction_period) OVER (PARTITION BY loyalty_plan_company ORDER BY date)     AS cumulative_txns
-         , SUM(count_refund_period)
-               OVER (PARTITION BY loyalty_plan_company ORDER BY date)                               AS cumulative_refund_txns
-    FROM txn_period)
-
-   , combine_all AS (
-    SELECT COALESCE(s.date, p.date)                                 AS date
-         , COALESCE(s.loyalty_plan_company, p.loyalty_plan_company) AS loyalty_plan_company
-         , COALESCE(s.loyalty_plan_name, p.loyalty_plan_name)       AS loyalty_plan_name
-         , COALESCE(s.cumulative_spend, 0)                          AS t004__spend__monthly_retailer__csum
-         , COALESCE(s.cumulative_refund, 0)                         AS t005__refund__monthly_retailer__csum
-         , COALESCE(s.cumulative_txns, 0)                           AS t006__txns__monthly_retailer__csum
-         , COALESCE(s.cumulative_refund_txns, 0)                    AS t007__refund__monthly_retailer__csum
-         , COALESCE(s.cumulative_bnpl_txns, 0)                      AS t008__bnpl_txns__monthly_retailer__csum
-         , COALESCE(p.spend_amount_period_positive, 0)              AS t009__spend__monthly_retailer__sum
-         , COALESCE(p.refund_amount_period, 0)                      AS t010__refund__monthly_retailer__sum
-         , COALESCE(p.count_transaction_period, 0)                  AS t011__txns__monthly_retailer__dcount
-         , COALESCE(p.count_refund_period, 0)                       AS t012__refund__monthly_retailer__dcount
-         , COALESCE(p.count_bnpl_period, 0)                         AS t013__bnpl_txns__monthly_retailer__dcount
-    FROM txn_cumulative s
-             FULL OUTER JOIN txn_period p ON s.date = p.date AND s.loyalty_plan_company = p.loyalty_plan_company)
-
-SELECT *
-FROM combine_all
+select *
+from combine_all

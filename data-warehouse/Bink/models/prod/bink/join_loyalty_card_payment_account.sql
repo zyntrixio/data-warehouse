@@ -11,67 +11,51 @@
  ref_object      	- stg_hermes__SCHEME_SCHEMEACCOUNT
  				 	- stg_hermes__PAYMENT_ACCOUNT
  */
+with
+    scheme as (
+        select loyalty_card_id, parse_json(pll_links) as pll
+        from {{ ref("stg_hermes__SCHEME_SCHEMEACCOUNT") }}
+        where pll_links != '[]'
+    ),
+    scheme_plls as (
+        select
+            loyalty_card_id,
+            lf.value:"active_link"::boolean as active_link,
+            lf.value:"id"::int as pll_link_id
+        from scheme, lateral flatten(input => pll) lf
+    ),
+    payment_accounts as (
+        select payment_account_id, parse_json(pll_links) as pll
+        from {{ ref("stg_hermes__PAYMENT_ACCOUNT") }}
+        where pll_links != '[]'
+    ),
+    payment_account_plls as (
+        select
+            payment_account_id,
+            lf.value:"active_link"::boolean as active_link,
+            lf.value:"id"::int as pll_link_id
+        from payment_accounts, lateral flatten(input => pll) lf
+    ),
+    intersecting_plls as (
+        select pll_link_id
+        from scheme_plls
+        intersect
+        select pll_link_id
+        from payment_account_plls
+    ),
+    joined_links as (
+        select
+            concat(loyalty_card_id, '-', payment_account_id) as pll_link_pk,
+            s.loyalty_card_id::varchar as loyalty_card_id,
+            p.payment_account_id::varchar as payment_account_id,
+            i.pll_link_id,
+            case
+                when s.active_link and p.active_link then true else false
+            end as active_link
+        from intersecting_plls i
+        inner join scheme_plls s on s.pll_link_id = i.pll_link_id
+        inner join payment_account_plls p on i.pll_link_id = p.pll_link_id
+    )
 
- 
-WITH
-scheme AS (
-	SELECT
-		LOYALTY_CARD_ID,
-		PARSE_JSON(pll_links) AS pll
-	FROM {{ref('stg_hermes__SCHEME_SCHEMEACCOUNT')}}
-	WHERE pll_links != '[]'
-)
-
-,scheme_plls AS (
-	SELECT
-		LOYALTY_CARD_ID,
-		lf.value :"active_link"::boolean AS ACTIVE_LINK,
-		lf.value :"id"::int AS PLL_LINK_ID
-	FROM scheme,
-		lateral flatten (input => pll) lf
-)
-
-,payment_accounts AS (
-	SELECT
-		PAYMENT_ACCOUNT_ID,
-		PARSE_JSON(pll_links) AS pll
-	FROM {{ref('stg_hermes__PAYMENT_ACCOUNT')}}
-	WHERE pll_links != '[]'
-)
-
-,payment_account_plls AS (
-	SELECT
-		PAYMENT_ACCOUNT_ID,
-		lf.value :"active_link"::boolean AS ACTIVE_LINK,
-		lf.value :"id"::int AS PLL_LINK_ID
-	FROM payment_accounts,
-		lateral flatten (input => pll) lf
-)
-
-,intersecting_plls AS (
-	SELECT PLL_LINK_ID
-	FROM scheme_plls
-	INTERSECT
-	SELECT PLL_LINK_ID
-	FROM payment_account_plls
-)
-
-,joined_links as (
-	SELECT
-		CONCAT(LOYALTY_CARD_ID,'-',PAYMENT_ACCOUNT_ID) AS PLL_LINK_PK,
-		s.LOYALTY_CARD_ID::varchar AS LOYALTY_CARD_ID,
-		p.PAYMENT_ACCOUNT_ID::varchar AS PAYMENT_ACCOUNT_ID,
-		i.PLL_LINK_ID,
-		CASE WHEN s.active_link AND p.active_link
-			THEN TRUE
-			ELSE FALSE
-			END AS active_link
-	FROM intersecting_plls i
-	INNER JOIN scheme_plls s
-		ON s.PLL_LINK_ID = i.PLL_LINK_ID
-	INNER JOIN payment_account_plls p
-		ON i.PLL_LINK_ID = p.PLL_LINK_ID
-)
-
-SELECT *
-FROM joined_links
+select *
+from joined_links

@@ -1,14 +1,8 @@
-WITH payment_status AS (
-    SELECT *
-    FROM {{source('LOOKUP','PAYMENT_STATUS')}}
-)
+with
+    payment_status as (select * from {{ source("LOOKUP", "PAYMENT_STATUS") }}),
+    payment_status_select as (
+        select status, id as payment_status_id from payment_status
+    )
 
-,payment_status_select AS (
-    SELECT
-        STATUS
-        ,ID AS PAYMENT_STATUS_ID
-    FROM payment_status
-)
-
-SELECT *
-FROM payment_status_select
+select *
+from payment_status_select

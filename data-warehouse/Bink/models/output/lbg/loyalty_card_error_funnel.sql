@@ -9,22 +9,16 @@ Description:
 Parameters:
     source_object       - LC201__LOYALTY_CARD_JOURNEY_FUNNEL__USER_LEVEL__UID
 */
-
-WITH funnel AS (
-    SELECT * 
-    FROM  {{ref('LC201__LOYALTY_CARD_JOURNEY_FUNNEL__USER_LEVEL__UID')}}
-    WHERE CHANNEL = 'LLOYDS'
+with
+    funnel as (
+        select *
+        from {{ ref("LC201__LOYALTY_CARD_JOURNEY_FUNNEL__USER_LEVEL__UID") }}
+        where channel = 'LLOYDS'
+    ),
+    model as (select * from {{ ref("src__lookup_sankey_model") }}),
+    combine as (
+        select f.*, m.* exclude link from funnel f inner join model m on m.link = f.link
     )
 
-,model AS (
-    SELECT *
-    FROM {{ref('src__lookup_sankey_model')}}
-)
-
-,combine AS (
-    SELECT f.*, m.* exclude LINK FROM funnel f
-    INNER JOIN model m ON
-        m.LINK = f.LINK
-)
-
-select * from combine
+select *
+from combine

@@ -14,178 +14,352 @@ Parameters:
                         - src__dim_loyalty_card
                         - src__dim_date
 */
+with
+    lc_events as (select * from {{ ref("lc_trans") }}),
+    dim_date as (
+        select *
+        from {{ ref("stg_metrics__dim_date") }}
+        where date >= (select min(from_date) from lc_events) and date <= current_date()
+    ),
+    count_up_snap as (
+        select
+            d.date,
+            u.channel,
+            u.brand,
+            u.loyalty_plan_name,
+            u.loyalty_plan_company,
+            coalesce(
+                sum(
+                    case when event_type = 'SUCCESS' and add_journey = 'JOIN' then 1 end
+                ),
+                0
+            ) as join_success_state,
+            coalesce(
+                sum(
+                    case when event_type = 'FAILED' and add_journey = 'JOIN' then 1 end
+                ),
+                0
+            ) as join_failed_state,
+            coalesce(
+                sum(
+                    case when event_type = 'REQUEST' and add_journey = 'JOIN' then 1 end
+                ),
+                0
+            ) as join_pending_state,
+            coalesce(
+                sum(
+                    case when event_type = 'REMOVED' and add_journey = 'JOIN' then 1 end
+                ),
+                0
+            ) as join_removed_state,
+            coalesce(
+                sum(
+                    case when event_type = 'SUCCESS' and add_journey = 'LINK' then 1 end
+                ),
+                0
+            ) as link_success_state,
+            coalesce(
+                sum(
+                    case when event_type = 'FAILED' and add_journey = 'LINK' then 1 end
+                ),
+                0
+            ) as link_failed_state,
+            coalesce(
+                sum(
+                    case when event_type = 'REQUEST' and add_journey = 'LINK' then 1 end
+                ),
+                0
+            ) as link_pending_state,
+            coalesce(
+                sum(
+                    case when event_type = 'REMOVED' and add_journey = 'LINK' then 1 end
+                ),
+                0
+            ) as link_removed_state
+        from lc_events u
+        left join
+            dim_date d
+            on d.date >= date(u.from_date)
+            and d.date < coalesce(date(u.to_date), '9999-12-31')
+        group by d.date, u.brand, u.channel, u.loyalty_plan_name, u.loyalty_plan_company
+        having date is not null
+    ),
+    count_up_abs as (
+        select
+            d.date,
+            u.channel,
+            u.brand,
+            u.loyalty_plan_name,
+            u.loyalty_plan_company,
+            coalesce(
+                sum(
+                    case when event_type = 'REQUEST' and add_journey = 'JOIN' then 1 end
+                ),
+                0
+            ) as join_requests,
+            coalesce(
+                sum(
+                    case when event_type = 'FAILED' and add_journey = 'JOIN' then 1 end
+                ),
+                0
+            ) as join_fails,
+            coalesce(
+                sum(
+                    case when event_type = 'SUCCESS' and add_journey = 'JOIN' then 1 end
+                ),
+                0
+            ) as join_successes,
+            coalesce(
+                sum(
+                    case when event_type = 'REMOVED' and add_journey = 'JOIN' then 1 end
+                ),
+                0
+            ) as join_deletes,
+            coalesce(
+                sum(
+                    case when event_type = 'REQUEST' and add_journey = 'LINK' then 1 end
+                ),
+                0
+            ) as link_requests,
+            coalesce(
+                sum(
+                    case when event_type = 'FAILED' and add_journey = 'LINK' then 1 end
+                ),
+                0
+            ) as link_fails,
+            coalesce(
+                sum(
+                    case when event_type = 'SUCCESS' and add_journey = 'LINK' then 1 end
+                ),
+                0
+            ) as link_successes,
+            coalesce(
+                sum(
+                    case when event_type = 'REMOVED' and add_journey = 'LINK' then 1 end
+                ),
+                0
+            ) as link_deletes,
+            coalesce(
+                count(
+                    distinct case
+                        when event_type = 'REQUEST' and add_journey = 'JOIN'
+                        then u.user_ref
+                    end
+                ),
+                0
+            ) as join_requests_unique_users,
+            coalesce(
+                count(
+                    distinct case
+                        when event_type = 'FAILED' and add_journey = 'JOIN'
+                        then u.user_ref
+                    end
+                ),
+                0
+            ) as join_fails_unique_users,
+            coalesce(
+                count(
+                    distinct case
+                        when event_type = 'SUCCESS' and add_journey = 'JOIN'
+                        then u.user_ref
+                    end
+                ),
+                0
+            ) as join_successes_unique_users,
+            coalesce(
+                count(
+                    distinct case
+                        when event_type = 'REMOVED' and add_journey = 'JOIN'
+                        then u.user_ref
+                    end
+                ),
+                0
+            ) as join_deletes_unique_users,
+            coalesce(
+                count(
+                    distinct case
+                        when event_type = 'REQUEST' and add_journey = 'LINK'
+                        then u.user_ref
+                    end
+                ),
+                0
+            ) as link_requests_unique_users,
+            coalesce(
+                count(
+                    distinct case
+                        when event_type = 'FAILED' and add_journey = 'LINK'
+                        then u.user_ref
+                    end
+                ),
+                0
+            ) as link_fails_unique_users,
+            coalesce(
+                count(
+                    distinct case
+                        when event_type = 'SUCCESS' and add_journey = 'LINK'
+                        then u.user_ref
+                    end
+                ),
+                0
+            ) as link_successes_unique_users,
+            coalesce(
+                count(
+                    distinct case
+                        when event_type = 'REMOVED' and add_journey = 'LINK'
+                        then u.user_ref
+                    end
+                ),
+                0
+            ) as link_deletes_unique_users,
+            coalesce(
+                count(distinct case when event_type = 'REQUEST' then u.user_ref end), 0
+            ) as requests_unique_users,
+            coalesce(
+                count(distinct case when event_type = 'FAILED' then u.user_ref end), 0
+            ) as fails_unique_users,
+            coalesce(
+                count(distinct case when event_type = 'SUCCESS' then u.user_ref end), 0
+            ) as successes_unique_users,
+            coalesce(
+                count(distinct case when event_type = 'REMOVED' then u.user_ref end), 0
+            ) as deletes_unique_users
 
-WITH lc_events AS (
-    SELECT *
-    FROM {{ref('lc_trans')}}
-)
+        from lc_events u
+        left join dim_date d on d.date = date(u.from_date)
+        group by d.date, u.brand, u.channel, u.loyalty_plan_name, u.loyalty_plan_company
+        having date is not null
+    ),
+    all_together as (
+        select
+            coalesce(a.date, s.date) date,
+            coalesce(a.brand, s.brand) brand,
+            coalesce(a.channel, s.channel) channel,
+            coalesce(a.loyalty_plan_name, s.loyalty_plan_name) loyalty_plan_name,
+            coalesce(
+                a.loyalty_plan_company, s.loyalty_plan_company
+            ) loyalty_plan_company,
+            coalesce(s.join_success_state, 0) as join_success_state,
+            coalesce(s.join_failed_state, 0) as join_failed_state,
+            coalesce(s.join_pending_state, 0) as join_pending_state,
+            coalesce(s.join_removed_state, 0) as join_removed_state,
+            coalesce(s.link_success_state, 0) as link_success_state,
+            coalesce(s.link_failed_state, 0) as link_failed_state,
+            coalesce(s.link_pending_state, 0) as link_pending_state,
+            coalesce(s.link_removed_state, 0) as link_removed_state,
+            coalesce(a.join_requests, 0) as join_requests,
+            coalesce(a.join_fails, 0) as join_fails,
+            coalesce(a.join_successes, 0) as join_successes,
+            coalesce(a.join_deletes, 0) as join_deletes,
+            coalesce(a.link_requests, 0) as link_requests,
+            coalesce(a.link_fails, 0) as link_fails,
+            coalesce(a.link_successes, 0) as link_successes,
+            coalesce(a.link_deletes, 0) as link_deletes,
+            coalesce(a.join_requests_unique_users, 0) as join_requests_unique_users,
+            coalesce(a.join_fails_unique_users, 0) as join_fails_unique_users,
+            coalesce(a.join_successes_unique_users, 0) as join_successes_unique_users,
+            coalesce(a.join_deletes_unique_users, 0) as join_deletes_unique_users,
+            coalesce(a.link_requests_unique_users, 0) as link_requests_unique_users,
+            coalesce(a.link_fails_unique_users, 0) as link_fails_unique_users,
+            coalesce(a.link_successes_unique_users, 0) as link_successes_unique_users,
+            coalesce(a.link_deletes_unique_users, 0) as link_deletes_unique_users
+        from count_up_abs a
+        full outer join
+            count_up_snap s
+            on a.date = s.date
+            and a.brand = s.brand
+            and a.loyalty_plan_name = s.loyalty_plan_name
+    ),
+    add_combine_rename as (
+        select
+            date,
+            channel,
+            brand,
+            loyalty_plan_name,
+            loyalty_plan_company,
+            join_success_state
+            as lc029__successful_loyalty_card_joins__daily_channel_brand_retailer__pit,
+            join_failed_state
+            as lc031__failed_loyalty_card_joins__daily_channel_brand_retailer__pit,
+            join_pending_state
+            as lc030__requests_loyalty_card_joins__daily_channel_brand_retailer__pit,
+            join_removed_state
+            as lc032__deleted_loyalty_card_joins__daily_channel_brand_retailer__pit,
+            link_success_state
+            as lc025__successful_loyalty_card_links__daily_channel_brand_retailer__pit,
+            link_failed_state
+            as lc027__failed_loyalty_card_links__daily_channel_brand_retailer__pit,
+            link_pending_state
+            as lc026__requests_loyalty_card_links__daily_channel_brand_retailer__pit,
+            link_removed_state
+            as lc028__deleted_loyalty_card_links__daily_channel_brand_retailer__pit,
+            join_success_state
+            + link_success_state
+            as lc001__successful_loyalty_cards__daily_channel_brand_retailer__pit,
+            join_pending_state
+            + link_pending_state
+            as lc002__requests_loyalty_cards__daily_channel_brand_retailer__pit,
+            join_failed_state
+            + link_failed_state
+            as lc003__failed_loyalty_cards__daily_channel_brand_retailer__pit,
+            link_removed_state
+            + join_removed_state
+            as lc004__deleted_loyalty_cards__daily_channel_brand_retailer__pit,
+            join_requests
+            as lc014__requests_loyalty_card_joins__daily_channel_brand_retailer__count,
+            join_fails
+            as lc015__failed_loyalty_card_joins__daily_channel_brand_retailer__count,
+            join_successes
+            as lc013__successful_loyalty_card_joins__daily_channel_brand_retailer__count
+            ,
+            join_deletes
+            as lc016__deleted_loyalty_card_joins__daily_channel_brand_retailer__count,
+            link_requests
+            as lc010__requests_loyalty_card_links__daily_channel_brand_retailer__count,
+            link_fails
+            as lc011__failed_loyalty_card_links__daily_channel_brand_retailer__count,
+            link_successes
+            as lc009__successful_loyalty_card_links__daily_channel_brand_retailer__count
+            ,
+            link_deletes
+            as lc012__deleted_loyalty_card_links__daily_channel_brand_retailer__count,
+            join_requests
+            + link_requests
+            as lc006__requests_loyalty_cards__daily_channel_brand_retailer__count,
+            join_fails
+            + link_fails
+            as lc007__failed_loyalty_cards__daily_channel_brand_retailer__count,
+            join_successes
+            + link_successes
+            as lc005__successful_loyalty_cards__daily_channel_brand_retailer__count,
+            join_deletes
+            + link_deletes
+            as lc008__deleted_loyalty_cards__daily_channel_brand_retailer__count,
+            join_requests_unique_users
+            as lc022__requests_loyalty_card_joins__daily_channel_brand_retailer__dcount_user
+            ,
+            join_fails_unique_users
+            as lc023__failed_loyalty_card_joins__daily_channel_brand_retailer__dcount_user
+            ,
+            join_successes_unique_users
+            as lc021__successful_loyalty_card_joins__daily_channel_brand_retailer__dcount_user
+            ,
+            join_deletes_unique_users
+            as lc024__deleted_loyalty_card_joins__daily_channel_brand_retailer__dcount_user
+            ,
+            link_requests_unique_users
+            as lc018__requests_loyalty_card_links__daily_channel_brand_retailer__dcount_user
+            ,
+            link_fails_unique_users
+            as lc019__failed_loyalty_card_links__daily_channel_brand_retailer__dcount_user
+            ,
+            link_successes_unique_users
+            as lc017__successful_loyalty_card_links__daily_channel_brand_retailer__dcount_user
+            ,
+            link_deletes_unique_users
+            as lc020__deleted_loyalty_card_links__daily_channel_brand_retailer__dcount_user
 
-,dim_date AS (
-    SELECT *
-    FROM {{ref('stg_metrics__dim_date')}}
-    WHERE
-        DATE >= (SELECT MIN(FROM_DATE) FROM lc_events)
-        AND DATE <= CURRENT_DATE()
-)
-        
-,count_up_snap AS (
-  SELECT
-    d.DATE
-    ,u.CHANNEL
-    ,u.BRAND
-    ,u.LOYALTY_PLAN_NAME
-    ,u.LOYALTY_PLAN_COMPANY
-        ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'SUCCESS' AND ADD_JOURNEY = 'JOIN' THEN 1 END),0)  AS JOIN_SUCCESS_STATE
-        ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'FAILED' AND ADD_JOURNEY = 'JOIN' THEN 1 END),0)   AS JOIN_FAILED_STATE
-        ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'REQUEST' AND ADD_JOURNEY = 'JOIN' THEN 1 END),0)  AS JOIN_PENDING_STATE
-        ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'REMOVED' AND ADD_JOURNEY = 'JOIN' THEN 1 END),0)   AS JOIN_REMOVED_STATE
-  
-        ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'SUCCESS' AND ADD_JOURNEY = 'LINK' THEN 1 END),0)  AS LINK_SUCCESS_STATE
-        ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'FAILED' AND ADD_JOURNEY = 'LINK' THEN 1 END),0)   AS LINK_FAILED_STATE
-        ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'REQUEST' AND ADD_JOURNEY = 'LINK' THEN 1 END),0)  AS LINK_PENDING_STATE
-        ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'REMOVED' AND ADD_JOURNEY = 'LINK' THEN 1 END),0)   AS LINK_REMOVED_STATE
-FROM lc_events u
-LEFT JOIN dim_date d
-    ON d.DATE >= DATE(u.FROM_DATE)
-    AND d.DATE < COALESCE(DATE(u.TO_DATE), '9999-12-31')
-GROUP BY
-    d.DATE
-    ,u.BRAND
-    ,u.CHANNEL
-    ,u.LOYALTY_PLAN_NAME
-    ,u.LOYALTY_PLAN_COMPANY
-HAVING DATE IS NOT NULL
-)    
+        from all_together
+    )
 
-,count_up_abs AS (
-  SELECT
-    d.DATE
-    ,u.CHANNEL
-    ,u.BRAND
-    ,u.LOYALTY_PLAN_NAME
-    ,u.LOYALTY_PLAN_COMPANY
-        ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'REQUEST' AND ADD_JOURNEY = 'JOIN' THEN 1 END),0)  AS JOIN_REQUESTS
-        ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'FAILED' AND ADD_JOURNEY = 'JOIN' THEN 1 END),0)   AS JOIN_FAILS
-        ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'SUCCESS' AND ADD_JOURNEY = 'JOIN' THEN 1 END),0)  AS JOIN_SUCCESSES
-        ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'REMOVED' AND ADD_JOURNEY = 'JOIN' THEN 1 END),0)   AS JOIN_DELETES
-  
-        ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'REQUEST' AND ADD_JOURNEY = 'LINK' THEN 1 END),0)  AS LINK_REQUESTS
-        ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'FAILED' AND ADD_JOURNEY = 'LINK' THEN 1 END),0)   AS LINK_FAILS
-        ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'SUCCESS' AND ADD_JOURNEY = 'LINK' THEN 1 END),0)  AS LINK_SUCCESSES
-        ,COALESCE(SUM(CASE WHEN EVENT_TYPE = 'REMOVED' AND ADD_JOURNEY = 'LINK' THEN 1 END),0)   AS LINK_DELETES
-
-
-        ,COALESCE(COUNT(DISTINCT CASE WHEN EVENT_TYPE = 'REQUEST' AND ADD_JOURNEY = 'JOIN' THEN u.USER_REF END),0)  AS JOIN_REQUESTS_UNIQUE_USERS
-        ,COALESCE(COUNT(DISTINCT CASE WHEN EVENT_TYPE = 'FAILED' AND ADD_JOURNEY = 'JOIN' THEN u.USER_REF END),0)   AS JOIN_FAILS_UNIQUE_USERS
-        ,COALESCE(COUNT(DISTINCT CASE WHEN EVENT_TYPE = 'SUCCESS' AND ADD_JOURNEY = 'JOIN' THEN u.USER_REF END),0)  AS JOIN_SUCCESSES_UNIQUE_USERS
-        ,COALESCE(COUNT(DISTINCT CASE WHEN EVENT_TYPE = 'REMOVED' AND ADD_JOURNEY = 'JOIN' THEN u.USER_REF END),0)   AS JOIN_DELETES_UNIQUE_USERS
-  
-        ,COALESCE(COUNT(DISTINCT CASE WHEN EVENT_TYPE = 'REQUEST' AND ADD_JOURNEY = 'LINK' THEN u.USER_REF END),0)  AS LINK_REQUESTS_UNIQUE_USERS
-        ,COALESCE(COUNT(DISTINCT CASE WHEN EVENT_TYPE = 'FAILED' AND ADD_JOURNEY = 'LINK' THEN u.USER_REF END),0)   AS LINK_FAILS_UNIQUE_USERS
-        ,COALESCE(COUNT(DISTINCT CASE WHEN EVENT_TYPE = 'SUCCESS' AND ADD_JOURNEY = 'LINK' THEN u.USER_REF END),0)  AS LINK_SUCCESSES_UNIQUE_USERS
-        ,COALESCE(COUNT(DISTINCT CASE WHEN EVENT_TYPE = 'REMOVED' AND ADD_JOURNEY = 'LINK' THEN u.USER_REF END),0)   AS LINK_DELETES_UNIQUE_USERS
-
-        ,COALESCE(COUNT(DISTINCT CASE WHEN EVENT_TYPE = 'REQUEST' THEN u.USER_REF END),0)   AS REQUESTS_UNIQUE_USERS
-        ,COALESCE(COUNT(DISTINCT CASE WHEN EVENT_TYPE = 'FAILED' THEN u.USER_REF END),0)    AS FAILS_UNIQUE_USERS
-        ,COALESCE(COUNT(DISTINCT CASE WHEN EVENT_TYPE = 'SUCCESS' THEN u.USER_REF END),0)   AS SUCCESSES_UNIQUE_USERS
-        ,COALESCE(COUNT(DISTINCT CASE WHEN EVENT_TYPE = 'REMOVED' THEN u.USER_REF END),0)    AS DELETES_UNIQUE_USERS
-
-FROM lc_events u
-LEFT JOIN dim_date d
-    ON d.DATE = DATE(u.FROM_DATE)
-GROUP BY
-    d.DATE
-    ,u.BRAND
-    ,u.CHANNEL
-    ,u.LOYALTY_PLAN_NAME
-    ,u.LOYALTY_PLAN_COMPANY
-HAVING DATE IS NOT NULL
-)
-
-,all_together AS (
-    SELECT
-        COALESCE(a.date,s.date) DATE
-        ,COALESCE(a.brand,s.brand) BRAND
-        ,COALESCE(a.CHANNEL,s.CHANNEL) CHANNEL
-        ,COALESCE(a.LOYALTY_PLAN_NAME,s.LOYALTY_PLAN_NAME) LOYALTY_PLAN_NAME
-        ,COALESCE(a.LOYALTY_PLAN_COMPANY,s.LOYALTY_PLAN_COMPANY) LOYALTY_PLAN_COMPANY
-
-        ,COALESCE(s.JOIN_SUCCESS_STATE,0)   AS JOIN_SUCCESS_STATE
-        ,COALESCE(s.JOIN_FAILED_STATE,0)    AS JOIN_FAILED_STATE
-        ,COALESCE(s.JOIN_PENDING_STATE,0)   AS JOIN_PENDING_STATE
-        ,COALESCE(s.JOIN_REMOVED_STATE,0)   AS JOIN_REMOVED_STATE
-        ,COALESCE(s.LINK_SUCCESS_STATE,0)   AS LINK_SUCCESS_STATE
-        ,COALESCE(s.LINK_FAILED_STATE,0)    AS LINK_FAILED_STATE
-        ,COALESCE(s.LINK_PENDING_STATE,0)   AS LINK_PENDING_STATE
-        ,COALESCE(s.LINK_REMOVED_STATE,0)   AS LINK_REMOVED_STATE
-
-        ,COALESCE(a.JOIN_REQUESTS,0)    AS JOIN_REQUESTS
-        ,COALESCE(a.JOIN_FAILS,0)       AS JOIN_FAILS
-        ,COALESCE(a.JOIN_SUCCESSES,0)   AS JOIN_SUCCESSES
-        ,COALESCE(a.JOIN_DELETES,0)     AS JOIN_DELETES
-        ,COALESCE(a.LINK_REQUESTS,0)    AS LINK_REQUESTS
-        ,COALESCE(a.LINK_FAILS,0)       AS LINK_FAILS
-        ,COALESCE(a.LINK_SUCCESSES,0)   AS LINK_SUCCESSES
-        ,COALESCE(a.LINK_DELETES,0)     AS LINK_DELETES
-
-        ,COALESCE(a.JOIN_REQUESTS_UNIQUE_USERS,0)   AS JOIN_REQUESTS_UNIQUE_USERS
-        ,COALESCE(a.JOIN_FAILS_UNIQUE_USERS,0)      AS JOIN_FAILS_UNIQUE_USERS
-        ,COALESCE(a.JOIN_SUCCESSES_UNIQUE_USERS,0)  AS JOIN_SUCCESSES_UNIQUE_USERS
-        ,COALESCE(a.JOIN_DELETES_UNIQUE_USERS,0)    AS JOIN_DELETES_UNIQUE_USERS
-        ,COALESCE(a.LINK_REQUESTS_UNIQUE_USERS,0)   AS LINK_REQUESTS_UNIQUE_USERS
-        ,COALESCE(a.LINK_FAILS_UNIQUE_USERS,0)      AS LINK_FAILS_UNIQUE_USERS
-        ,COALESCE(a.LINK_SUCCESSES_UNIQUE_USERS,0)  AS LINK_SUCCESSES_UNIQUE_USERS
-        ,COALESCE(a.LINK_DELETES_UNIQUE_USERS,0)    AS LINK_DELETES_UNIQUE_USERS
-    FROM count_up_abs a
-    FULL OUTER JOIN count_up_snap s     
-        ON a.date=s.date and a.brand = s.brand and a.loyalty_plan_name = s.loyalty_plan_name
-)
-
-,add_combine_rename AS (
-    SELECT
-        DATE
-        ,CHANNEL
-        ,BRAND
-        ,LOYALTY_PLAN_NAME
-        ,LOYALTY_PLAN_COMPANY
-
-        ,JOIN_SUCCESS_STATE                                          AS LC029__SUCCESSFUL_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,JOIN_FAILED_STATE                                           AS LC031__FAILED_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,JOIN_PENDING_STATE                                          AS LC030__REQUESTS_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,JOIN_REMOVED_STATE                                          AS LC032__DELETED_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,LINK_SUCCESS_STATE                                          AS LC025__SUCCESSFUL_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,LINK_FAILED_STATE                                           AS LC027__FAILED_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,LINK_PENDING_STATE                                          AS LC026__REQUESTS_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,LINK_REMOVED_STATE                                          AS LC028__DELETED_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,JOIN_SUCCESS_STATE+LINK_SUCCESS_STATE                       AS LC001__SUCCESSFUL_LOYALTY_CARDS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,JOIN_PENDING_STATE+LINK_PENDING_STATE                       AS LC002__REQUESTS_LOYALTY_CARDS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,JOIN_FAILED_STATE+LINK_FAILED_STATE                         AS LC003__FAILED_LOYALTY_CARDS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,LINK_REMOVED_STATE+JOIN_REMOVED_STATE                       AS LC004__DELETED_LOYALTY_CARDS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-
-        ,JOIN_REQUESTS                                              AS LC014__REQUESTS_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,JOIN_FAILS                                                 AS LC015__FAILED_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,JOIN_SUCCESSES                                             AS LC013__SUCCESSFUL_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,JOIN_DELETES                                               AS LC016__DELETED_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,LINK_REQUESTS                                              AS LC010__REQUESTS_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,LINK_FAILS                                                 AS LC011__FAILED_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,LINK_SUCCESSES                                             AS LC009__SUCCESSFUL_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,LINK_DELETES                                               AS LC012__DELETED_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,JOIN_REQUESTS + LINK_REQUESTS                              AS LC006__REQUESTS_LOYALTY_CARDS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,JOIN_FAILS + LINK_FAILS                                    AS LC007__FAILED_LOYALTY_CARDS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,JOIN_SUCCESSES + LINK_SUCCESSES                            AS LC005__SUCCESSFUL_LOYALTY_CARDS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,JOIN_DELETES + LINK_DELETES                                AS LC008__DELETED_LOYALTY_CARDS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-
-        ,JOIN_REQUESTS_UNIQUE_USERS                                 AS LC022__REQUESTS_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,JOIN_FAILS_UNIQUE_USERS                                    AS LC023__FAILED_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,JOIN_SUCCESSES_UNIQUE_USERS                                AS LC021__SUCCESSFUL_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,JOIN_DELETES_UNIQUE_USERS                                  AS LC024__DELETED_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,LINK_REQUESTS_UNIQUE_USERS                                 AS LC018__REQUESTS_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,LINK_FAILS_UNIQUE_USERS                                    AS LC019__FAILED_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,LINK_SUCCESSES_UNIQUE_USERS                                AS LC017__SUCCESSFUL_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,LINK_DELETES_UNIQUE_USERS                                  AS LC020__DELETED_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-
-    FROM all_together
-)
-
-select * 
+select *
 from add_combine_rename

@@ -1,38 +1,28 @@
-WITH
-source as (
-	SELECT
-		*
-	FROM
-		{{ ref('fact_pll_link_status_change_secure') }}
-)
+with
+    source as (select * from {{ ref("fact_pll_link_status_change_secure") }}),
+    renamed as (
+        select
+            event_id,
+            event_date_time,
+            loyalty_card_id / /,
+            loyalty_plan_id,
+            loyalty_plan_company,
+            loyalty_plan_name,
+            payment_account_id / /,
+            from_status_id,
+            from_status / /,
+            to_status_id,
+            to_status,
+            channel,
+            brand / /,
+            origin,
+            user_id,
+            external_user_ref / /,
+            is_most_recent / /,
+            inserted_date_time / /,
+            updated_date_time
+        from source
+    )
 
-,renamed as (
-	SELECT
-		EVENT_ID
-		,EVENT_DATE_TIME
-		,LOYALTY_CARD_ID
-        //,LOYALTY_PLAN_ID
-        ,LOYALTY_PLAN_COMPANY
-        ,LOYALTY_PLAN_NAME
-        ,PAYMENT_ACCOUNT_ID
-		//,FROM_STATUS_ID
-        ,FROM_STATUS
-		//,TO_STATUS_ID
-        ,TO_STATUS
-        ,CHANNEL
-		,BRAND
-		//,ORIGIN
-		,USER_ID
-		,EXTERNAL_USER_REF
-		//,IS_MOST_RECENT
-		//,INSERTED_DATE_TIME
-		//,UPDATED_DATE_TIME
-	FROM
-		source
-)
-
-
-SELECT
-	*
-FROM
-	renamed
+select *
+from renamed

@@ -9,29 +9,26 @@ Description:
 Parameters:
     source_object       - voucher_trans
 */
+with
+    voucher_trans as (select * from {{ ref("voucher_trans") }}),
+    metrics as (
+        select distinct
+            channel,
+            brand,
+            loyalty_plan_company,
+            loyalty_plan_name,
+            state,
+            earn_type,
+            voucher_code,
+            redemption_tracked,
+            date_redeemed,
+            date_issued,
+            expiry_date,
+            time_to_redemption as v007__time_to_redemption__voucher_level__sum,
+            days_left_on_vouchers as v008__days_left_on_voucher__voucher_level__sum
+        from voucher_trans
 
-WITH voucher_trans AS (
-    SELECT *
-    FROM {{ ref('voucher_trans') }})
+    )
 
-,metrics AS (
-    SELECT DISTINCT
-        CHANNEL
-        ,BRAND
-        ,loyalty_plan_company
-        ,loyalty_plan_name
-        ,state
-        ,earn_type
-        ,voucher_code
-        ,REDEMPTION_TRACKED
-        ,DATE_REDEEMED
-        ,DATE_ISSUED
-        ,EXPIRY_DATE
-        ,TIME_TO_REDEMPTION AS V007__time_to_redemption__voucher_level__SUM
-        ,days_left_on_vouchers AS V008__days_left_on_voucher__voucher_level__SUM
-    FROM
-        voucher_trans
-
-)
-
-SELECT * FROM metrics
+select *
+from metrics

@@ -10,42 +10,30 @@ Description:
 Parameters:
     source_object      - HERMES_EVENTS.EVENTS
 */
+{{ config(materialized="incremental", unique_key="EVENT_ID") }}
 
-{{
-    config(
-        materialized='incremental'
-		,unique_key='EVENT_ID'
+with
+    all_events as (
+        select *
+        from {{ source("snowstorm", "events") }}  -- this is pointing to service_data schema
+        {% if is_incremental() %}
+        where _airbyte_emitted_at >= (select max(_airbyte_emitted_at) from {{ this }})
+        {% endif %}
+
+    ),
+    all_events_select as (
+        select
+            parse_json(json) as json,
+            event_type,
+            event_date_time::timestamp as event_date_time,
+            _airbyte_ab_id,
+            _airbyte_emitted_at,
+            _airbyte_normalized_at,
+            _airbyte_events_hashid,
+            -- ,_AIRBYTE_UNIQUE_KEY
+            id as event_id
+        from all_events
     )
-}}
 
-WITH
-all_events as (
-	SELECT
-		*
-	FROM
-		{{ source('snowstorm', 'events') }} --this is pointing to service_data schema
-	{% if is_incremental() %}
-  	WHERE _AIRBYTE_EMITTED_AT >= (SELECT MAX(_AIRBYTE_EMITTED_AT) from {{ this }})
-	{% endif %}
-	
-)
-
-,all_events_select as (
-	SELECT
-		PARSE_JSON(JSON) AS JSON
-		,EVENT_TYPE
-		,EVENT_DATE_TIME::TIMESTAMP AS EVENT_DATE_TIME
-		,_AIRBYTE_AB_ID
-		,_AIRBYTE_EMITTED_AT
-		,_AIRBYTE_NORMALIZED_AT
-		,_AIRBYTE_EVENTS_HASHID
-		-- ,_AIRBYTE_UNIQUE_KEY
-		,ID AS EVENT_ID
-	FROM
-		all_events
-)
-
-SELECT
-	*
-FROM
-	all_events_select
+select *
+from all_events_select

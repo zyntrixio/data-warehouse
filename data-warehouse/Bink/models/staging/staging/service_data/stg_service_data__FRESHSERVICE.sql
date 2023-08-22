@@ -10,36 +10,22 @@ Description:
 Parameters:
     source_object      - SNOWSTORM.FRESHSERVICE
 */
+with
+    all_data as (select * from {{ source("snowstorm", "freshservice") }}),
+    all_data_select as (
+        select
+            {{ dbt_utils.surrogate_key(["ID", "UPDATED_AT"]) }} as id,
+            id as ticket_id,
+            mi,
+            status,
+            channel,
+            service,
+            created_at,
+            updated_at,
+            sla_breached,
+            _airbyte_emitted_at
+        from all_data
+    )
 
-
-WITH
-all_data as (
-	SELECT
-		*
-	FROM
-		{{ source('snowstorm', 'freshservice') }}
-)
-
-,all_data_select as (
-	SELECT
-		{{ dbt_utils.surrogate_key(
-      ['ID',
-      'UPDATED_AT']
-  			) }} as ID
-		,ID AS TICKET_ID
-		,MI
-		,STATUS
-		,CHANNEL
-		,SERVICE
-		,CREATED_AT
-		,UPDATED_AT
-		,SLA_BREACHED
-		,_AIRBYTE_EMITTED_AT
-	FROM
-		all_data
-)
-
-SELECT
-	*
-FROM
-	all_data_select
+select *
+from all_data_select

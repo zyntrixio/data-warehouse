@@ -4,49 +4,60 @@ Generic test to ensure the number of events in the past day isn't outside a give
 Created By:     SP
 Created Date:   2022/07/12
 */
-
 {% test sd_daily_spike(model, column_name, vals, datetime_col, unique_id_col, max_sd) %}
-        {{ config(
-        tags=['business']
-        ,meta={"description": "Generic test to ensure the number of events in the past day isn't outside a given multiple of the standard deviation beyond the median.", 
-            "test_type": "Business"},
-        ) }}
-    WITH count_new_vals AS (
-        SELECT COUNT(*) c
-        FROM {{ model }}
-        WHERE {{ column_name }} IN ( {%- for item in vals-%} {%- if not loop.first %} , {% endif %} {{ "'" + item + "' "}}  {%- endfor -%} )
-        AND TO_DATE({{ datetime_col }}) = dateadd(day, -1, current_date())
+{{
+    config(
+        tags=["business"],
+        meta={
+            "description": "Generic test to ensure the number of events in the past day isn't outside a given multiple of the standard deviation beyond the median.",
+            "test_type": "Business",
+        },
     )
-    , past_days AS (
-        SELECT TO_DATE({{ datetime_col }}) AS date_part
-        ,COUNT({{ unique_id_col }}) c
-        FROM {{ model }}
-        GROUP BY date_part
-        HAVING DATEDIFF(day, date_part, CURRENT_DATE()) < 60
+}}
+with
+    count_new_vals as (
+        select count(*) c
+        from {{ model }}
+        where
+            {{ column_name }} in (
+                {%- for item in vals -%}
+                {%- if not loop.first %}, {% endif %} {{ "'" + item + "' " }}
+                {%- endfor -%}
+            )
+            and to_date({{ datetime_col }}) = dateadd(day, -1, current_date())
+    ),
+    past_days as (
+        select to_date({{ datetime_col }}) as date_part, count({{ unique_id_col }}) c
+        from {{ model }}
+        group by date_part
+        having datediff(day, date_part, current_date()) < 60
+    ),
+    ranges as (
+        select
+            stddev(c) as sdev,
+            median(c) as med,
+            med + {{ max_sd }} * sdev as med_plus,
+            greatest(med - {{ max_sd }} * sdev, 0) as med_minus
+        from past_days
+    ),
+    is_beyond_range as (
+        select
+            case
+                when (select med_plus from ranges) < c then true else false
+            end as is_greater,
+            case
+                when (select med_minus from ranges) > c then true else false
+            end as is_less
+        from count_new_vals
+    ),
+    is_fail as (
+        select *
+        from is_beyond_range
+        except
+        select false as is_greater, false as is_less
     )
 
-    , ranges AS (
-        SELECT
-            STDDEV(c) AS sdev
-            ,MEDIAN(c) AS med
-            ,med + {{max_sd}} * sdev AS med_plus
-            ,GREATEST(med - {{max_sd}} * sdev, 0) AS med_minus
-        FROM past_days
-    )
-
-    ,is_beyond_range AS (
-        SELECT
-            CASE WHEN (SELECT med_plus FROM ranges) < c THEN true ELSE false END AS is_greater
-            ,CASE WHEN (SELECT med_minus FROM ranges) > c THEN true ELSE false END AS is_less
-        FROM count_new_vals
-    )
-
-    ,is_fail AS (
-        SELECT * FROM is_beyond_range
-        EXCEPT
-        SELECT false AS is_greater, false AS is_less
-    )
-
-    SELECT * FROM is_fail
+select *
+from is_fail
 
 {% endtest %}

@@ -10,17 +10,11 @@ Description:
 Parameters:
     source_object      - HERMES.USER_ORGANISATION
 */
+with
+    organisation as (
+        select id as organisation_id, name as organisation_name, terms_and_conditions
+        from {{ source("Hermes", "ORGANISATION") }}
+    )
 
-WITH organisation AS (
-	SELECT
-		ID AS ORGANISATION_ID
-		,NAME AS ORGANISATION_NAME
-		,TERMS_AND_CONDITIONS		
-	FROM
-		{{ source('Hermes', 'ORGANISATION') }}
-)
-
-SELECT
-	*
-FROM
-	organisation
+select *
+from organisation

@@ -10,59 +10,55 @@ Description:
 Parameters:
     ref_object      - fact_loyalty_card_status_change_secure
 */
-
 {{
     config(
-        materialized='incremental'
-		,unique_key='EVENT_ID'
-		,merge_update_columns = ['IS_MOST_RECENT', 'UPDATED_DATE_TIME']
+        materialized="incremental",
+        unique_key="EVENT_ID",
+        merge_update_columns=["IS_MOST_RECENT", "UPDATED_DATE_TIME"],
     )
 }}
 
-WITH
-lc AS (
-    SELECT * 
-    FROM {{ref('fact_loyalty_card_status_change_secure')}}
-	{% if is_incremental() %}
-  	WHERE UPDATED_DATE_TIME>= (SELECT MAX(UPDATED_DATE_TIME) from {{ this }})
-	{% endif %}
-)
+with
+    lc as (
+        select *
+        from {{ ref("fact_loyalty_card_status_change_secure") }}
+        {% if is_incremental() %}
+        where updated_date_time >= (select max(updated_date_time) from {{ this }})
+        {% endif %}
+    ),
+    lc_select as (
+        select
+            event_id,
+            event_date_time,
+            loyalty_card_id,
+            loyalty_plan_id,
+            loyalty_plan_name,
+            loyalty_plan_company,
+            from_status_id,
+            from_status,
+            from_status_type,
+            from_status_rollup,
+            from_external_status,
+            from_error_slug,
+            to_status_id,
+            to_status,
+            to_status_type,
+            to_status_rollup,
+            to_external_status,
+            to_error_slug,
+            is_most_recent / /,
+            main_answer,
+            origin,
+            channel,
+            brand,
+            user_id / /,
+            external_user_ref / /,
+            email,
+            email_domain,
+            inserted_date_time,
+            updated_date_time
+        from lc
+    )
 
-,lc_select AS (
-    SELECT
-		EVENT_ID
-		,EVENT_DATE_TIME
-		,LOYALTY_CARD_ID
-		,LOYALTY_PLAN_ID
-		,LOYALTY_PLAN_NAME
-		,LOYALTY_PLAN_COMPANY
-		,FROM_STATUS_ID
-		,FROM_STATUS
-		,FROM_STATUS_TYPE
-		,FROM_STATUS_ROLLUP
-		,FROM_EXTERNAL_STATUS
-		,FROM_ERROR_SLUG
-		,TO_STATUS_ID
-		,TO_STATUS
-		,TO_STATUS_TYPE
-		,TO_STATUS_ROLLUP
-		,TO_EXTERNAL_STATUS
-		,TO_ERROR_SLUG
-		,IS_MOST_RECENT
-		// ,MAIN_ANSWER
-		,ORIGIN
-		,CHANNEL
-		,BRAND
-		,USER_ID
-		// ,EXTERNAL_USER_REF
-		// ,EMAIL
-		,EMAIL_DOMAIN
-		,INSERTED_DATE_TIME
-		,UPDATED_DATE_TIME
-    FROM
-        lc
-)
-
-
-SELECT *
-FROM lc_select
+select *
+from lc_select
