@@ -8,7 +8,7 @@ LOTS OF TECHNICAL DEBT, PLEASE BE CAREFUL.
 
 Firstly, any users of this repository will require DBT to be installed locally. Please follow the link below:
 
-[DBT Installation Instructions](https://docs.getdbt.com/docs/core/homebrew-install)
+[DBT Installation Instructions](https://docs.getdbt.com/docs/core/pip-install)
 
 You will then need a copy of the company `profiles.yaml` to provide you with the correct data warehouse locations, environments, and passwords.
 
@@ -30,8 +30,9 @@ And you are ready to go.
 
 ```shell
 dbt run -t uat # for UAT
-dbt run -t prod # for prod
-dbt run -t uat --select {name of model} # for a specific model
+dbt run -t dev # for dev
+dbt run -t uat -s {name of model} # for a specific model
+dbt run -t dev -s /models/{Directory} # for all models in a directory
 ```
 
 ### Prefect Orchestration
@@ -57,7 +58,7 @@ You can run data testing via the DBT Cli command
 
 ```Shell
 dbt test -t uat # for all tests
-dbt test -t uat -s models/output # for all output layer models
+dbt test -t uat -s models/{directory} # for all tests on models in a directory
 ```
 
 The output from these tests must be presented at code review to verify that data integrity is maintained.
@@ -66,7 +67,7 @@ The output from these tests must be presented at code review to verify that data
 
 #### Python Models
 
-We use Ruff to lint our python models, and Black to format them.
+We use [Ruff](https://pypi.org/project/ruff/) to lint our python models, and [Black](https://pypi.org/project/black/) to format them.
 
 They are installed as dev dependancies in our Poetry Venv for this project.
 
@@ -81,20 +82,22 @@ This will format the model then run the linter over the model to check that it m
 
 #### DBT SQL Models
 
-We use sqlfluff to Lint and Format our dbt sql models
+We use [sqlfluff](https://pypi.org/project/sqlfluff/) to Lint and Format our dbt sql models
 
 This is installed as dev dependancies in our Poetry Venv for this project.
 
 To run them please use the below commands:
 
 ```Shell
-sqlfluff format /path/to/file
-sqlfluff lint /path/to/file
+sqlfluff format -d snowflake -t jinja /path/to/file
+sqlfluff lint -d snowflake -t jinja /path/to/file
 ```
 
 This will format the query then run the linter over the model to check that it matches the rules, such as type safety, import clean up, etc.
 
 ### Pull Requests
+
+New features, hotfixes, and changes, must be done via a new branch. This will then be merged into master via a Pull Request to ensure all required checks are performed.
 
 Pull requests and code review must be performed before code can be merged into master branch.
 
