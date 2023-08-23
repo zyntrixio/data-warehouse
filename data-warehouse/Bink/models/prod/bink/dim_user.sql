@@ -14,24 +14,24 @@ with
     user as (select * from {{ ref("dim_user_secure") }}),
     user_select as (
         select
-            -- user_id,
-            external_id,
+            user_id,
+            -- external_id,
             channel_id,
-            -- date_joined,
+            date_joined,
             -- delete_token,
-            email,
+            -- email,
             is_active,
             is_staff,
             is_superuser,
             is_tester,
-            -- last_login,
+            last_login,
             -- password,
-            reset_token,
+            -- reset_token,
             marketing_code_id,
-            -- salt,
+            salt,
             -- apple,
             -- facebook,
-            twitter,
+            -- twitter,
             magic_link_verified
         from user
     )

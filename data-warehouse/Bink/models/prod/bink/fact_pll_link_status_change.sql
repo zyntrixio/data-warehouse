@@ -47,8 +47,8 @@ with
             channel,
             brand,
             origin,
-            -- user_id,
-            external_user_ref,
+            user_id,
+            -- external_user_ref,
             case
                 when
                     (

@@ -81,12 +81,8 @@ final as (
         financial_month,
         financial_weekofyear,
         financial_dayofyear,
-        financial_year::varchar
-        || '-'
-        || financial_quarter::varchar as financial_year_quarter,
-        financial_year::varchar
-        || '-'
-        || financial_month::varchar as financial_year_month,
+        financial_year::varchar||'-'|| financial_quarter::varchar as financial_year_quarter, -- noqa: disable=all
+        financial_year::varchar||'-'|| financial_month::varchar as financial_year_month, -- noqa: disable=all
         dateadd(month, 8, start_of_year) as start_of_financial_year,
         dateadd(month, 8, end_of_year) as end_of_financial_year,
         dateadd(month, 8, start_of_quarter) as start_of_financial_quarter,

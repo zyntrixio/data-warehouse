@@ -44,11 +44,9 @@ with
             json:spend_currency::varchar as spend_currency,
             json:loyalty_id::varchar as loyalty_id,
             json:scheme_account_id::varchar as loyalty_card_id,
-            -- json:mid::varchar as merchant_id,
-            json:location_id::varchar as location_id
-            -- joins to harmonia merchant data,
-            json:merchant_internal_id::varchar as merchant_internal_id
-            -- joins to harmonia merchant data,
+            json:mid::varchar as merchant_id,
+            -- json:location_id::varchar as location_id NOTE: joins to harmonia merchant data,
+            -- json:merchant_internal_id::varchar as merchant_internal_id NOTE: joins to harmonia merchant data,
             json:payment_card_account_id::varchar as payment_account_id,
             json:settlement_key::varchar as settlement_key,
             json:authorisation_code::varchar as auth_code,
