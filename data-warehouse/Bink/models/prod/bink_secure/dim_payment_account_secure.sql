@@ -1,8 +1,8 @@
 /*
 Created by:         Sam Pibworth
 Created date:       2022-04-21
-Last modified by:   
-Last modified date: 
+Last modified by:
+Last modified date:
 
 Description:
 	Processes json values and finishes payment_account table
@@ -10,107 +10,105 @@ Description:
 Parameters:
     ref_object      - transformed_payment_accounts
 */
+{{ config(alias="dim_payment_account") }}
 
-{{ config(alias='dim_payment_account') }}
+with
+payment_accounts as (select * from {{ ref("transformed_payment_accounts") }}),
 
-WITH
-payment_accounts AS (
-    SELECT *
-    FROM {{ ref('transformed_payment_accounts')}}
-)
-
-
-,payment_account_select AS (
-	SELECT
-		PAYMENT_ACCOUNT_ID
-		,HASH
-		,TOKEN
-		,STATUS
-		,PROVIDER_ID
-		,PROVIDER_STATUS_CODE
-		,COUNTRY -- GB And UK???
-		,CREATED
-		,PAN_END
-		,UPDATED
-		,CASE WHEN CONSENTS IN ('[]', '[{}]') -- Need to check this only has 1 entity in array
-            THEN NULL
-            ELSE PARSE_JSON(CONSENTS)[0]:type :: INT
-            END AS CONSENTS_TYPE
-        ,CASE WHEN CONSENTS IN ('[]', '[{}]')
-            THEN NULL
-            ELSE PARSE_JSON(CONSENTS)[0]:timestamp :: TIMESTAMP
-            END AS CONSENTS_TIMESTAMP
-        ,CASE WHEN CONSENTS IN ('[]', '[{}]')
-            THEN NULL
-            ELSE PARSE_JSON(CONSENTS)[0]:longitude :: FLOAT
-            END AS CONSENTS_LONGITUDE
-        ,CASE WHEN CONSENTS IN ('[]', '[{}]')
-            THEN NULL
-            ELSE PARSE_JSON(CONSENTS)[0]:latitude :: FLOAT
-            END AS CONSENTS_LATITUDE
-        ,ISSUER_ID
-		,PAN_START
-		,PSP_TOKEN
-		,CASE WHEN AGENT_DATA = '{}'
-            THEN NULL
-            ELSE PARSE_JSON(AGENT_DATA):card_uid :: VARCHAR
-            END AS CARD_UID
-		,IS_DELETED
-		,START_MONTH
-		,START_YEAR
-		,EXPIRY_MONTH
-		,EXPIRY_YEAR
-		,FINGERPRINT
-		,ISSUER_NAME
-		,NAME_ON_CARD
-		,CARD_NICKNAME
-		,CURRENCY_CODE
-		,CARD_NAME -- Need to check no conflict with the status join
-		,CARD_TYPE
-		--,FORMATTED_IMAGES -- Complicated JSON - should this be unpacked?
-	FROM
-		payment_accounts
+payment_account_select as (
+    select
+        payment_account_id,
+        hash,
+        token,
+        status,
+        provider_id,
+        provider_status_code,
+        country,  -- GB And UK???
+        created,
+        pan_end,
+        updated,
+        case
+            -- Need to check this only has 1 entity in array
+            when consents in ('[]', '[{}]')
+                then null
+            else parse_json(consents)[0]:type::int
+        end as consents_type,
+        case
+            when consents in ('[]', '[{}]')
+                then null
+            else parse_json(consents)[0]:timestamp::timestamp
+        end as consents_timestamp,
+        case
+            when consents in ('[]', '[{}]')
+                then null
+            else parse_json(consents)[0]:longitude::float
+        end as consents_longitude,
+        case
+            when consents in ('[]', '[{}]')
+                then null
+            else parse_json(consents)[0]:latitude::float
+        end as consents_latitude,
+        issuer_id,
+        pan_start,
+        psp_token,
+        case
+            when agent_data = '{}'
+                then null
+            else parse_json(agent_data):card_uid::varchar
+        end as card_uid,
+        is_deleted,
+        start_month,
+        start_year,
+        expiry_month,
+        expiry_year,
+        fingerprint,
+        issuer_name,
+        name_on_card,
+        card_nickname,
+        currency_code,
+        card_name,  -- Need to check no conflict with the status join
+        card_type
+        -- ,FORMATTED_IMAGES -- Complicated JSON - should this be unpacked?
+    from payment_accounts
 ),
 
-add_na_value AS (
-	SELECT
-		'NOT_APPLICABLE' AS PAYMENT_ACCOUNT_ID
-		,NULL AS HASH
-		,NULL AS TOKEN
-		,NULL AS STATUS
-		,NULL AS PROVIDER_ID
-		,NULL AS PROVIDER_STATUS_CODE
-		,NULL AS COUNTRY
-		,NULL AS CREATED
-		,NULL AS PAN_END
-		,NULL AS UPDATED
-		,NULL AS CONSENTS_TYPE
-		,NULL AS CONSENTS_TIMESTAMP
-		,NULL AS CONSENTS_LONGITUDE
-		,NULL AS CONSENTS_LATITUDE
-		,NULL AS ISSUER_ID
-		,NULL AS PAN_START
-		,NULL AS PSP_TOKEN
-		,NULL AS CARD_UID
-		,NULL AS IS_DELETED
-		,NULL AS START_MONTH
-		,NULL AS START_YEAR
-		,NULL AS EXPIRY_MONTH
-		,NULL AS EXPIRY_YEAR
-		,NULL AS FINGERPRINT
-		,NULL AS ISSUER_NAME
-		,NULL AS NAME_ON_CARD
-		,NULL AS CARD_NICKNAME
-		,NULL AS CURRENCY_CODE
-		,NULL AS CARD_NAME -- Need to check no conflict with the status join
-		,NULL AS CARD_TYPE
-		--,NULL AS FORMATTED
-	UNION ALL
-	SELECT *
-	FROM payment_account_select	
+add_na_value as (
+    select
+        'NOT_APPLICABLE' as payment_account_id,
+        null as hash,
+        null as token,
+        null as status,
+        null as provider_id,
+        null as provider_status_code,
+        null as country,
+        null as created,
+        null as pan_end,
+        null as updated,
+        null as consents_type,
+        null as consents_timestamp,
+        null as consents_longitude,
+        null as consents_latitude,
+        null as issuer_id,
+        null as pan_start,
+        null as psp_token,
+        null as card_uid,
+        null as is_deleted,
+        null as start_month,
+        null as start_year,
+        null as expiry_month,
+        null as expiry_year,
+        null as fingerprint,
+        null as issuer_name,
+        null as name_on_card,
+        null as card_nickname,
+        null as currency_code,
+        null as card_name,  -- Need to check no conflict with the status join
+        null as card_type
+        -- ,NULL AS FORMATTED
+    union all
+    select *
+    from payment_account_select
 )
 
-SELECT
-    *
-FROM
-    add_na_value
+select *
+from add_na_value

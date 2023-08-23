@@ -1,8 +1,8 @@
 /*
-Created by:         Christopher Mitchell 
+Created by:         Christopher Mitchell
 Created date:       2023-06-07
-Last modified by:   
-Last modified date: 
+Last modified by:
+Last modified date:
 
 Description:
     Rewrite of the LL table lc_joins_links_snapshot and lc_joins_links containing both snapshot and daily absolute data of all link and join journeys split by merchant.
@@ -14,27 +14,26 @@ Parameters:
                         - src__dim_loyalty_card
                         - src__dim_date
 */
+with
+user_events as (select * from {{ ref("stg_metrics__fact_transaction") }}),
 
-WITH user_events AS (
-    SELECT *
-    FROM {{ref('stg_metrics__fact_transaction')}}
+metrics as (
+    select
+        date(date) as date,
+        channel,
+        brand,
+        loyalty_plan_company,
+        coalesce(
+            nullif(external_user_ref, ''), user_id
+        ) as u007__active_users__user_level_daily__uid
+    from user_events
+    group by
+        coalesce(nullif(external_user_ref, ''), user_id),
+        channel,
+        brand,
+        loyalty_plan_company,
+        date(date)
 )
 
-,metrics AS (
-    SELECT
-        DATE(DATE)                                          AS DATE
-        ,CHANNEL
-        ,BRAND
-        ,LOYALTY_PLAN_COMPANY
-        ,COALESCE(NULLIF(EXTERNAL_USER_REF,''), USER_ID)    AS U007__ACTIVE_USERS__USER_LEVEL_DAILY__UID
-    FROM
-        user_events
-    GROUP BY
-        COALESCE(NULLIF(EXTERNAL_USER_REF,''), USER_ID)
-        ,CHANNEL
-        ,BRAND
-        ,LOYALTY_PLAN_COMPANY
-        ,DATE(DATE)
-)
-
-select * from metrics
+select *
+from metrics

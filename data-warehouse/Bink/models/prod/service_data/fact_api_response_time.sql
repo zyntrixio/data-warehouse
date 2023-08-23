@@ -1,8 +1,8 @@
 /*
 Created by:         Anand Bhakta
 Created date:       2023-02-02
-Last modified by:   
-Last modified date: 
+Last modified by:
+Last modified date:
 
 Description:
     Table representing all api response time data from the apistats table
@@ -10,43 +10,37 @@ Description:
 Parameters:
     source_object      - SERVICE_DATA.APISTATS
 */
+{{ config(materialized="incremental", unique_key="API_ID") }}
 
-{{
-    config(
-        materialized='incremental'
-		,unique_key='API_ID'
-    )
-}}
-
-WITH
+with
 all_events as (
-	SELECT
-		*
-	FROM
-		{{ ref('stg_service_data__APISTATS') }}
-	{% if is_incremental() %}
-  	WHERE _AIRBYTE_EMITTED_AT >= (SELECT MAX(INSERTED_DATE_TIME) from {{ this }})
-	{% endif %}
-	
+    select *
+    from {{ ref("stg_service_data__APISTATS") }}
+    {% if is_incremental() %}
+        where
+            _airbyte_emitted_at
+            >= (select max(inserted_date_time) from {{ this }})
+    {% endif %}
+
+),
+
+extract_channel as (
+    select
+        api_id,
+        date_time,
+        method,
+        path,
+        coalesce(
+            case when contains(client_ip, '141.92') then 'LLOYDS' else null end,
+            case
+                when contains(client_ip, '157.83') then 'BARCLAYS' else null
+            end
+        ) as channel,
+        response_time,
+        status_code,
+        sysdate() as inserted_date_time
+    from all_events
 )
 
-,extract_channel as (
-	SELECT
-		API_ID
-		,DATE_TIME
-		,METHOD
-		,PATH
-		,COALESCE(
-			CASE WHEN CONTAINS(CLIENT_IP, '141.92') THEN 'LLOYDS' ELSE NULL END
-			,CASE WHEN CONTAINS(CLIENT_IP, '157.83') THEN 'BARCLAYS' ELSE NULL END
-					) AS CHANNEL 
-		,RESPONSE_TIME
-		,STATUS_CODE
-		,SYSDATE() AS INSERTED_DATE_TIME
-	FROM all_events
-)
-
-SELECT
-	*
-FROM
-	extract_channel
+select *
+from extract_channel

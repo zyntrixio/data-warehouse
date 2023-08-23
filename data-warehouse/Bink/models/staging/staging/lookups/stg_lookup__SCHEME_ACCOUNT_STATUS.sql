@@ -1,20 +1,18 @@
-WITH account_status AS (
-    SELECT *
-    FROM {{source('LOOKUP','ACCOUNT_STATUS')}}
+with
+account_status as (select * from {{ source("LOOKUP", "ACCOUNT_STATUS") }}),
+
+account_status_select as (
+    select
+        code,
+        status,
+        status_group,
+        journey_type,
+        status_type,
+        status_rollup,
+        api2_status,
+        api2_error_slug
+    from account_status
 )
 
-,account_status_select AS (
-    SELECT
-        CODE
-        ,STATUS
-        ,STATUS_GROUP
-        ,JOURNEY_TYPE
-        ,STATUS_TYPE
-        ,STATUS_ROLLUP
-        ,API2_STATUS
-        ,API2_ERROR_SLUG
-    FROM account_status
-)
-
-SELECT *
-FROM account_status_select
+select *
+from account_status_select

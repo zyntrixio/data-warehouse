@@ -10,54 +10,44 @@ Description:
 Parameters:
     ref_object      - transformed_transactions
 */
+{{ config(materialized="incremental", unique_key="EVENT_ID") }}
 
-{{
-    config(
-        materialized='incremental'
-		,unique_key='EVENT_ID'
+with
+    transaction_events as (
+        select *
+        from {{ ref("fact_transaction_secure") }}
+        {% if is_incremental() %}
+        where updated_date_time >= (select max(updated_date_time) from {{ this }})
+        {% endif %}
+    ),
+    select_transactions as (
+        select
+            event_id,
+            event_date_time,
+            user_id / /,
+            external_user_ref,
+            channel,
+            brand,
+            transaction_id,
+            provider_slug,
+            feed_type,
+            duplicate_transaction,
+            loyalty_plan_name,
+            loyalty_plan_company,
+            transaction_date,
+            spend_amount,
+            spend_currency,
+            loyalty_id,
+            loyalty_card_id,
+            merchant_id,
+            payment_account_id,
+            settlement_key,
+            auth_code,
+            approval_code,
+            inserted_date_time,
+            updated_date_time
+        from transaction_events
     )
-}}
 
-WITH
-transaction_events AS (
-	SELECT *
-	FROM {{ ref('fact_transaction_secure')}}
-	{% if is_incremental() %}
-  	WHERE UPDATED_DATE_TIME>= (SELECT MAX(UPDATED_DATE_TIME) from {{ this }})
-	{% endif %}
-)
-
-,select_transactions as (
-	SELECT
-		EVENT_ID
-		,EVENT_DATE_TIME
-		,USER_ID
-		//  ,EXTERNAL_USER_REF
-		,CHANNEL
-		,BRAND
-		,TRANSACTION_ID
-		,PROVIDER_SLUG
-		,FEED_TYPE
-		,DUPLICATE_TRANSACTION
-		,LOYALTY_PLAN_NAME
-		,LOYALTY_PLAN_COMPANY
-		,TRANSACTION_DATE
-		,SPEND_AMOUNT
-		,SPEND_CURRENCY
-		,LOYALTY_ID
-		,LOYALTY_CARD_ID
-		,MERCHANT_ID
-		,PAYMENT_ACCOUNT_ID
-		,SETTLEMENT_KEY
-		,AUTH_CODE
-		,APPROVAL_CODE
-		,INSERTED_DATE_TIME
-		,UPDATED_DATE_TIME
-	FROM
-		transaction_events
-)
-
-SELECT
-    *
-FROM
-    select_transactions
+select *
+from select_transactions

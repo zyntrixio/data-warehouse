@@ -1,8 +1,8 @@
 /*
 Created by:         Christopher Mitchell
 Created date:       2023-06-23
-Last modified by:   
-Last modified date: 
+Last modified by:
+Last modified date:
 
 Description:
     Rewrite of metrics for transactions at a user level, daily agg
@@ -10,29 +10,30 @@ Notes:
     will be used in output for LBG as user level
     source_object       - src fact transaction
 */
+with
+txn_events as (select * from {{ ref("stg_metrics__fact_transaction") }}),
 
-WITH txn_events AS (
-    SELECT *
-    FROM {{ref('stg_metrics__fact_transaction')}}
+metrics as (
+    select
+        date(date) as date,
+        channel,
+        brand,
+        loyalty_plan_company,
+        sum(spend_amount) as t001__spend__user_level_daily__sum,
+        coalesce(
+            nullif(external_user_ref, ''), user_id
+        ) as t002__active_users__user_level_daily__uid,
+        count(
+            distinct transaction_id
+        ) as t003__transactions__user_level_daily__dcount_txn
+    from txn_events
+    group by
+        coalesce(nullif(external_user_ref, ''), user_id),
+        channel,
+        brand,
+        loyalty_plan_company,
+        date(date)
 )
 
-,metrics AS (
-    SELECT
-        DATE(DATE)                                          AS DATE
-        ,CHANNEL
-        ,BRAND
-        ,LOYALTY_PLAN_COMPANY
-        ,SUM(SPEND_AMOUNT)                                  AS T001__SPEND__USER_LEVEL_DAILY__SUM
-        ,COALESCE(NULLIF(EXTERNAL_USER_REF,''), USER_ID)    AS T002__ACTIVE_USERS__USER_LEVEL_DAILY__UID
-        ,COUNT(DISTINCT TRANSACTION_ID)                     AS T003__TRANSACTIONS__USER_LEVEL_DAILY__DCOUNT_TXN
-    FROM
-        txn_events
-    GROUP BY
-        COALESCE(NULLIF(EXTERNAL_USER_REF,''), USER_ID)
-        ,CHANNEL
-        ,BRAND
-        ,LOYALTY_PLAN_COMPANY
-        ,DATE(DATE)
-)
-
-select * from metrics
+select *
+from metrics

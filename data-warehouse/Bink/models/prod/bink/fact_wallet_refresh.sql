@@ -10,43 +10,38 @@ Description:
 Parameters:
     ref_object      - fact_wallet_refresh_secure
 */
-
 {{
     config(
-        materialized='incremental'
-		,unique_key='EVENT_ID'
-		,merge_update_columns = ['IS_MOST_RECENT', 'UPDATED_DATE_TIME']
+        materialized="incremental",
+        unique_key="EVENT_ID",
+        merge_update_columns=["IS_MOST_RECENT", "UPDATED_DATE_TIME"],
     )
 }}
 
-WITH
-user_events AS (
-	SELECT *
-	FROM {{ ref('fact_wallet_refresh_secure')}}
-	{% if is_incremental() %}
-  	WHERE UPDATED_DATE_TIME>= (SELECT MAX(UPDATED_DATE_TIME) from {{ this }})
-	{% endif %}
-)
+with
+    user_events as (
+        select *
+        from {{ ref("fact_wallet_refresh_secure") }}
+        {% if is_incremental() %}
+        where updated_date_time >= (select max(updated_date_time) from {{ this }})
+        {% endif %}
+    ),
+    user_events_select as (
+        select
+            event_id,
+            event_date_time,
+            user_id,
+            event_type,
+            is_most_recent,
+            origin,
+            channel,
+            brand / /,
+            external_user_ref / /,
+            lower(email) as email,
+            inserted_date_time,
+            updated_date_time
+        from user_events
+    )
 
-,user_events_select AS (
-	SELECT
-		EVENT_ID
-		,EVENT_DATE_TIME
-		,USER_ID
-		,EVENT_TYPE
-		,IS_MOST_RECENT
-		,ORIGIN
-		,CHANNEL
-		,BRAND
-		// ,EXTERNAL_USER_REF
-		// ,LOWER(EMAIL) AS EMAIL
-		,INSERTED_DATE_TIME
-		,UPDATED_DATE_TIME
-	FROM user_events
-)
-
-SELECT
-	*
-FROM
-	user_events_select
-	
+select *
+from user_events_select

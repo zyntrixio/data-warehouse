@@ -10,47 +10,35 @@ Description:
 Parameters:
     source_object      - SNOWSTORM.APISTATS
 */
+{{ config(materialized="incremental", unique_key="API_ID") }}
 
-{{
-    config(
-        materialized='incremental'
-		,unique_key='API_ID'
+with
+    all_events as (
+        select *
+        from {{ source("snowstorm", "apistats") }}
+        {% if is_incremental() %}
+        where _airbyte_emitted_at >= (select max(_airbyte_emitted_at) from {{ this }})
+        {% endif %}
+
+    ),
+    all_events_select as (
+        select
+            id as api_id,
+            path,
+            method / /,
+            ms_pop,
+            client_ip,
+            date_time,
+            user_agent,
+            status_code,
+            response_time / /,
+            client_country,
+            _airbyte_ab_id,
+            _airbyte_emitted_at,
+            _airbyte_normalized_at,
+            _airbyte_apistats_hashid
+        from all_events
     )
-}}
 
-WITH
-all_events as (
-	SELECT
-		*
-	FROM
-		{{ source('snowstorm', 'apistats') }}
-	{% if is_incremental() %}
-  	WHERE _AIRBYTE_EMITTED_AT >= (SELECT MAX(_AIRBYTE_EMITTED_AT) from {{ this }})
-	{% endif %}
-	
-)
-
-,all_events_select as (
-	SELECT
-		ID AS API_ID
-		,PATH
-		,METHOD
-		//,MS_POP
-		,CLIENT_IP
-		,DATE_TIME
-		,USER_AGENT
-		,STATUS_CODE
-		,RESPONSE_TIME	
-		//,CLIENT_COUNTRY
-		,_AIRBYTE_AB_ID
-		,_AIRBYTE_EMITTED_AT
-		,_AIRBYTE_NORMALIZED_AT
-		,_AIRBYTE_APISTATS_HASHID
-	FROM
-		all_events
-)
-
-SELECT
-	*
-FROM
-	all_events_select
+select *
+from all_events_select

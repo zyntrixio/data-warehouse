@@ -1,91 +1,92 @@
 /*
 Created by:         Anand Bhakta
 Created date:       2023-06-30
-Last modified by:   
-Last modified date: 
+Last modified by:
+Last modified date:
 
 Description:
     Datasource to produce lloyds mi dashboard - service_overview
 Parameters:
     source_object       - src__apistats
 */
+with
+apistats as (
+    select
+        *,
+        'API' as tab
+    from {{ ref("stg_metrics__apistats") }}
+    where channel = 'LLOYDS'
+),
 
-WITH apistats AS (
-    SELECT *
-    ,'API' AS TAB
-    FROM {{ref('stg_metrics__apistats')}}
-    WHERE CHANNEL = 'LLOYDS' 
+service as (
+    select
+        *,
+        'SERVICE' as tab
+    from {{ ref("stg_metrics__service_management") }}
+    where channel = 'LLOYDS'
+),
+
+trans as (
+    select
+        *,
+        'TRANS' as tab
+    from {{ ref("trans__trans__daily_user_level") }}
+    where channel = 'LLOYDS'
+),
+
+combine as (
+    select
+        tab,
+        date,
+        channel,
+        api_id,
+        method,
+        path,
+        response_time,
+        status_code,
+        null as ticket_id,
+        null as mi,
+        null as service,
+        null as sla_breached,
+        null as t002__active_users__user_level_daily__uid
+    from apistats
+
+    union all
+
+    select
+        tab,
+        date,
+        channel,
+        null as api_id,
+        null as method,
+        null as path,
+        null as response_time,
+        null as status_code,
+        ticket_id,
+        mi,
+        service,
+        sla_breached,
+        null as t002__active_users__user_level_daily__uid
+    from service
+
+    union all
+
+    select
+        tab,
+        date,
+        channel,
+        null as api_id,
+        null as method,
+        null as path,
+        null as response_time,
+        null as status_code,
+        null as ticket_id,
+        null as mi,
+        null as service,
+        null as sla_breached,
+        t002__active_users__user_level_daily__uid
+    from trans
 )
 
-,service AS (
-        SELECT *
-    ,'SERVICE' AS TAB
-    FROM {{ref('stg_metrics__service_management')}}
-    WHERE CHANNEL = 'LLOYDS' 
-)
-
-,trans AS (
-        SELECT *
-    ,'TRANS' AS TAB
-    FROM {{ref('trans__trans__daily_user_level')}}
-    WHERE CHANNEL = 'LLOYDS' 
-)
-
-,combine AS (
-    SELECT
-        TAB
-        ,DATE
-        ,CHANNEL
-        ,API_ID
-        ,METHOD
-        ,PATH
-        ,RESPONSE_TIME
-        ,STATUS_CODE
-        ,NULL AS TICKET_ID
-		,NULL AS MI
-		,NULL AS SERVICE
-		,NULL AS SLA_BREACHED
-        ,NULL AS T002__ACTIVE_USERS__USER_LEVEL_DAILY__UID
-    FROM
-        apistats
-
-    UNION ALL
-
-    SELECT
-        TAB
-        ,DATE
-        ,CHANNEL
-        ,NULL AS API_ID
-        ,NULL AS METHOD
-        ,NULL AS PATH
-        ,NULL AS RESPONSE_TIME
-        ,NULL AS STATUS_CODE
-		,TICKET_ID
-		,MI
-		,SERVICE
-		,SLA_BREACHED
-        ,NULL AS T002__ACTIVE_USERS__USER_LEVEL_DAILY__UID
-	FROM
-		service
-
-    UNION ALL
-
-    SELECT
-        TAB
-        ,DATE
-        ,CHANNEL
-        ,NULL AS API_ID
-        ,NULL AS METHOD
-        ,NULL AS PATH
-        ,NULL AS RESPONSE_TIME
-        ,NULL AS STATUS_CODE
-		,NULL AS TICKET_ID
-		,NULL AS MI
-		,NULL AS SERVICE
-		,NULL AS SLA_BREACHED
-        ,T002__ACTIVE_USERS__USER_LEVEL_DAILY__UID
-	FROM
-		trans 
-)
-
-select * from combine
+select *
+from combine

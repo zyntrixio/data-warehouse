@@ -1,8 +1,8 @@
 /*
 Created by:         Anand Bhakta
 Created date:       2023-06-07
-Last modified by:   
-Last modified date: 
+Last modified by:
+Last modified date:
 
 Description:
     Datasource to produce lloyds mi dashboard - loyalty_cards_overview
@@ -10,93 +10,139 @@ Parameters:
     source_object       - lc__links_joins__daily_retailer_channel
                         - user__loyalty_card__daily_channel_brand
 */
+with
+lc_metrics as (
+    select
+        *,
+        'LC' as tab
+    from {{ ref("lc__links_joins__daily_retailer_channel") }}
+    where
+        channel = 'LLOYDS'
+        and loyalty_plan_company not in ('Loyalteas', 'Bink Sweet Shop')
+),
 
-WITH lc_metrics AS (
-    SELECT *
-    ,'LC' AS TAB
-    FROM {{ref('lc__links_joins__daily_retailer_channel')}}
-    WHERE CHANNEL = 'LLOYDS'
-    AND LOYALTY_PLAN_COMPANY NOT IN ('Loyalteas', 'Bink Sweet Shop')
+lc_user_metrics as (
+    select
+        *,
+        'LC_USER' as tab
+    from {{ ref("user__loyalty_card__daily_channel_brand") }}
+    where channel = 'LLOYDS'
+),
+
+combine as (
+    select
+        tab,
+        date,
+        channel,
+        brand,
+        loyalty_plan_company,
+        lc001__successful_loyalty_cards__daily_channel_brand_retailer__pit,
+        lc009__successful_loyalty_card_links__daily_channel_brand_retailer__count,
+        lc010__requests_loyalty_card_links__daily_channel_brand_retailer__count,
+        lc011__failed_loyalty_card_links__daily_channel_brand_retailer__count,
+        lc012__deleted_loyalty_card_links__daily_channel_brand_retailer__count,
+        lc013__successful_loyalty_card_joins__daily_channel_brand_retailer__count,
+        lc014__requests_loyalty_card_joins__daily_channel_brand_retailer__count,
+        lc015__failed_loyalty_card_joins__daily_channel_brand_retailer__count,
+        lc016__deleted_loyalty_card_joins__daily_channel_brand_retailer__count,
+        lc017__successful_loyalty_card_links__daily_channel_brand_retailer__dcount_user
+        ,
+        lc018__requests_loyalty_card_links__daily_channel_brand_retailer__dcount_user
+        ,
+        lc019__failed_loyalty_card_links__daily_channel_brand_retailer__dcount_user,
+        lc020__deleted_loyalty_card_links__daily_channel_brand_retailer__dcount_user
+        ,
+        lc021__successful_loyalty_card_joins__daily_channel_brand_retailer__dcount_user
+        ,
+        lc022__requests_loyalty_card_joins__daily_channel_brand_retailer__dcount_user
+        ,
+        lc023__failed_loyalty_card_joins__daily_channel_brand_retailer__dcount_user,
+        lc024__deleted_loyalty_card_joins__daily_channel_brand_retailer__dcount_user
+        ,
+        lc025__successful_loyalty_card_links__daily_channel_brand_retailer__pit,
+        lc026__requests_loyalty_card_links__daily_channel_brand_retailer__pit,
+        lc027__failed_loyalty_card_links__daily_channel_brand_retailer__pit,
+        lc028__deleted_loyalty_card_links__daily_channel_brand_retailer__pit,
+        lc029__successful_loyalty_card_joins__daily_channel_brand_retailer__pit,
+        lc030__requests_loyalty_card_joins__daily_channel_brand_retailer__pit,
+        lc031__failed_loyalty_card_joins__daily_channel_brand_retailer__pit,
+        lc032__deleted_loyalty_card_joins__daily_channel_brand_retailer__pit,
+        null as u003__users_with_a_linked_loyalty_card__daily_channel_brand__pit
+    from lc_metrics
+
+    union all
+
+    select
+        tab,
+        date,
+        channel,
+        brand,
+        null as loyalty_plan_company,
+        null
+            as lc001__successful_loyalty_cards__daily_channel_brand_retailer__pit,
+        null
+            as lc009__successful_loyalty_card_links__daily_channel_brand_retailer__count
+        ,
+        null
+            as lc010__requests_loyalty_card_links__daily_channel_brand_retailer__count,
+        null
+            as lc011__failed_loyalty_card_links__daily_channel_brand_retailer__count,
+        null
+            as lc012__deleted_loyalty_card_links__daily_channel_brand_retailer__count,
+        null
+            as lc013__successful_loyalty_card_joins__daily_channel_brand_retailer__count
+        ,
+        null
+            as lc014__requests_loyalty_card_joins__daily_channel_brand_retailer__count,
+        null
+            as lc015__failed_loyalty_card_joins__daily_channel_brand_retailer__count,
+        null
+            as lc016__deleted_loyalty_card_joins__daily_channel_brand_retailer__count,
+        null
+            as lc017__successful_loyalty_card_links__daily_channel_brand_retailer__dcount_user
+        ,
+        null
+            as lc018__requests_loyalty_card_links__daily_channel_brand_retailer__dcount_user
+        ,
+        null
+            as lc019__failed_loyalty_card_links__daily_channel_brand_retailer__dcount_user
+        ,
+        null
+            as lc020__deleted_loyalty_card_links__daily_channel_brand_retailer__dcount_user
+        ,
+        null
+            as lc021__successful_loyalty_card_joins__daily_channel_brand_retailer__dcount_user
+        ,
+        null
+            as lc022__requests_loyalty_card_joins__daily_channel_brand_retailer__dcount_user
+        ,
+        null
+            as lc023__failed_loyalty_card_joins__daily_channel_brand_retailer__dcount_user
+        ,
+        null
+            as lc024__deleted_loyalty_card_joins__daily_channel_brand_retailer__dcount_user
+        ,
+        null
+            as lc025__successful_loyalty_card_links__daily_channel_brand_retailer__pit,
+        null
+            as lc026__requests_loyalty_card_links__daily_channel_brand_retailer__pit,
+        null
+            as lc027__failed_loyalty_card_links__daily_channel_brand_retailer__pit,
+        null
+            as lc028__deleted_loyalty_card_links__daily_channel_brand_retailer__pit
+        ,
+        null
+            as lc029__successful_loyalty_card_joins__daily_channel_brand_retailer__pit,
+        null
+            as lc030__requests_loyalty_card_joins__daily_channel_brand_retailer__pit,
+        null
+            as lc031__failed_loyalty_card_joins__daily_channel_brand_retailer__pit,
+        null
+            as lc032__deleted_loyalty_card_joins__daily_channel_brand_retailer__pit
+        ,
+        u003__users_with_a_linked_loyalty_card__daily_channel_brand__pit
+    from lc_user_metrics
 )
 
-,lc_user_metrics AS (
-    SELECT *
-    ,'LC_USER' AS TAB
-    FROM {{ref('user__loyalty_card__daily_channel_brand')}}
-    WHERE CHANNEL = 'LLOYDS'
-)
-
-,combine AS (
-    SELECT
-        TAB
-        ,DATE
-        ,CHANNEL
-        ,BRAND
-        ,LOYALTY_PLAN_COMPANY
-        ,LC001__SUCCESSFUL_LOYALTY_CARDS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,LC009__SUCCESSFUL_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,LC010__REQUESTS_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,LC011__FAILED_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,LC012__DELETED_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,LC013__SUCCESSFUL_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,LC014__REQUESTS_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,LC015__FAILED_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,LC016__DELETED_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,LC017__SUCCESSFUL_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,LC018__REQUESTS_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,LC019__FAILED_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,LC020__DELETED_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,LC021__SUCCESSFUL_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,LC022__REQUESTS_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,LC023__FAILED_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,LC024__DELETED_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,LC025__SUCCESSFUL_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,LC026__REQUESTS_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,LC027__FAILED_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,LC028__DELETED_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,LC029__SUCCESSFUL_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,LC030__REQUESTS_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,LC031__FAILED_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,LC032__DELETED_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,NULL AS U003__USERS_WITH_A_LINKED_LOYALTY_CARD__DAILY_CHANNEL_BRAND__PIT
-    FROM
-        lc_metrics
-
-    UNION ALL
-
-    SELECT
-        TAB
-        ,DATE
-        ,CHANNEL
-        ,BRAND
-        ,NULL AS LOYALTY_PLAN_COMPANY
-        ,NULL AS LC001__SUCCESSFUL_LOYALTY_CARDS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,NULL AS LC009__SUCCESSFUL_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,NULL AS LC010__REQUESTS_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,NULL AS LC011__FAILED_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,NULL AS LC012__DELETED_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,NULL AS LC013__SUCCESSFUL_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,NULL AS LC014__REQUESTS_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,NULL AS LC015__FAILED_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,NULL AS LC016__DELETED_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__COUNT
-        ,NULL AS LC017__SUCCESSFUL_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,NULL AS LC018__REQUESTS_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,NULL AS LC019__FAILED_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,NULL AS LC020__DELETED_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,NULL AS LC021__SUCCESSFUL_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,NULL AS LC022__REQUESTS_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,NULL AS LC023__FAILED_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,NULL AS LC024__DELETED_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT_USER
-        ,NULL AS LC025__SUCCESSFUL_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,NULL AS LC026__REQUESTS_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,NULL AS LC027__FAILED_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,NULL AS LC028__DELETED_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,NULL AS LC029__SUCCESSFUL_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,NULL AS LC030__REQUESTS_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,NULL AS LC031__FAILED_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,NULL AS LC032__DELETED_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__PIT
-        ,U003__USERS_WITH_A_LINKED_LOYALTY_CARD__DAILY_CHANNEL_BRAND__PIT
-    FROM
-        lc_user_metrics)
-
-select * from combine
+select *
+from combine

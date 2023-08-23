@@ -19,12 +19,19 @@ prefect-shell = "^0.1.5"
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.0.278"
 black = "^23.7.0"
+sqlfluff = "^2.3.0"
+shandy-sqlfmt = "^0.19.2"
 
 [tool.black]
 line-length = 120
 
 [tool.ruff]
 line-length = 120
+
+[tool.sqlfmt]
+exclude = ["target/**/*", "dbt_packages/**/*"]
+line_length = 120
+check = true
 
 [build-system]
 requires = ["poetry-core"]

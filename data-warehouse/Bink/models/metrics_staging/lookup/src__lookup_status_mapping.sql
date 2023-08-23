@@ -1,7 +1,7 @@
-WITH source AS (
-    SELECT * 
-    FROM {{ source('STAGING', 'STG_LOOKUP__SCHEME_ACCOUNT_STATUS') }}
+with
+source as (
+    select * from {{ source("STAGING", "STG_LOOKUP__SCHEME_ACCOUNT_STATUS") }}
 )
 
-SELECT *
-FROM source
+select *
+from source

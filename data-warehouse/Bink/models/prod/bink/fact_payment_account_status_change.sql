@@ -10,47 +10,43 @@ Description:
 Parameters:
     ref_object      - fact_payment_account_status_change_secure
 */
-
 {{
     config(
-        materialized='incremental'
-		,unique_key='EVENT_ID'
-		,merge_update_columns = ['IS_MOST_RECENT', 'UPDATED_DATE_TIME']
+        materialized="incremental",
+        unique_key="EVENT_ID",
+        merge_update_columns=["IS_MOST_RECENT", "UPDATED_DATE_TIME"],
     )
 }}
 
-WITH
-pa AS (
-    SELECT * 
-    FROM {{ref('fact_payment_account_status_change_secure')}}
-	{% if is_incremental() %}
-  	WHERE UPDATED_DATE_TIME>= (SELECT MAX(UPDATED_DATE_TIME) from {{ this }})
-	{% endif %}
-)
+with
+    pa as (
+        select *
+        from {{ ref("fact_payment_account_status_change_secure") }}
+        {% if is_incremental() %}
+        where updated_date_time >= (select max(updated_date_time) from {{ this }})
+        {% endif %}
+    ),
+    pa_select as (
+        select
+            event_id,
+            event_date_time,
+            payment_account_id,
+            is_most_recent,
+            origin,
+            channel,
+            brand,
+            user_id,
+            external_user_ref / /,
+            expiry_date,
+            token,
+            from_status_id,
+            from_status,
+            to_status_id,
+            to_status,
+            inserted_date_time,
+            updated_date_time
+        from pa
+    )
 
-,pa_select AS (
-    SELECT
-		EVENT_ID
-		,EVENT_DATE_TIME
-		,PAYMENT_ACCOUNT_ID
-		,IS_MOST_RECENT
-		,ORIGIN
-		,CHANNEL
-		,BRAND
-		,USER_ID
-		,EXTERNAL_USER_REF
-		// ,EXPIRY_DATE
-		,TOKEN
-		,FROM_STATUS_ID
-		,FROM_STATUS
-		,TO_STATUS_ID
-		,TO_STATUS
-		,INSERTED_DATE_TIME
-		,UPDATED_DATE_TIME
-	FROM
-        pa
-)
-
-
-SELECT *
-FROM pa_select
+select *
+from pa_select

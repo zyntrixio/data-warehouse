@@ -1,8 +1,8 @@
 /*
 Created by:         Christopher Mitchell
 Created date:       2023-06-30
-Last modified by:    
-Last modified date: 
+Last modified by:
+Last modified date:
 
 Description:
     Voucher table, which relates to the transform date into do date and from date for metrics layer
@@ -10,92 +10,108 @@ Description:
 Parameters:
     ref_object      - src__fact_voucher
 */
+with
+fact_voucher as (select * from {{ ref("stg_metrics__fact_voucher") }}),
 
-with FACT_VOUCHER AS (
-    SELECT * 
-    FROM {{ref('stg_metrics__fact_voucher')}}
+lc_trans as (select * from {{ ref("lc_trans") }} where event_type = 'SUCCESS'),
+
+issued as (
+    select
+        v.loyalty_card_id,
+        v.state,
+        v.earn_type,
+        v.voucher_code,
+        v.redemption_tracked,
+        v.date_redeemed,
+        v.date_issued,
+        v.expiry_date,
+        v.time_to_redemption,
+        v.days_valid_for,
+        v.days_left_on_vouchers,
+        l.user_id,
+        l.channel,
+        l.brand,
+        l.loyalty_plan_company,
+        l.loyalty_plan_name
+    from fact_voucher v
+    inner join
+        lc_trans l
+        on
+            v.date_issued between l.from_date and l.to_date
+            and v.loyalty_card_id = l.loyalty_card_id
+),
+
+redeem as (
+    select
+        v.loyalty_card_id,
+        v.state,
+        v.earn_type,
+        v.voucher_code,
+        v.redemption_tracked,
+        v.date_redeemed,
+        v.date_issued,
+        v.expiry_date,
+        v.time_to_redemption,
+        v.days_valid_for,
+        v.days_left_on_vouchers,
+        l.user_id,
+        l.channel,
+        l.brand,
+        l.loyalty_plan_company,
+        l.loyalty_plan_name
+    from fact_voucher v
+    inner join
+        lc_trans l
+        on
+            v.date_redeemed between l.from_date and l.to_date
+            and v.loyalty_card_id = l.loyalty_card_id
+
+),
+
+final as (
+
+    select
+        coalesce(i.loyalty_card_id, r.loyalty_card_id) as loyalty_card_id,
+        coalesce(i.user_id, r.user_id) as user_id,
+        coalesce(i.channel, r.channel) as channel,
+        coalesce(i.brand, r.brand) as brand,
+        coalesce(
+            i.loyalty_plan_company, r.loyalty_plan_company
+        ) as loyalty_plan_company,
+        coalesce(i.loyalty_plan_name, r.loyalty_plan_name) as loyalty_plan_name,
+        coalesce(i.state, r.state) as state,
+        coalesce(i.earn_type, r.earn_type) as earn_type,
+        coalesce(i.voucher_code, i.voucher_code) as voucher_code,
+        coalesce(i.redemption_tracked, r.redemption_tracked)
+            as redemption_tracked,
+        coalesce(r.date_redeemed, null) as date_redeemed,
+        coalesce(i.date_issued, null) as date_issued,
+        coalesce(i.expiry_date, r.expiry_date) as expiry_date,
+        case
+            when i.date_issued is not null and r.date_redeemed is not null
+                then coalesce(i.time_to_redemption, r.time_to_redemption)
+            else null
+        end as time_to_redemption,
+        case
+            when i.date_issued is not null and r.date_redeemed is not null
+                then coalesce(i.days_valid_for, r.days_valid_for)
+            else null
+        end as days_valid_for,
+        coalesce(
+            i.days_left_on_vouchers, r.days_left_on_vouchers
+        ) as days_left_on_vouchers
+
+    from issued i
+    full outer join
+        redeem r
+        on
+            r.loyalty_card_id = i.loyalty_card_id
+            and r.voucher_code = i.voucher_code
+            and r.user_id = i.user_id
+            and r.channel = r.channel
+    order by i.voucher_code
 
 )
 
-
-, LC_TRANS AS (
-    SELECT * 
-    FROM {{ref('lc_trans')}}
-    WHERE EVENT_TYPE = 'SUCCESS'
-)
-
-,issued as (
-SELECT  v.LOYALTY_CARD_ID
-       , v.state
-       , v.earn_type
-       , v.voucher_code
-       , v.REDEMPTION_TRACKED
-       , v.DATE_REDEEMED
-       , v.DATE_ISSUED
-       , v.EXPIRY_DATE
-       , v.TIME_TO_REDEMPTION
-       , v.DAYS_VALID_FOR
-       , v.days_left_on_vouchers
-       , l.user_id
-       , l.channel
-       , l.brand
-       , l.loyalty_plan_company
-       , l.loyalty_plan_name
-FROM FACT_VOUCHER v
-INNER JOIN LC_TRANS l
-ON v.date_issued BETWEEN l.from_date AND l.to_date AND v.loyalty_card_id = l.loyalty_card_id
-)
-
-
-
-, redeem as (
-SELECT  v.LOYALTY_CARD_ID
-       , v.state
-       , v.earn_type
-       , v.voucher_code
-       , v.REDEMPTION_TRACKED
-       , v.DATE_REDEEMED
-       , v.DATE_ISSUED
-       , v.EXPIRY_DATE
-       , v.TIME_TO_REDEMPTION
-       , v.DAYS_VALID_FOR
-       , v.days_left_on_vouchers
-       , l.user_id
-       , l.channel
-       , l.brand
-       , l.loyalty_plan_company
-       , l.loyalty_plan_name
-FROM FACT_VOUCHER v
-INNER JOIN LC_TRANS l
-ON v.date_redeemed BETWEEN l.from_date AND l.to_date AND v.loyalty_card_id = l.loyalty_card_id
-  
-  )
-
-  , final as (
-  
-SELECT  coalesce(i.LOYALTY_CARD_ID,r.LOYALTY_CARD_ID)                                                                                                AS LOYALTY_CARD_ID
-       , coalesce(i.USER_ID,r.USER_ID)                                                                                                               AS USER_ID
-       , coalesce(i.CHANNEL,r.CHANNEL)                                                                                                               AS CHANNEL
-       , coalesce(i.BRAND, r.BRAND)                                                                                                                  AS BRAND
-       , coalesce(i.loyalty_plan_company, r.loyalty_plan_company)                                                                                    AS loyalty_plan_company
-       , coalesce(i.loyalty_plan_name, r.loyalty_plan_name)                                                                                          AS loyalty_plan_name
-       , coalesce(i.state,r.state)                                                                                                                   AS state
-       , coalesce(i.earn_type,r.earn_type)                                                                                                           AS earn_type
-       , coalesce(i.voucher_code,i.voucher_code)                                                                                                     AS voucher_code
-       , coalesce(i.REDEMPTION_TRACKED,r.REDEMPTION_TRACKED)                                                                                         AS REDEMPTION_TRACKED
-       , coalesce(r.DATE_REDEEMED,null)                                                                                                              AS DATE_REDEEMED
-       , coalesce(i.DATE_ISSUED,null)                                                                                                                AS DATE_ISSUED
-       , coalesce(i.EXPIRY_DATE,r.EXPIRY_DATE)                                                                                                       AS EXPIRY_DATE
-       , CASE WHEN i.DATE_ISSUED IS not null AND r.date_redeemed IS not null THEN coalesce(i.TIME_TO_REDEMPTION,r.TIME_TO_REDEMPTION)  ELSE null END AS TIME_TO_REDEMPTION
-       , CASE WHEN i.DATE_ISSUED IS not null AND r.date_redeemed IS not null THEN coalesce(i.DAYS_VALID_FOR,r.DAYS_VALID_FOR)  ELSE null END         AS DAYS_VALID_FOR
-       , coalesce(i.days_left_on_vouchers,r.days_left_on_vouchers)                                                                                   AS days_left_on_vouchers
-       
-FROM issued i
-FULL OUTER JOIN redeem r
-ON r.LOYALTY_CARD_ID = i.LOYALTY_CARD_ID AND r.voucher_code = i.voucher_code AND r.user_id = i.user_id AND r.channel = r.channel
-ORDER BY i.voucher_code
-
-  )
-
-  select *
-  from final
+select *
+from final

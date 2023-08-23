@@ -11,45 +11,30 @@ Parameters:
     ref_object      - stg_hermes__CLIENT_APPLICATION
 					- stg_hermes__ORGANISATION
 */
+with
+    client as (select * from {{ ref("stg_hermes__CLIENT_APPLICATION") }}),
+    orgainsation as (select * from {{ ref("stg_hermes__ORGANISATION") }}),
+    client_select as (
+        select
+            c.channel_id,
+            c.channel_name / /,
+            c.secret,
+            c.organisation_id,
+            o.organisation_name
+        from client c
+        left join orgainsation o on c.organisation_id = o.organisation_id
+    ),
+    client_na_unions as (
+        select
+            'NOT_APPICABLE' as channel_id,
+            null as channel_name / /,
+            null as secret,
+            null as organisation_id,
+            null as organisation_name
+        union all
+        select *
+        from client_select
+    )
 
-WITH
-client AS (
-	SELECT *
-	FROM {{ref('stg_hermes__CLIENT_APPLICATION')}}
-)
-
-,orgainsation AS (
-	SELECT *
-	FROM {{ref('stg_hermes__ORGANISATION')}}
-)
-
-,client_select AS (
-    SELECT
-		c.CHANNEL_ID
-		,c.CHANNEL_NAME
-		// ,c.SECRET
-		,c.ORGANISATION_ID
-		,o.ORGANISATION_NAME
-    FROM
-		client c
-	LEFT JOIN
-		orgainsation o
-		ON c.ORGANISATION_ID = o.ORGANISATION_ID
-)
-
-,client_na_unions AS (
-	SELECT
-		'NOT_APPICABLE' 	AS CHANNEL_ID
-		,NULL AS CHANNEL_NAME
-		// ,NULL AS SECRET
-		,NULL 				AS ORGANISATION_ID
-		,NULL 				AS ORGANISATION_NAME
-	UNION ALL
-	SELECT *
-	FROM client_select
-)
-
-SELECT
-    *
-FROM
-    client_na_unions
+select *
+from client_na_unions

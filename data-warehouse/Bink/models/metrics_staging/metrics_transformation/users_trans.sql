@@ -10,43 +10,48 @@ Description:
 Parameters:
     ref_object      - src__fact_user
 */
+with
+usr_events as (select * from {{ ref("stg_metrics__fact_user") }}),
 
-WITH usr_events AS (
-    SELECT *
-    FROM {{ref('stg_metrics__fact_user')}})
+usr_stage as (
+    select
+        user_id,
+        coalesce(nullif(external_user_ref, ''), user_id) as user_ref,
+        event_id,
+        event_type,
+        channel,
+        brand,
+        event_date_time
+    from usr_events
+),
 
-, usr_stage AS (
-    SELECT user_id
-        , COALESCE(NULLIF(external_user_ref, ''), user_id) AS user_ref
-        , event_id
-        , event_type
-        , channel
-        , brand
-        , event_date_time
-    FROM usr_events)
+to_from_date as (
+    select
+        user_id,
+        user_ref,
+        event_id,
+        event_type,
+        channel,
+        brand,
+        event_date_time as from_date,
+        lead(event_date_time) over (
+            partition by user_ref order by event_date_time asc
+        ) as to_date
+    from usr_stage
+),
 
-, to_from_date AS (
-    SELECT user_id
-        , user_ref
-        , event_id
-        , event_type
-        , channel
-        , brand
-        , event_date_time                                             AS from_date
-        , LEAD(event_date_time)
-            OVER (PARTITION BY user_ref ORDER BY event_date_time ASC) AS to_date
-    FROM usr_stage)
+usr_final as (
+    select
+        event_id,
+        user_ref,
+        user_id,
+        event_type,
+        channel,
+        brand,
+        from_date,
+        coalesce(to_date, current_timestamp) as to_date
+    from to_from_date
+)
 
-, usr_final AS (
-    SELECT event_id
-        , user_ref
-        , user_id
-        , event_type
-        , channel
-        , brand
-        , from_date
-        , COALESCE(to_date, CURRENT_TIMESTAMP) AS to_date
-    FROM to_from_date)
-
-SELECT *
-FROM usr_final
+select *
+from usr_final

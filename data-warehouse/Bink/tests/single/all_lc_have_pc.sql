@@ -4,34 +4,34 @@
  Created By:     SP
  Created Date:   2022/07/19
  */
+{{
+    config(
+        tags=["business"],
+        error_if=">100",
+        warn_if=">100",
+        meta={
+            "description": "Test to ensure all active Barcalys loyalty cards are linked to a payment card.",
+            "test_type": "Business",
+        },
+    )
+}}
 
-{{ config(
-        tags=['business']
-        ,error_if = '>100'
-        ,warn_if = '>100'
-        ,meta={"description": "Test to ensure all active Barcalys loyalty cards are linked to a payment card.", 
-            "test_type": "Business"},
-) }}
+with
+    new_lc as (
+        select *
+        from {{ ref("fact_loyalty_card") }}
+        where
+            auth_type in ('REGISTER', 'JOIN')
+            and event_type = 'SUCCESS'
+            and channel like '%barclays%'
+            and timediff(
+                hour,
+                event_date_time,
+                (select max(event_date_time) from {{ ref("fact_loyalty_card") }})
+            )
+            < 24
+    )
 
-WITH new_lc AS (
-    SELECT *
-    FROM
-        {{ref('fact_loyalty_card')}}
-    WHERE
-        AUTH_TYPE in ('REGISTER', 'JOIN')
-        AND EVENT_TYPE = 'SUCCESS'
-        AND CHANNEL LIKE '%barclays%'
-        AND TIMEDIFF(
-                    HOUR, EVENT_DATE_TIME, (
-                        SELECT MAX(EVENT_DATE_TIME)
-                        FROM {{ref('fact_loyalty_card')}}
-                        )
-                    ) < 24
-)
-  
-SELECT
-    USER_ID
-FROM
-    new_lc
-WHERE
-    USER_ID NOT IN (SELECT USER_ID FROM {{ref('fact_payment_account')}})
+select user_id
+from new_lc
+where user_id not in (select user_id from {{ ref("fact_payment_account") }})

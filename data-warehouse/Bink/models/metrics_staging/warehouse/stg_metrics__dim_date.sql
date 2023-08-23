@@ -1,48 +1,46 @@
-WITH source AS (
-    SELECT * 
-    FROM {{ ref('dim_date') }}
+with
+source as (select * from {{ ref("dim_date") }}),
+
+renamed as (
+    select
+        date,
+        year,
+        quarter,
+        month,
+        monthname,
+        dayofmonth,
+        dayofweek,
+        weekofyear,
+        dayofyear,
+        dayname,
+        weekpart,
+        daynumber,
+        yearnumber,
+        quarternumber,
+        monthnumber,
+        year_quarter,
+        year_month,
+        start_of_month,
+        end_of_month,
+        start_of_year,
+        end_of_year,
+        start_of_quarter,
+        end_of_quarter,
+        start_of_week,
+        end_of_week,
+        financial_year,
+        financial_quarter,
+        financial_month,
+        financial_weekofyear,
+        financial_dayofyear,
+        financial_year_quarter,
+        financial_year_month,
+        start_of_financial_year,
+        end_of_financial_year,
+        start_of_financial_quarter,
+        end_of_financial_quarter
+    from source
 )
 
-,renamed AS (
-    SELECT
-        DATE
-        ,YEAR
-        ,QUARTER
-        ,MONTH
-        ,MONTHNAME
-        ,DAYOFMONTH
-        ,DAYOFWEEK
-        ,WEEKOFYEAR
-        ,DAYOFYEAR
-        ,DAYNAME
-        ,WEEKPART
-        ,DAYNUMBER
-        ,YEARNUMBER
-        ,QUARTERNUMBER
-        ,MONTHNUMBER
-        ,YEAR_QUARTER
-        ,YEAR_MONTH
-        ,START_OF_MONTH
-        ,END_OF_MONTH
-        ,START_OF_YEAR
-        ,END_OF_YEAR
-        ,START_OF_QUARTER
-        ,END_OF_QUARTER
-        ,START_OF_WEEK
-        ,END_OF_WEEK
-        ,FINANCIAL_YEAR
-        ,FINANCIAL_QUARTER
-        ,FINANCIAL_MONTH
-        ,FINANCIAL_WEEKOFYEAR
-        ,FINANCIAL_DAYOFYEAR
-        ,FINANCIAL_YEAR_QUARTER
-        ,FINANCIAL_YEAR_MONTH
-        ,START_OF_FINANCIAL_YEAR
-        ,END_OF_FINANCIAL_YEAR
-        ,START_OF_FINANCIAL_QUARTER
-        ,END_OF_FINANCIAL_QUARTER
-    FROM source
-)
-
-SELECT *
-FROM renamed
+select *
+from renamed

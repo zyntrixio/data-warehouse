@@ -10,49 +10,42 @@ Description:
 Parameters:
     ref_object      - dim_payment_account_secure
 */
+with
+    payment_account as (select * from {{ ref("dim_payment_account_secure") }}),
+    payment_account_select as (
+        select
+            payment_account_id / /,
+            hash / /,
+            token,
+            status,
+            provider_id,
+            provider_status_code,
+            country,
+            created,
+            pan_end,
+            updated,
+            consents_type,
+            consents_timestamp,
+            consents_longitude,
+            consents_latitude,
+            issuer_id,
+            pan_start / /,
+            psp_token / /,
+            card_uid,
+            is_deleted,
+            start_month,
+            start_year / /,
+            expiry_month / /,
+            expiry_year / /,
+            fingerprint,
+            issuer_name / /,
+            name_on_card,
+            card_nickname,
+            currency_code,
+            card_name,
+            card_type
+        from payment_account
+    )
 
-WITH
-payment_account AS (
-    SELECT * 
-    FROM {{ref('dim_payment_account_secure')}}
-)
-
-, payment_account_select AS (
-    SELECT
-        PAYMENT_ACCOUNT_ID
-        // ,HASH
-        // ,TOKEN
-        ,STATUS
-        ,PROVIDER_ID
-        ,PROVIDER_STATUS_CODE
-        ,COUNTRY
-        ,CREATED
-        ,PAN_END
-        ,UPDATED
-        ,CONSENTS_TYPE
-        ,CONSENTS_TIMESTAMP
-        ,CONSENTS_LONGITUDE
-        ,CONSENTS_LATITUDE
-        ,ISSUER_ID
-        ,PAN_START
-        // ,PSP_TOKEN
-        // ,CARD_UID
-        ,IS_DELETED
-        ,START_MONTH
-        ,START_YEAR
-        // ,EXPIRY_MONTH
-        // ,EXPIRY_YEAR
-        // ,FINGERPRINT
-        ,ISSUER_NAME
-        // ,NAME_ON_CARD
-        ,CARD_NICKNAME
-        ,CURRENCY_CODE
-        ,CARD_NAME
-        ,CARD_TYPE
-    FROM
-        payment_account
-)
-
-
-SELECT *
-FROM payment_account_select 
+select *
+from payment_account_select

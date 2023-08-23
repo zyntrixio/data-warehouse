@@ -4,41 +4,42 @@
  Created By:     SP
  Created Date:   2022/07/19
 */
+{{
+    config(
+        tags=["business"],
+        error_if=">100",
+        warn_if=">100",
+        meta={
+            "description": "Test to monitor long delays (10 mins) whilst the payment account is in pending with set limits.",
+            "test_type": "Business",
+        },
+    )
+}}
 
+with
+    new_pa as (
+        select *
+        from {{ ref("fact_payment_account") }}
+        where
+            event_type = 'ADDED'
+            and timediff(
+                hour,
+                event_date_time,
+                (select max(event_date_time) from {{ ref("fact_payment_account") }})
+            )
+            < 24
+    ),
+    wait_times as (
+        select
+            pasc.event_date_time as pending_dt,
+            pa.event_date_time as created_dt,
+            timediff(minute, created_dt, pending_dt) as wait_minutes_pending
+        from new_pa pa
+        left join
+            {{ ref("fact_payment_account_status_change") }} pasc
+            on pa.payment_account_id = pasc.payment_account_id
+    )
 
-{{ config(
-        tags=['business']
-        ,error_if = '>100'
-        ,warn_if = '>100'
-        ,meta={"description": "Test to monitor long delays (10 mins) whilst the payment account is in pending with set limits.", 
-            "test_type": "Business"},
-) }}
-
-WITH new_pa AS (
-    SELECT *
-    FROM {{ref('fact_payment_account')}}
-    WHERE EVENT_TYPE = 'ADDED'
-    AND TIMEDIFF(
-                        HOUR, EVENT_DATE_TIME, (
-                            SELECT MAX(EVENT_DATE_TIME)
-                            FROM {{ref('fact_payment_account')}}
-                            )
-                        ) < 24
-)
-
-,wait_times AS (
-    SELECT 
-        pasc.EVENT_DATE_TIME AS PENDING_DT
-        ,pa.EVENT_DATE_TIME AS CREATED_DT
-        ,TIMEDIFF(MINUTE,CREATED_DT, PENDING_DT) AS WAIT_MINUTES_PENDING
-    FROM new_pa pa
-    LEFT JOIN
-        {{ref('fact_payment_account_status_change')}} pasc
-        ON pa.PAYMENT_ACCOUNT_ID = pasc.PAYMENT_ACCOUNT_ID
-)
-  
-SELECT *
-FROM wait_times
-WHERE WAIT_MINUTES_PENDING > 10
-  
-  
+select *
+from wait_times
+where wait_minutes_pending > 10

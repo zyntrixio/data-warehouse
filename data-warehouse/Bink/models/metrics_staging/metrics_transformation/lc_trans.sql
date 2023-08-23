@@ -2,7 +2,7 @@
 Created by:         Anand Bhakta
 Created date:       2023-05-05
 Last modified by:   2023
-Last modified date: 
+Last modified date:
 
 Description:
     Rewrite of the LL table lc_joins_links_snapshot and lc_joins_links containing both snapshot and daily absolute data of all link and join journeys split by merchant.
@@ -12,59 +12,66 @@ Parameters:
     source_object       - src__fact_lc
                         - src__dim_date
 */
+with
+lc_events as (select * from {{ ref("stg_metrics__fact_lc") }}),
 
-WITH lc_events AS (
-    SELECT *
-    FROM {{ref('stg_metrics__fact_lc')}}
+transforming_deletes as (
+    select
+        event_date_time,
+        user_id,
+        channel,
+        brand,
+        coalesce(nullif(external_user_ref, ''), user_id) as user_ref,
+        loyalty_card_id,
+        loyalty_plan_name,
+        loyalty_plan_company,
+        event_type,
+        case
+        event_type
+            when 'REMOVED'
+                then
+                    lag(auth_type, 1) over (
+                        partition by user_ref, loyalty_card_id
+                        order by event_date_time asc
+                    )
+            else auth_type
+        end as auth_type,
+        lag(event_type, 1) over (
+            partition by user_ref, loyalty_card_id order by event_date_time asc
+        ) as prev_event,
+        consent_slug,
+        consent_response
+    from lc_events
+    qualify not (event_type = 'REMOVED' and prev_event != 'SUCCESS')
+),
+
+to_from_dates as (
+    select
+        user_id,
+        channel,
+        brand,
+        user_ref,
+        loyalty_card_id,
+        coalesce(
+            case when auth_type in ('ADD AUTH', 'AUTH') then 'LINK' end,
+            case when auth_type in ('JOIN', 'REGISTER') then 'JOIN' end
+        ) as add_journey,
+        event_type,
+        loyalty_plan_name,
+        loyalty_plan_company,
+        event_type as from_event,
+        event_date_time as from_date,
+        coalesce(
+            lead(event_date_time, 1) over (
+                partition by user_ref, loyalty_plan_name
+                order by event_date_time
+            ),
+            current_timestamp
+        ) as to_date,
+        consent_slug,
+        consent_response
+    from transforming_deletes
 )
 
-,transforming_deletes AS (
-    SELECT
-        EVENT_DATE_TIME
-        ,USER_ID
-        ,CHANNEL
-        ,BRAND
-        ,COALESCE(NULLIF(EXTERNAL_USER_REF,''), USER_ID)    AS USER_REF
-        ,LOYALTY_CARD_ID
-        ,LOYALTY_PLAN_NAME
-        ,LOYALTY_PLAN_COMPANY
-        ,EVENT_TYPE
-        ,CASE EVENT_TYPE
-            WHEN 'REMOVED' THEN LAG(AUTH_TYPE, 1) OVER (PARTITION BY USER_REF, LOYALTY_CARD_ID ORDER BY EVENT_DATE_TIME ASC)
-            ELSE AUTH_TYPE
-            END AS AUTH_TYPE
-        ,LAG(EVENT_TYPE, 1) OVER (PARTITION BY USER_REF, LOYALTY_CARD_ID ORDER BY EVENT_DATE_TIME ASC) AS PREV_EVENT
-        ,CONSENT_SLUG
-        ,CONSENT_RESPONSE
-    FROM lc_events
-    QUALIFY
-        NOT (EVENT_TYPE = 'REMOVED' AND PREV_EVENT != 'SUCCESS')
-)
-
-,to_from_dates AS (
-    SELECT
-        USER_ID
-        ,CHANNEL
-        ,BRAND
-        ,USER_REF
-        ,LOYALTY_CARD_ID
-        ,COALESCE(
-            CASE WHEN auth_type IN ('ADD AUTH', 'AUTH') THEN 'LINK' END,
-            CASE WHEN auth_type IN ('JOIN', 'REGISTER') THEN 'JOIN' END
-                ) AS ADD_JOURNEY
-        ,EVENT_TYPE
-        ,LOYALTY_PLAN_NAME
-        ,LOYALTY_PLAN_COMPANY
-        ,EVENT_TYPE AS FROM_EVENT
-        ,EVENT_DATE_TIME AS FROM_DATE
-        ,COALESCE(
-            LEAD(EVENT_DATE_TIME, 1) OVER (PARTITION BY USER_REF, LOYALTY_PLAN_NAME ORDER BY EVENT_DATE_TIME)
-            ,CURRENT_TIMESTAMP
-         ) AS TO_DATE
-        ,CONSENT_SLUG
-        ,CONSENT_RESPONSE
-    FROM
-    transforming_deletes
-)
-
-select * from to_from_dates
+select *
+from to_from_dates

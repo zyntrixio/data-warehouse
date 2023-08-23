@@ -1,78 +1,87 @@
-{{ config(enabled = false)}}
+{{ config(enabled=false) }}
 
-WITH wasabi_grid AS (
-    SELECT *
-    FROM {{source('MERCHANT','WASABI_GRID')}}
-)
+with
+    wasabi_grid as (select * from {{ source("MERCHANT", "WASABI_GRID") }}),
+    wasabi_grid_select as (
+        select
+            date / /,
+            joins__barclays__joins_scheme / /,
+            joins__barclays__opted_in_to_marketing / /,
+            joins__barclays__percent_opted_in_to_marketing / /,
+            joins__barclays__joins_and_pll_enabled_linked_payment_card / /,
+            joins__bink__joins_scheme / /,
+            joins__bink__opted_in_to_marketing / /,
+            joins__bink__percent_opted_in_to_marketing / /,
+            joins__bink__joins_and_pll_enabled_linked_payment_card,
+            joins__total__joins_scheme,
+            joins__total__joins_scheme_and_pll_enabled / /,
+            joins__total__billable_joins,
+            joins__total__cumulative_joins_scheme_and_pll_enabled,
+            adds__barclays__adds_with_payment_card,
+            adds__barclays__adds_without_a_payment_card / /,
+            adds__barclays__adds_with_and_without_a_payment_card,
+            adds__bink__adds_with_payment_card / /,
+            adds__bink__adds_without_a_payment_card / /,
+            adds__bink__adds_with_and_without_a_payment_card / /,
+            live_users_loyalty_ids_pll_link_exc_testers__barclays__live_users__loyalty_ids
+            / /,
+            live_users_loyalty_ids_pll_link_exc_testers__bink__live_users__loyalty_ids
+            / /,
+            live_users_loyalty_ids_pll_link_exc_testers__total__live_users__loyalty_ids
+            / /,
+            active_users_billable / /,
+            percent_active_versus_total_live_users / /,
+            live_users_loyalty_ids_pll_link_exc_testers__barclays_only / /,
+            live_users_loyalty_ids_pll_link_exc_testers__bink_only / /,
+            live_users_loyalty_ids_pll_link_exc_testers__barclays_and_bink / /,
+            transactions_for_mi_all_trans_inc_testers__matched_but_no_stamp / /,
+            transactions_for_mi_all_trans_inc_testers__matched_stamp_awarded / /,
+            transactions_for_mi_all_trans_inc_testers__matched_no_response_received / /,
+            transactions_for_mi_all_trans_inc_testers__total_matched / /,
+            transactions_for_mi_all_trans_inc_testers__spotted / /,
+            transactions_for_mi_all_trans_inc_testers__total,
+            transactions_for_mi_all_trans_exc_testers__matched_but_no_stamp,
+            transactions_for_mi_all_trans_exc_testers__matched_stamp_awarded / /,
+            transactions_for_mi_all_trans_exc_testers__matched_no_response_received,
+            transactions_for_mi_all_trans_exc_testers__total_matched / /,
+            transactions_for_mi_all_trans_exc_testers__spotted / /,
+            transactions_for_mi_all_trans_exc_testers__total,
+            transactions_for_mi_all_trans_exc_testers__average_transaction_value,
+            transactions_for_mi_all_trans_exc_testers__total_transaction_value_active_users
+            ,
+            transactions_for_mi_all_trans_exc_testers__average_number_of_matched_transactions_per_customer_total
+            ,
+            transactions_for_mi_all_trans_exc_testers__average_number_of_matched_transactions_per_customers_active
+            / /,
+            transactions_for_mi_all_trans_exc_testers__percent_of_transactions_issuing_a_stamp
+            / /,
+            vouchers_inc_testers__issued / /,
+            vouchers_inc_testers__redeemed / /,
+            vouchers_inc_testers__live / /,
+            vouchers_inc_testers__total_issued / /,
+            vouchers_inc_testers__total_redeemed / /,
+            vouchers_inc_testers__total_expired,
+            vouchers_exc_testers__issued,
+            vouchers_exc_testers__redeemed / /,
+            vouchers_exc_testers__live,
+            vouchers_exc_testers__total_issued,
+            vouchers_exc_testers__total_redeemed / /,
+            vouchers_exc_testers__total_expired / /,
+            number_of_customers_with_each_stamp_total__at_end_of_the_month_exc_testers__0
+            / /,
+            number_of_customers_with_each_stamp_total__at_end_of_the_month_exc_testers__1
+            / /,
+            number_of_customers_with_each_stamp_total__at_end_of_the_month_exc_testers__2
+            / /,
+            number_of_customers_with_each_stamp_total__at_end_of_the_month_exc_testers__3
+            / /,
+            number_of_customers_with_each_stamp_total__at_end_of_the_month_exc_testers__4
+            / /,
+            number_of_customers_with_each_stamp_total__at_end_of_the_month_exc_testers__5
+            / /,
+            number_of_customers_with_each_stamp_total__at_end_of_the_month_exc_testers__6
+        from wasabi_grid
+    )
 
-, wasabi_grid_select AS (
-    SELECT
-        DATE
-//        ,JOINS__BARCLAYS__JOINS_SCHEME
-//        ,JOINS__BARCLAYS__OPTED_IN_TO_MARKETING
-//        ,JOINS__BARCLAYS__PERCENT_OPTED_IN_TO_MARKETING
-//        ,JOINS__BARCLAYS__JOINS_AND_PLL_ENABLED_LINKED_PAYMENT_CARD
-//        ,JOINS__BINK__JOINS_SCHEME
-//        ,JOINS__BINK__OPTED_IN_TO_MARKETING
-//        ,JOINS__BINK__PERCENT_OPTED_IN_TO_MARKETING
-//        ,JOINS__BINK__JOINS_AND_PLL_ENABLED_LINKED_PAYMENT_CARD
-        ,JOINS__TOTAL__JOINS_SCHEME
-        ,JOINS__TOTAL__JOINS_SCHEME_AND_PLL_ENABLED
-//        ,JOINS__TOTAL__BILLABLE_JOINS
-        ,JOINS__TOTAL__CUMULATIVE_JOINS_SCHEME_AND_PLL_ENABLED
-        ,ADDS__BARCLAYS__ADDS_WITH_PAYMENT_CARD
-        ,ADDS__BARCLAYS__ADDS_WITHOUT_A_PAYMENT_CARD
-//        ,ADDS__BARCLAYS__ADDS_WITH_AND_WITHOUT_A_PAYMENT_CARD
-        ,ADDS__BINK__ADDS_WITH_PAYMENT_CARD
-//        ,ADDS__BINK__ADDS_WITHOUT_A_PAYMENT_CARD
-//        ,ADDS__BINK__ADDS_WITH_AND_WITHOUT_A_PAYMENT_CARD
-//        ,LIVE_USERS_LOYALTY_IDS_PLL_LINK_EXC_TESTERS__BARCLAYS__LIVE_USERS__LOYALTY_IDS
-//        ,LIVE_USERS_LOYALTY_IDS_PLL_LINK_EXC_TESTERS__BINK__LIVE_USERS__LOYALTY_IDS
-//        ,LIVE_USERS_LOYALTY_IDS_PLL_LINK_EXC_TESTERS__TOTAL__LIVE_USERS__LOYALTY_IDS
-//        ,ACTIVE_USERS_BILLABLE
-//        ,PERCENT_ACTIVE_VERSUS_TOTAL_LIVE_USERS
-//        ,LIVE_USERS_LOYALTY_IDS_PLL_LINK_EXC_TESTERS__BARCLAYS_ONLY
-//        ,LIVE_USERS_LOYALTY_IDS_PLL_LINK_EXC_TESTERS__BINK_ONLY
-//        ,LIVE_USERS_LOYALTY_IDS_PLL_LINK_EXC_TESTERS__BARCLAYS_AND_BINK
-//        ,TRANSACTIONS_FOR_MI_ALL_TRANS_INC_TESTERS__MATCHED_BUT_NO_STAMP
-//        ,TRANSACTIONS_FOR_MI_ALL_TRANS_INC_TESTERS__MATCHED_STAMP_AWARDED
-//        ,TRANSACTIONS_FOR_MI_ALL_TRANS_INC_TESTERS__MATCHED_NO_RESPONSE_RECEIVED
-//        ,TRANSACTIONS_FOR_MI_ALL_TRANS_INC_TESTERS__TOTAL_MATCHED
-//        ,TRANSACTIONS_FOR_MI_ALL_TRANS_INC_TESTERS__SPOTTED
-//        ,TRANSACTIONS_FOR_MI_ALL_TRANS_INC_TESTERS__TOTAL
-        ,TRANSACTIONS_FOR_MI_ALL_TRANS_EXC_TESTERS__MATCHED_BUT_NO_STAMP
-        ,TRANSACTIONS_FOR_MI_ALL_TRANS_EXC_TESTERS__MATCHED_STAMP_AWARDED
-//        ,TRANSACTIONS_FOR_MI_ALL_TRANS_EXC_TESTERS__MATCHED_NO_RESPONSE_RECEIVED
-        ,TRANSACTIONS_FOR_MI_ALL_TRANS_EXC_TESTERS__TOTAL_MATCHED
-//        ,TRANSACTIONS_FOR_MI_ALL_TRANS_EXC_TESTERS__SPOTTED
-//        ,TRANSACTIONS_FOR_MI_ALL_TRANS_EXC_TESTERS__TOTAL
-        ,TRANSACTIONS_FOR_MI_ALL_TRANS_EXC_TESTERS__AVERAGE_TRANSACTION_VALUE
-        ,TRANSACTIONS_FOR_MI_ALL_TRANS_EXC_TESTERS__TOTAL_TRANSACTION_VALUE_ACTIVE_USERS
-        ,TRANSACTIONS_FOR_MI_ALL_TRANS_EXC_TESTERS__AVERAGE_NUMBER_OF_MATCHED_TRANSACTIONS_PER_CUSTOMER_TOTAL
-        ,TRANSACTIONS_FOR_MI_ALL_TRANS_EXC_TESTERS__AVERAGE_NUMBER_OF_MATCHED_TRANSACTIONS_PER_CUSTOMERS_ACTIVE
-//        ,TRANSACTIONS_FOR_MI_ALL_TRANS_EXC_TESTERS__PERCENT_OF_TRANSACTIONS_ISSUING_A_STAMP
-//        ,VOUCHERS_INC_TESTERS__ISSUED
-//        ,VOUCHERS_INC_TESTERS__REDEEMED
-//        ,VOUCHERS_INC_TESTERS__LIVE
-//        ,VOUCHERS_INC_TESTERS__TOTAL_ISSUED
-//        ,VOUCHERS_INC_TESTERS__TOTAL_REDEEMED
-//        ,VOUCHERS_INC_TESTERS__TOTAL_EXPIRED
-        ,VOUCHERS_EXC_TESTERS__ISSUED
-        ,VOUCHERS_EXC_TESTERS__REDEEMED
-//        ,VOUCHERS_EXC_TESTERS__LIVE
-        ,VOUCHERS_EXC_TESTERS__TOTAL_ISSUED
-        ,VOUCHERS_EXC_TESTERS__TOTAL_REDEEMED
-//        ,VOUCHERS_EXC_TESTERS__TOTAL_EXPIRED
-//        ,NUMBER_OF_CUSTOMERS_WITH_EACH_STAMP_TOTAL__AT_END_OF_THE_MONTH_EXC_TESTERS__0
-//        ,NUMBER_OF_CUSTOMERS_WITH_EACH_STAMP_TOTAL__AT_END_OF_THE_MONTH_EXC_TESTERS__1
-//        ,NUMBER_OF_CUSTOMERS_WITH_EACH_STAMP_TOTAL__AT_END_OF_THE_MONTH_EXC_TESTERS__2
-//        ,NUMBER_OF_CUSTOMERS_WITH_EACH_STAMP_TOTAL__AT_END_OF_THE_MONTH_EXC_TESTERS__3
-//        ,NUMBER_OF_CUSTOMERS_WITH_EACH_STAMP_TOTAL__AT_END_OF_THE_MONTH_EXC_TESTERS__4
-//        ,NUMBER_OF_CUSTOMERS_WITH_EACH_STAMP_TOTAL__AT_END_OF_THE_MONTH_EXC_TESTERS__5
-//        ,NUMBER_OF_CUSTOMERS_WITH_EACH_STAMP_TOTAL__AT_END_OF_THE_MONTH_EXC_TESTERS__6
-    FROM
-         wasabi_grid
-)
-
-SELECT *
-FROM wasabi_grid_select
+select *
+from wasabi_grid_select

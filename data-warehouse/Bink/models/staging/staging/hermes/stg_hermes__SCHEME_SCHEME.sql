@@ -1,8 +1,8 @@
 /*
 Created by:         Aidan Summerville
 Created date:       2022-04-21
-Last modified by:   
-Last modified date: 
+Last modified by:
+Last modified date:
 
 Description:
     Stages the base table the indovdual loyalty plans
@@ -10,67 +10,62 @@ Description:
 Parameters:
     source_object      - Hermes.SCHEME_SCHEME
 */
+with
+source as (select * from {{ source("Hermes", "SCHEME_SCHEME") }}),
 
-WITH
-source  as (
-	SELECT	*
-	FROM {{ source('Hermes', 'SCHEME_SCHEME') }}
+renaming as (
+
+    select
+        id as loyalty_plan_id,
+        has_points,
+        join_url,
+        url,
+        _airbyte_emitted_at,
+        _airbyte_scheme_scheme_hashid,
+        company as loyalty_plan_company,
+        itunes_url,
+        authorisation_required,
+        barcode_prefix,
+        barcode_type,
+        card_number_prefix,
+        colour,
+        enrol_incentive,
+        play_store_url,
+        plan_popularity,
+        digital_only,
+        plan_name,
+        slug as loyalty_plan_slug,
+        text_colour,
+        tier as loyalty_plan_tier,
+        max_points_value_length,
+        plan_description,
+        plan_summary,
+        formatted_images,
+        ios_scheme,
+        linking_support,
+        plan_name_card as loyalty_plan_name_card,
+        plan_register_info,
+        _airbyte_normalized_at,
+        barcode_regex,
+        company_url,
+        join_t_and_c,
+        name as loyalty_plan_name,
+        scan_message,
+        identifier,
+        android_app_id,
+        barcode_redeem_instructions,
+        card_number_regex,
+        forgotten_password_url,
+        has_transactions,
+        link_account_text,
+        point_name,
+        category_id as loyalty_plan_category_id,
+        secondary_colour,
+        transaction_headers,
+        _airbyte_ab_id
+    from source
+
 )
 
-,renaming  as (
-
-
-SELECT  ID as LOYALTY_PLAN_ID
-       ,HAS_POINTS
-       ,JOIN_URL
-       ,URL
-       ,_AIRBYTE_EMITTED_AT
-       ,_AIRBYTE_SCHEME_SCHEME_HASHID
-       ,COMPANY as LOYALTY_PLAN_COMPANY
-       ,ITUNES_URL
-       ,AUTHORISATION_REQUIRED
-       ,BARCODE_PREFIX
-       ,BARCODE_TYPE
-       ,CARD_NUMBER_PREFIX
-       ,COLOUR
-       ,ENROL_INCENTIVE
-       ,PLAY_STORE_URL
-       ,PLAN_POPULARITY
-       ,DIGITAL_ONLY
-       ,PLAN_NAME 
-       ,SLUG as LOYALTY_PLAN_SLUG
-       ,TEXT_COLOUR
-       ,TIER as LOYALTY_PLAN_TIER
-       ,MAX_POINTS_VALUE_LENGTH
-       ,PLAN_DESCRIPTION
-       ,PLAN_SUMMARY
-       ,FORMATTED_IMAGES
-       ,IOS_SCHEME
-       ,LINKING_SUPPORT
-       ,PLAN_NAME_CARD as LOYALTY_PLAN_NAME_CARD
-       ,PLAN_REGISTER_INFO
-       ,_AIRBYTE_NORMALIZED_AT
-       ,BARCODE_REGEX
-       ,COMPANY_URL
-       ,JOIN_T_AND_C
-       ,NAME as LOYALTY_PLAN_NAME
-       ,SCAN_MESSAGE
-       ,IDENTIFIER
-       ,ANDROID_APP_ID
-       ,BARCODE_REDEEM_INSTRUCTIONS
-       ,CARD_NUMBER_REGEX
-       ,FORGOTTEN_PASSWORD_URL
-       ,HAS_TRANSACTIONS
-       ,LINK_ACCOUNT_TEXT
-       ,POINT_NAME
-       ,CATEGORY_ID as LOYALTY_PLAN_CATEGORY_ID
-       ,SECONDARY_COLOUR
-       ,TRANSACTION_HEADERS
-       ,_AIRBYTE_AB_ID
-FROM source
-	
-)
-
-SELECT
-	*
-FROM renaming
+select *
+from renaming
