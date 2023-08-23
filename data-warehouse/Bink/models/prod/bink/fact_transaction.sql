@@ -24,7 +24,7 @@ with
         select
             event_id,
             event_date_time,
-            user_id / /,
+            -- user_id,
             external_user_ref,
             channel,
             brand,

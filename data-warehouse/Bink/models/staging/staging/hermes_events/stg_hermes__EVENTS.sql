@@ -16,7 +16,7 @@ with
 all_events as (
     select *
     -- this is pointing to service_data schema
-    from {{ source("snowstorm", "events") }}
+    from {{ source("snowstorm", "events") }}{{ var("qa_data_suffix")}}
     {% if is_incremental() %}
         where
             _airbyte_emitted_at

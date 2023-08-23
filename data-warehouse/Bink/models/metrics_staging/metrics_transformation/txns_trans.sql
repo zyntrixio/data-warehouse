@@ -15,22 +15,22 @@ with
     transforming_refs as (
         select
             date,
-            user_id / /,
+            -- user_id,
             external_user_ref,
             channel,
             brand,
             coalesce(nullif(external_user_ref, ''), user_id) as user_ref,
-            transaction_id / /,
+            -- transaction_id,
             provider_slug,
             duplicate_transaction,
             feed_type,
             loyalty_plan_name,
             loyalty_plan_company,
             transaction_date,
-            spend_amount / /,
+            -- spend_amount,
             loyalty_id,
-            loyalty_card_id / /,
-            merchant_id / /,
+            -- loyalty_card_id,
+            -- merchant_id,
             payment_account_id
         from trans_events
     ),

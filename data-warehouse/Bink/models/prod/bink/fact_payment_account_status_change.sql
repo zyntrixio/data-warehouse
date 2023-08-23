@@ -36,7 +36,7 @@ with
             channel,
             brand,
             user_id,
-            external_user_ref / /,
+            -- external_user_ref,
             expiry_date,
             token,
             from_status_id,

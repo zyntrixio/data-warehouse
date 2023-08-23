@@ -35,8 +35,8 @@ with
             is_most_recent,
             origin,
             channel,
-            brand / /,
-            external_user_ref / /,
+            -- brand,
+            -- external_user_ref,
             lower(email) as email,
             inserted_date_time,
             updated_date_time

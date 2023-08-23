@@ -17,7 +17,7 @@ with
     client_select as (
         select
             c.channel_id,
-            c.channel_name / /,
+            -- c.channel_name,
             c.secret,
             c.organisation_id,
             o.organisation_name
@@ -27,7 +27,7 @@ with
     client_na_unions as (
         select
             'NOT_APPICABLE' as channel_id,
-            null as channel_name / /,
+            -- null as channel_name,
             null as secret,
             null as organisation_id,
             null as organisation_name
