@@ -1,13 +1,13 @@
 /*
 Created by:         Christopher Mitchell
 Created date:       2023-07-17
-Last modified by:
-Last modified date:
+Last modified by:   Christopher Mitchell
+Last modified date: 2023-08-23
 
 Description:
-    Rewrite of metrics for transactions at a monthly agg
+    Rewrite of metrics for transactions, monthly by retailer
 Notes:
-    source_object       - fact transaction
+    source_object       - txns_trans
 */
 with
 txn_events as (select * from {{ ref("txns_trans") }}),

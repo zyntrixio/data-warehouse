@@ -1,13 +1,13 @@
 /*
 Created by:         Anand Bhakta
 Created date:       2023-06-07
-Last modified by:
-Last modified date:
+Last modified by:   Christopher Mitchell
+Last modified date: 2023-08-23
 
 Description:
     Datasource to produce lloyds mi dashboard - loyalty_cards_overview
 Parameters:
-    source_object       - lc__errors__daily_user_level
+    source_object       - lc__errors__daily_status_rollup_user_level
                         - lc__links_joins__daily_retailer_channel
 */
 with

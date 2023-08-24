@@ -1,8 +1,8 @@
 /*
 Created by:         Sam Pibworth
 Created date:       2022-05-04
-Last modified by:
-Last modified date:
+Last modified by:   Christopher Mitchell
+Last modified date: 2023-08-24
 
 Description:
     Stages the events table, which is an aggregation of all hermes events including user, payment, and loyalty card information
@@ -16,7 +16,7 @@ with
 all_events as (
     select *
     -- this is pointing to service_data schema
-    from {{ source("snowstorm", "events") }}
+    from {{ source("snowstorm", "events") }}{{ var("qa_data_suffix") }}
     {% if is_incremental() %}
         where
             _airbyte_emitted_at

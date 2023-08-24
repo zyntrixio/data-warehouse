@@ -24,7 +24,7 @@ loyalty_plan_category as (select * from {{ ref("stg_hermes__SCHEME_CATEGORY") }}
 
 join_to_base as (
     select
-        -- BALANCES --is this a json field
+        -- BALANCES -- is this a json field
         lc.loyalty_card_id,
         -- ,lcaa.EVENT_TYPE AS ADD_AUTH_STATUS
         -- ,lcaa.EVENT_DATE_TIME AS ADD_AUTH_DATE_TIME
@@ -36,13 +36,13 @@ join_to_base as (
         updated,
         barcode,
         link_date,
-        -- ,VOUCHERS  --is this a json field,
+        -- ,VOUCHERS  -- is this a json field,
         created,
         orders,
         -- TRANSACTIONS,
         originating_journey,  -- is there a linking table for this ?
-        -- ,PLL_LINKS  --is this a json field
-        -- ,FORMATTED_IMAGES --is this a json field,
+        -- ,PLL_LINKS  -- is this a json field
+        -- ,FORMATTED_IMAGES -- is this a json field,
         is_deleted,
         lc.loyalty_plan_id,
         lp.loyalty_plan_company,

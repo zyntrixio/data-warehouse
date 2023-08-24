@@ -1,13 +1,13 @@
 /*
 Created by:         Anand Bhakta
 Created date:       2023-08-03
-Last modified by:    
-Last modified date: 
+Last modified by:   Christopher Mitchell
+Last modified date: 2023-08-23
 
 Description:
-    Datasource to produce tableau dashboard for Viator 12 month rolling datasource
+    Datasource to produce tableau dashboard for The Works 12 month rolling datasource
 Parameters:
-    source_object       - viator_dashboard_view
+    source_object       - src__retailer_lookups_the_works_metrics_ref
 */
 with
     unpivot as (

@@ -1,13 +1,13 @@
 /*
 Created by:         Christopher Mitchell
 Created date:       2023-07-03
-Last modified by:
-Last modified date:
+Last modified by:   Christopher Mitchell
+Last modified date: 2023-08-24
 
 Description:
-    todo
+    User transaction metrics monthly by channel, brand and retailera
 Parameters:
-    source_object       - src__fact_transaction
+    source_object       - stg_metrics__fact_transaction
 */
 with
 user_events as (select * from {{ ref("stg_metrics__fact_transaction") }}),

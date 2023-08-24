@@ -97,3 +97,4 @@ seeds:
 vars:
  dbt_artifacts_database: 'DEV'
  dbt_artifacts_schema: 'MONITORING'
+ qa_data_suffix: ''

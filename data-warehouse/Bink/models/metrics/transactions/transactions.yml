@@ -2,10 +2,10 @@ version: 2
 
 models:
   - name: trans__trans__daily_user_level
-    description: transactions broken down by date and user to provide some aggregation before most compute happens in analytics tool
+    description: transactions broken down by at a user level
 
   - name: trans__trans__monthly_retailer
-    description: placeholder
+    description: transactions broken down by month and retailer
 
   - name: trans__avg__monthly_retailer
-    description: placeholder
+    description: transactions average calculations by month and retailer (eg ARPU for Viator etc)
