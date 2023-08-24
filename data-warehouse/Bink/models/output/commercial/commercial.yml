@@ -2,6 +2,7 @@ version: 2
 
 models:
   - name: revenue_share_lbg
+    description: Revenue Share Report for LBG Channel in Tableau
     columns:
      - name: 'CHANNEL'
        tests:

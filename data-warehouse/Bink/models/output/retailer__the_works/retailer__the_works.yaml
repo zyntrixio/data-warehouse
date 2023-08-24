@@ -11,7 +11,7 @@ models:
             values: ['The Works']
 
   - name: the_works_12_month
-    description: Data source for the works overview
+    description: Data source for the works 12 month dashboard
     columns:
      - name: 'LOYALTY_PLAN_COMPANY'
        tests:
