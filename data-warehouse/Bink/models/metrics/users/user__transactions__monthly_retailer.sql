@@ -1,15 +1,13 @@
 /*
 Created by:         Christopher Mitchell
 Created date:       2023-06-07
-Last modified by:
-Last modified date:
+Last modified by:   Christopher Mitchell
+Last modified date: 2023-08-24
 
 Description:
-    Rewrite of the LL table lc_joins_links_snapshot and lc_joins_links containing both snapshot and daily absolute data of all link and join journeys split by merchant.
-Notes:
-    This code can be made more efficient if the start is pushed to the trans__lbg_user code and that can be the source for the majority of the dashboards including user_loyalty_plan_snapshot and user_with_loyalty_cards
+    User Transaction Metrics monthly by retailer
 Parameters:
-    source_object       - trans_trans
+    source_object       - txns_trans
                         - stg_metrics__dim_date
 */
 with

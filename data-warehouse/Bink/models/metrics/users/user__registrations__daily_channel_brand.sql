@@ -1,15 +1,15 @@
 /*
 Created by:         Christopher Mitchell
 Created date:       2023-05-23
-Last modified by:
-Last modified date:
+Last modified by:   Christopher Mitchell
+Last modified date: 2023-08-24
 
 Description:
-    CUMULATIVE AND PERIOD METRICS ON USER REGISTRATION AND DEREGISTRATION
-
+    cumulative and period metrics on user registration and deregistration broken down by channel and brand on a daily basis
 Parameters:
     source_object       - user_trans
-                        - src__dim_date
+                        - stg_metrics__dim_date
+
 */
 with
 fact_usr as (select * from {{ ref("users_trans") }}),

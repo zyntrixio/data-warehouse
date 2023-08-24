@@ -1,14 +1,13 @@
 /*
 Created by:         Christopher Mitchell
 Created date:       2023-06-23
-Last modified by:
-Last modified date:
+Last modified by:   Christopher Mitchell
+Last modified date: 2023-08-23
 
 Description:
     Rewrite of metrics for transactions at a user level, daily agg
 Notes:
-    will be used in output for LBG as user level
-    source_object       - src fact transaction
+    source_object       - stg_metrics__fact_transaction
 */
 with
 txn_events as (select * from {{ ref("stg_metrics__fact_transaction") }}),

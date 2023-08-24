@@ -1,13 +1,13 @@
 /*
 Created by:         Christopher Mitchell
 Created date:       2023-07-05
-Last modified by:
-Last modified date:
+Last modified by:   Christopher Mitchell
+Last modified date: 2023-08-23
 
 Description:
     Datasource to produce lloyds mi dashboard - vouchers_overview
 Parameters:
-    source_object       - voucher__daily_channel_brand_retailer
+    source_object       - voucher__counts__daily_channel_brand_retailer
                         - voucher__times__voucher_level_channel_brand
 */
 with

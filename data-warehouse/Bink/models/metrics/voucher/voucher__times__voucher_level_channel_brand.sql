@@ -1,11 +1,11 @@
 /*
 Created by:         Christopher Mitchell
 Created date:       2023-07-04
-Last modified by:
-Last modified date:
+Last modified by:   Christopher Mitchell
+Last modified date: 2023-08-24
 
 Description:
-    todo
+    Voucher Date related metrics on a voucher level by channel and brand
 Parameters:
     source_object       - voucher_trans
 */

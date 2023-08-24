@@ -2,15 +2,15 @@
 Created by:         Anand Bhakta
 Created date:       2023-05-23
 Last modified by:   Christopher Mitchell
-Last modified date: 2023-06-07
+Last modified date: 2023-08-23
 
 Description:
     Datasource to produce lloyds mi dashboard - users_overview
 Parameters:
     source_object       - lc__links_joins__daily_retailer_channel
-                        - lc__links_joins__daily_channel
+                        - user__loyalty_card__daily_channel_brand
                         - user__transactions__daily_user_level
-                        - user__registrations__daily__channel_brand
+                        - trans__trans__daily_user_level
 */
 with
 lc_metrics_retailer as (

@@ -1,13 +1,15 @@
 /*
 Created by:         Anand Bhakta
 Created date:       2023-06-30
-Last modified by:
-Last modified date:
+Last modified by:   Christopher Mitchell
+Last modified date: 2023-08-23
 
 Description:
     Datasource to produce lloyds mi dashboard - service_overview
 Parameters:
-    source_object       - src__apistats
+    source_object       - stg_metrics__apistats
+                        - stg_metrics__service_management
+                        - trans__trans__daily_user_level
 */
 with
 apistats as (

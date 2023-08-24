@@ -1,14 +1,14 @@
 /*
 Created by:          Christopher Mitchell
 Created date:        2023-07-04
-Last modified by:
-Last modified date:
+Last modified by:    Christopher Mitchell
+Last modified date:  2023-08-23
 
 Description:
-    Datasource to produce lloyds mi dashboard - users_overview
+    Datasource to produce lloyds mi dashboard - LBG Revenue Share
 Parameters:
     source_object       - lc__links_joins__monthly_retailer_channel
-                        - User__transactions__monthly_user_level
+                        - user__transactions__monthly_channel_brand_retailer
 */
 with
 joins as (

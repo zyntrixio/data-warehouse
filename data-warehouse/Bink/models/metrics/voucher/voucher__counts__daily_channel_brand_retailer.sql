@@ -1,11 +1,11 @@
 /*
 Created by:         Christopher Mitchell
 Created date:       2023-07-04
-Last modified by:
-Last modified date:
+Last modified by:   Christopher Mitchell
+Last modified date: 2023-08-24
 
 Description:
-    todo
+    Count of Voucher States daily by channel brand and retailer
 Parameters:
     source_object       - voucher_trans
                         - dim_date

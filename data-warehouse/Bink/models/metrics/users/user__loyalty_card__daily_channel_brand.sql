@@ -1,16 +1,14 @@
 /*
 Created by:         Christopher Mitchell
 Created date:       2023-06-07
-Last modified by:
-Last modified date:
+Last modified by:   Christopher Mitchell
+Last modified date: 2023-08-24
 
 Description:
-    Rewrite of the LL table lc_joins_links_snapshot and lc_joins_links containing both snapshot and daily absolute data of all link and join journeys split by merchant.
+    Users with Linked Loyalty Card broken down daily, by channel and brand
 Parameters:
-    source_object       - src__fact_lc_add
-                        - src__fact_lc_removed
-                        - src__dim_loyalty_card
-                        - src__dim_date
+    source_object       - lc_trans
+                        - stg_metrics__dim_date
 */
 with
 lc_events as (select * from {{ ref("lc_trans") }}),
