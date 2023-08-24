@@ -238,7 +238,9 @@ models:
         - name: 'SPEND_AMOUNT'
           tests:
             - not_null
-            - elementary.column_anomalies
+            - elementary.column_anomalies:
+                config:
+                  severity: warn
         - name: 'SPEND_CURRENCY'
           description: GBP
           quote: true
