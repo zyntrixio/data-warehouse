@@ -56,14 +56,14 @@ aggs as (
         ) as t016__atf__monthly_retailer__avg,
         div0(
             t020__net_spend__monthly_retailer__sum,
-            t011__txns__monthly_retailer__dcount+t012__refund__monthly_retailer__dcount
+            t025__txns_and_refunds__monthly_retailer__dcount
         ) as t022__aov_inc_refunds__monthly_retailer__avg,
         div0(
             t020__net_spend__monthly_retailer__sum,
             u112_active_users_inc_refunds__retailer_monthly__dcount_uid
         ) as t023__arpu_inc_refunds__monthly_retailer__avg,
         div0(
-            t011__txns__monthly_retailer__dcount+t012__refund__monthly_retailer__dcount,
+            t025__txns_and_refunds__monthly_retailer__dcount,
             u112_active_users_inc_refunds__retailer_monthly__dcount_uid
         ) as t024__atf_inc_refunds__monthly_retailer__avg
     from joins

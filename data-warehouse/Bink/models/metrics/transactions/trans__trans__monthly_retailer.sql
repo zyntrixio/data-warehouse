@@ -159,7 +159,8 @@ finalise as
         t013__bnpl_txns__monthly_retailer__dcount,
         DIV0(t017__duplicate_txn__monthly_retailer__dcount,t011__txns__monthly_retailer__dcount) as t019__duplicate_txn_per_txn__monthly_retailer__percentage,
         t020__net_spend__monthly_retailer__sum,
-        t021__net_spend__monthly_retailer__csum
+        t021__net_spend__monthly_retailer__csum,
+        t011__txns__monthly_retailer__dcount+t012__refund__monthly_retailer__dcount as t025__txns_and_refunds__monthly_retailer__dcount
 
 
     from combine_all
