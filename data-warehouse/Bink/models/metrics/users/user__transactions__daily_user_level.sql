@@ -10,24 +10,23 @@ Description:
     source_object       - stg_metrics__fact_transaction
 */
 with
-user_events as (select * from {{ ref("stg_metrics__fact_transaction") }}),
+user_events as (select * from {{ ref("txns_trans") }}),
 
 metrics as (
     select
-        date(date) as date,
+        date,
         channel,
         brand,
         loyalty_plan_company,
-        coalesce(
-            nullif(external_user_ref, ''), user_id
-        ) as u007__active_users__user_level_daily__uid
+        user_ref as u007__active_users__user_level_daily__uid
     from user_events
+    where status = 'TXNS'
     group by
-        coalesce(nullif(external_user_ref, ''), user_id),
+        user_ref,
         channel,
         brand,
         loyalty_plan_company,
-        date(date)
+        date
 )
 
 select *
