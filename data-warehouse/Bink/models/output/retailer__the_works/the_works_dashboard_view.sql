@@ -66,7 +66,7 @@ combine_all as (
         null as u108_active_users_brand_retailer_monthly__cdcount_uid,
         null as t011__txns__monthly_retailer__dcount,
         null as t009__spend__monthly_retailer__sum,
-        null as t014__aov__monthly_retailer__avg__avg,
+        null as t014__aov__monthly_retailer__avg,
         null as t016__atf__monthly_retailer__avg,
         null as t015__arpu__monthly_retailer__avg
     from lc_metric
