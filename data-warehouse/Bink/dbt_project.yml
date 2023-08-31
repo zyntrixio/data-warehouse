@@ -98,3 +98,4 @@ vars:
  dbt_artifacts_database: 'DEV'
  dbt_artifacts_schema: 'MONITORING'
  qa_data_suffix: ''
+ retailor_start_date: {"The Works": "2023-08-22"}

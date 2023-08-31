@@ -13,6 +13,16 @@ Parameters:
 with
 trans_events as (select * from {{ ref("stg_metrics__fact_transaction") }}),
 
+filter_data as (
+    select *
+    from trans_events
+    where
+    {% for retailor, start_date in var("retailor_start_date").items() %}
+        ((loyalty_plan_company = '{{retailor}}' and date >= '{{start_date}}') or loyalty_plan_company != '{{retailor}}')
+    {%- if not loop.last %} and {% endif -%}
+    {% endfor %}
+),
+
 transforming_refs as (
     select
         date,
@@ -33,7 +43,7 @@ transforming_refs as (
         -- merchant_id, 
         -- payment_account_id,
         loyalty_card_id
-    from trans_events
+    from filter_data
 ),
 
 txn_flag as (
