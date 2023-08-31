@@ -28,6 +28,7 @@ joins as (
         t.t013__bnpl_txns__monthly_retailer__dcount,
         u.u107_active_users__retailer_monthly__dcount_uid,
         t.t020__net_spend__monthly_retailer__sum,
+        t.t025__txns_and_refunds__monthly_retailer__dcount,
         u.u112_active_users_inc_refunds__retailer_monthly__dcount_uid
     from trans_events t
     left join
