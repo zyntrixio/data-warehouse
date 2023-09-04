@@ -531,10 +531,14 @@ add_combine_rename as (
         link_deletes_cumulative
             as lc374__deleted_loyalty_card_joins__monthly_channel_brand_retailer__csum,
         join_successes_mrkt_opt_in_cumulative
-            as lc383__sucessful_loyalty_card_join_mrkt_opt_in__monthly_channel_brand_retailer__csum
+            as lc383__successful_loyalty_card_join_mrkt_opt_in__monthly_channel_brand_retailer__csum
         ,
         join_successes_mrkt_opt_in
-            as lc384__sucessful_loyalty_card_join_mrkt_opt_in__monthly_channel_brand_retailer__count
+            as lc384__successful_loyalty_card_join_mrkt_opt_in__monthly_channel_brand_retailer__count,
+
+        DIV0(join_successes_mrkt_opt_in,join_successes) as lc385__successful_loyalty_card_join_mrkt_opt_in_percentage__monthly_channel_brand_retailer__percentage
+
+        
 
     from all_together
 )
