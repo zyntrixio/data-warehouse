@@ -69,6 +69,7 @@ combine_all as (
         null as t014__aov__monthly_retailer__avg,
         null as t015__arpu__monthly_retailer__avg,
         null as t016__atf__monthly_retailer__avg,
+        null as t026__txns_and_dupes__monthly_retailer__dcount,
         null as t019__duplicate_txn_per_txn__monthly_retailer__percentage,
         null as t017__duplicate_txn__monthly_retailer__dcount
     from lc_metric
@@ -89,6 +90,7 @@ combine_all as (
         null as t014__aov__monthly_retailer__avg,
         null as t015__arpu__monthly_retailer__avg,
         null as t016__atf__monthly_retailer__avg,
+        t026__txns_and_dupes__monthly_retailer__dcount,
         t019__duplicate_txn_per_txn__monthly_retailer__percentage,
         t017__duplicate_txn__monthly_retailer__dcount
     from txn_metrics
@@ -109,6 +111,7 @@ combine_all as (
         t014__aov__monthly_retailer__avg,
         t015__arpu__monthly_retailer__avg,
         t016__atf__monthly_retailer__avg,
+        null as t026__txns_and_dupes__monthly_retailer__dcount,
         null as t019__duplicate_txn_per_txn__monthly_retailer__percentage,
         null as t017__duplicate_txn__monthly_retailer__dcount
     from txn_avg
@@ -129,6 +132,7 @@ combine_all as (
         null as t014__aov__monthly_retailer__avg,
         null as t015__arpu__monthly_retailer__avg,
         null as t016__atf__monthly_retailer__avg,
+        null as t026__txns_and_dupes__monthly_retailer__dcount,
         null as t019__duplicate_txn_per_txn__monthly_retailer__percentage,
         null as t017__duplicate_txn__monthly_retailer__dcount
     from user_metrics
@@ -149,6 +153,7 @@ combine_all as (
         null as t014__aov__monthly_retailer__avg,
         null as t015__arpu__monthly_retailer__avg,
         null as t016__atf__monthly_retailer__avg,
+        null as t026__txns_and_dupes__monthly_retailer__dcount,
         null as t019__duplicate_txn_per_txn__monthly_retailer__percentage,
         null as t017__duplicate_txn__monthly_retailer__dcount
     from pll_metrics
