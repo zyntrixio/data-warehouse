@@ -462,37 +462,37 @@ add_combine_rename as (
             as lc349__requests_loyalty_card_joins__monthly_retailer__count,
         join_deletes
             as lc350__failed_loyalty_card_joins__monthly_retailer__count,
-        join_successes_cumulative
-            as lc375__successful_loyalty_card_links__monthly_retailer__csum,
-        join_requests_cumulative
-            as lc376__requests_loyalty_card_links__monthly_retailer__csum,
-        join_fails_cumulative
-            as lc377__failed_loyalty_card_links__monthly_retailer__csum,
-        join_deletes_cumulative
-            as lc378__deleted_loyalty_card_links__monthly_retailer__csum,
         link_successes_cumulative
-            as lc379__successful_loyalty_card_joins__monthly_retailer__csum,
+            as lc375__successful_loyalty_card_links__monthly_retailer__csum,
         link_requests_cumulative
-            as lc380__requests_loyalty_card_joins__monthly_retailer__csum,
+            as lc376__requests_loyalty_card_links__monthly_retailer__csum,
         link_fails_cumulative
-            as lc381__failed_loyalty_card_joins__monthly_retailer__csum,
+            as lc377__failed_loyalty_card_links__monthly_retailer__csum,
         link_deletes_cumulative
+            as lc378__deleted_loyalty_card_links__monthly_retailer__csum,
+        join_successes_cumulative
+            as lc379__successful_loyalty_card_joins__monthly_retailer__csum,
+        join_requests_cumulative
+            as lc380__requests_loyalty_card_joins__monthly_retailer__csum,
+        join_fails_cumulative
+            as lc381__failed_loyalty_card_joins__monthly_retailer__csum,
+        join_deletes_cumulative
             as lc382__deleted_loyalty_card_joins__monthly_retailer__csum,
-        join_successes_unique_users
-            as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user,
-        join_requests_unique_users
-            as lc352__requests_loyalty_card_links__monthly_retailer__dcount_user,
-        join_fails_unique_users
-            as lc353__failed_loyalty_card_links__monthly_retailer__dcount_user,
-        join_deletes_unique_users
-            as lc354__deleted_loyalty_card_links__monthly_retailer__dcount_user,
         link_successes_unique_users
-            as lc355__successful_loyalty_card_joins__monthly_retailer__dcount_user,
+            as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user,
         link_requests_unique_users
-            as lc356__requests_loyalty_card_joins__monthly_retailer__dcount_user,
+            as lc352__requests_loyalty_card_links__monthly_retailer__dcount_user,
         link_fails_unique_users
-            as lc357__failed_loyalty_card_joins__monthly_retailer__dcount_user,
+            as lc353__failed_loyalty_card_links__monthly_retailer__dcount_user,
         link_deletes_unique_users
+            as lc354__deleted_loyalty_card_links__monthly_retailer__dcount_user,
+        join_successes_unique_users
+            as lc355__successful_loyalty_card_joins__monthly_retailer__dcount_user,
+        join_requests_unique_users
+            as lc356__requests_loyalty_card_joins__monthly_retailer__dcount_user,
+        join_fails_unique_users
+            as lc357__failed_loyalty_card_joins__monthly_retailer__dcount_user,
+        join_deletes_unique_users
             as lc358__deleted_loyalty_card_joins__monthly_retailer__dcount_user,
         join_successes_mrkt_opt_in
             as lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count,
