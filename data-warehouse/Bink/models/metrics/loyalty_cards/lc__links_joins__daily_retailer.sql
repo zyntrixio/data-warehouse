@@ -276,64 +276,6 @@ count_up_abs as (
     having date is not null
 ),
 
-adding_cumulative_abs as (
-
-    select
-        date,
-        loyalty_plan_name,
-        loyalty_plan_company,
-        join_requests,
-        join_fails,
-        join_successes,
-        join_deletes,
-        link_requests,
-        link_fails,
-        link_successes,
-        link_deletes,
-        sum(join_requests) over (
-            partition by loyalty_plan_company, loyalty_plan_name
-            order by date asc
-        ) as join_requests_cumulative,
-        sum(join_fails) over (
-            partition by loyalty_plan_company, loyalty_plan_name
-            order by date asc
-        ) as join_fails_cumulative,
-        sum(join_successes) over (
-            partition by loyalty_plan_company, loyalty_plan_name
-            order by date asc
-        ) as join_successes_cumulative,
-        sum(join_deletes) over (
-            partition by loyalty_plan_company, loyalty_plan_name
-            order by date asc
-        ) as join_deletes_cumulative,
-        sum(link_requests) over (
-            partition by loyalty_plan_company, loyalty_plan_name
-            order by date asc
-        ) as link_requests_cumulative,
-        sum(link_fails) over (
-            partition by loyalty_plan_company, loyalty_plan_name
-            order by date asc
-        ) as link_fails_cumulative,
-        sum(link_successes) over (
-            partition by loyalty_plan_company, loyalty_plan_name
-            order by date asc
-        ) as link_successes_cumulative,
-        sum(link_deletes) over (
-            partition by loyalty_plan_company, loyalty_plan_name
-            order by date asc
-        ) as link_deletes_cumulative,
-        join_requests_unique_users,
-        join_fails_unique_users,
-        join_successes_unique_users,
-        join_deletes_unique_users,
-        link_requests_unique_users,
-        link_fails_unique_users,
-        link_successes_unique_users,
-        link_deletes_unique_users
-
-    from count_up_abs
-),
-
 all_together as (
     select
         coalesce(a.date, s.date) date,
@@ -357,14 +299,6 @@ all_together as (
         coalesce(a.link_fails, 0) as link_fails,
         coalesce(a.link_successes, 0) as link_successes,
         coalesce(a.link_deletes, 0) as link_deletes,
-        coalesce(a.join_requests_cumulative, 0) as join_requests_cumulative,
-        coalesce(a.join_fails_cumulative, 0) as join_fails_cumulative,
-        coalesce(a.join_successes_cumulative, 0) as join_successes_cumulative,
-        coalesce(a.join_deletes_cumulative, 0) as join_deletes_cumulative,
-        coalesce(a.link_requests_cumulative, 0) as link_requests_cumulative,
-        coalesce(a.link_fails_cumulative, 0) as link_fails_cumulative,
-        coalesce(a.link_successes_cumulative, 0) as link_successes_cumulative,
-        coalesce(a.link_deletes_cumulative, 0) as link_deletes_cumulative,
         coalesce(a.join_requests_unique_users, 0) as join_requests_unique_users,
         coalesce(a.join_fails_unique_users, 0) as join_fails_unique_users,
         coalesce(a.join_successes_unique_users, 0)
@@ -375,7 +309,7 @@ all_together as (
         coalesce(a.link_successes_unique_users, 0)
             as link_successes_unique_users,
         coalesce(a.link_deletes_unique_users, 0) as link_deletes_unique_users
-    from adding_cumulative_abs a
+    from count_up_abs a
     full outer join
         count_up_snap s
         on
@@ -469,24 +403,38 @@ add_combine_rename as (
         ,
         link_deletes_unique_users
             as lc064__deleted_loyalty_card_links__daily_retailer__dcount_user,
-        join_requests_cumulative
-            as lc065__requests_loyalty_card_joins__daily_retailer__csum,
-        join_fails_cumulative
-            as lc066__failed_loyalty_card_joins__daily_retailer__csum,
-        join_successes_cumulative
-            as lc067__successful_loyalty_card_joins__daily_retailer__csum
-        ,
-        join_deletes_cumulative
-            as lc068__deleted_loyalty_card_joins__daily_retailer__csum,
-        link_requests_cumulative
-            as lc069__requests_loyalty_card_links__daily_retailer__csum,
-        link_fails_cumulative
-            as lc070__failed_loyalty_card_links__daily_retailer__csum,
-        link_successes_cumulative
-            as lc071__successful_loyalty_card_links__daily_retailer__csum
-        ,
-        link_deletes_cumulative
-            as lc072__deleted_loyalty_card_links__daily_retailer__csum
+        sum(join_requests) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as lc065__requests_loyalty_card_joins__daily_retailer__csum,
+        sum(join_fails) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as lc066__failed_loyalty_card_joins__daily_retailer__csum,
+        sum(join_successes) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as lc067__successful_loyalty_card_joins__daily_retailer__csum,
+        sum(join_deletes) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as lc068__deleted_loyalty_card_joins__daily_retailer__csum,
+        sum(link_requests) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as lc069__requests_loyalty_card_links__daily_retailer__csum,
+        sum(link_fails) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as lc070__failed_loyalty_card_links__daily_retailer__csum,
+        sum(link_successes) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as lc071__successful_loyalty_card_links__daily_retailer__csum,
+        sum(link_deletes) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as lc072__deleted_loyalty_card_links__daily_retailer__csum
         
 
     from all_together
