@@ -7,5 +7,8 @@ models:
   - name: trans__trans__monthly_retailer
     description: transactions broken down by month and retailer
 
+  - name: trans__trans__daily_retailer
+    description: transactions broken down by month and retailer
+
   - name: trans__avg__monthly_retailer
     description: transactions average calculations by month and retailer (eg ARPU for Viator etc)
