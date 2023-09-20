@@ -31,7 +31,7 @@ with metrics as (select * from {{ ref(node) }})
         {%- if col.column in categorical %}
         {{ col.column}},
         {%- else %}
-        div0({{ col.column}} - 1, lag({{ col.column}}) over (partition by {% for col in partition %} {{col}} {%- if not loop.last %} , {% endif -%} {% endfor %} order by {{order}})) as {{ col.column}}__growth
+        div0({{ col.column}} - 1, lag({{ col.column}}) over (partition by {% for col in partition %} {{col}} {%- if not loop.last %} , {% endif -%} {% endfor %} order by {{order}})) as {{ col.column}}__GROWTH
         {%- if not loop.last %} , {% endif -%}
         {%- endif %}
         {%- endfor %}
