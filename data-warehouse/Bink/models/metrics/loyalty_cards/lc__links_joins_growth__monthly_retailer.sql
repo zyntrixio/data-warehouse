@@ -14,28 +14,26 @@ Parameters:
     ... {{ col.column }} ...
 {% endfor %}
 #}
+
+{% set categorical = ["date", "loyalty_plan_name", "loyalty_plan_company"] %}
+{% set exclusion = [] %}
+{% set partition = ["loyalty_plan_name", "loyalty_plan_company"] %}
+{% set order = ["date"] %}
+
 with metrics as (select * from {{ ref("lc__links_joins__monthly_retailer") }})
 
 ,lag as (
     select
-        date,
-        loyalty_plan_name,
-        loyalty_plan_company,
-        lag(lc335__successful_loyalty_cards__monthly_retailer__pit) over (partition by loyalty_plan_name, loyalty_plan_company order by date) lc335__successful_loyalty_cards__monthly_retailer__pit_prev,
-        lc335__successful_loyalty_cards__monthly_retailer__pit
-    from
-        metrics
+        {% for col in adapter.get_columns_in_relation(ref('lc__links_joins__monthly_retailer')) if col.column in categorical -%}
+
+        {{ col.column}},
+
+        {% else %}
+
+        div0({{ col.column}} - 1, lag({{ col.column}}) over (partition by loyalty_plan_name, loyalty_plan_company order by date)),
+
+        {% endfor %}
 )
 
-,growth as (
-    select
-        date,
-        loyalty_plan_name,
-        loyalty_plan_company,    
-        DIV0(1 - lc335__successful_loyalty_cards__monthly_retailer__pit, lc335__successful_loyalty_cards__monthly_retailer__pit_prev) as growth
-    from
-        lag
-)
-
-
-select * from growth
+select * from lag
+where loyalty_plan_company = 'The Works';
