@@ -1,5 +1,18 @@
 version: 2
 
+source:
+  - name: DATA_PRODUCT
+    description: Jira Data Product Table
+    database: RAW
+    schema: JIRA
+    tags: ['source']
+
+  - name: RETAILER
+    description: Jira Retailer Table
+    database: RAW
+    schema: JIRA
+    tags: ['source']
+
 models:
   - name: stg_metrics__apistats
     description: placeholder
