@@ -1,0 +1,9 @@
+version: 2
+
+models:
+  - name: data_product
+    description: bi layer for data product jira metrics
+
+  - name: retailer
+    description: bi layer for retailer jira metrics
+
