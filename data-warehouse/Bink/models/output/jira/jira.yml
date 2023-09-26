@@ -1,9 +1,11 @@
 version: 2
 
 models:
-  - name: data_product
+  - name: data_product_squad
     description: bi layer for data product jira metrics
 
-  - name: retailer
+  - name: retailer_squad
     description: bi layer for retailer jira metrics
 
+  - name: wallet_squad
+    description: bi layer for retailer jira metrics

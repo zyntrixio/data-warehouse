@@ -1,8 +1,5 @@
-/*
-THIS IS A TEST OF THE JIRA API FOR DP-222
-*/
 
-WITH Stage AS (
+WITH source AS (
     SELECT *
     FROM {{ source("JIRA","DATA_PRODUCT") }}
 ),
@@ -30,7 +27,7 @@ RENAME AS (
         PRODUCT_TICKETS,
         BAU_PRODUCT,
         PROJECT
-    FROM stage
+    FROM source
 )
 
 SELECT * FROM RENAME

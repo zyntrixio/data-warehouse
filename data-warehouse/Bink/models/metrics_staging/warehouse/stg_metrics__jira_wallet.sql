@@ -1,10 +1,9 @@
-WITH source AS (
-    SELECT *
-    FROM {{ source("JIRA","RETAILER") }}
+with source as (
+    select * from {{ source('JIRA', 'WALLET') }}
 ),
 
-rename AS (
-    SELECT
+renamed as (
+    select
         name,
         goal,
         start_date,
@@ -19,6 +18,8 @@ rename AS (
         story_points_in_sprint_goal,
         story_points_carried_over,
         defects_in_sprint,
+        api_banking_release,
+        api_consumer_release,
         tech_tickets,
         security_tickets,
         devops_tickets,
@@ -26,7 +27,7 @@ rename AS (
         product_tickets,
         bau_product,
         project
-    FROM source
+    from source
 )
 
-SELECT * FROM rename
+select * from renamed

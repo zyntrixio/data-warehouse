@@ -10,6 +10,7 @@ sources:
     tables:
       - name: DATA_PRODUCT
       - name: RETAILER
+      - name: WALLET
 
 models:
   - name: stg_metrics__apistats
