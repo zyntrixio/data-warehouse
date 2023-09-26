@@ -1,17 +1,15 @@
 version: 2
 
-source:
-  - name: DATA_PRODUCT
+sources:
+  - name: JIRA
     description: Jira Data Product Table
     database: RAW
     schema: JIRA
     tags: ['source']
 
-  - name: RETAILER
-    description: Jira Retailer Table
-    database: RAW
-    schema: JIRA
-    tags: ['source']
+    tables:
+      - name: DATA_PRODUCT
+      - name: RETAILER
 
 models:
   - name: stg_metrics__apistats
