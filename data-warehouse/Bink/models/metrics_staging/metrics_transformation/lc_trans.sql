@@ -13,7 +13,29 @@ Parameters:
                         - src__dim_date
 */
 with
-lc_events as (select * from {{ ref("stg_metrics__fact_lc") }}),
+lc_events as (select * from {{ ref("stg_metrics__fact_lc") }}
+where
+{#
+        {%- for retailor, exclusions in var("retailor_exclusion_lists").items() %}
+        {%- for field, list in exclusions.items() %}
+        ((loyalty_plan_company = '{{retailor}}' and  {{field}} not in (
+                {%- for value in list -%}
+                    '{{value}}'
+                {%- if not loop.last %} , {% endif -%}
+                {%- endfor -%}
+            ) or loyalty_plan_company != '{{retailor}}')
+        {%- if not loop.last %} and {% endif -%}
+        {% endfor %}
+    {%- if not loop.last %} and {% endif -%}
+    {% endfor %}) -- ridiculous solution for excluding values per merchant
+#}
+    {% for retailor, start_date in var("retailor_start_date").items() %}
+        ((loyalty_plan_company = '{{retailor}}' and event_date_time >= '{{start_date}}') or loyalty_plan_company != '{{retailor}}')
+    {%- if not loop.last %} and {% endif -%}
+    {% endfor %}
+
+
+), 
 
 transforming_deletes as (
     select

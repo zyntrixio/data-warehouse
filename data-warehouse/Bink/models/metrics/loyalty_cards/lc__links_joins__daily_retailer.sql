@@ -1,22 +1,25 @@
 /*
-Created by:         Christopher Mitchell
-Created date:       2023-07-03
+Created by:         Anand Bhakta
+Created date:       2023-09-12
 Last modified by:
 Last modified date:
 
 Description:
-    todo
+    Rewrite of the LL table lc_joins_links_snapshot and lc_joins_links containing both snapshot and daily absolute data of all link and join journeys split by RETAILER.
+Notes:
+    This code can be made more efficient if the start is pushed to the trans__lbg_user code and that can be the source for the majority of the dashboards including user_loyalty_plan_snapshot and user_with_loyalty_cards
 Parameters:
     source_object       - src__fact_lc_add
+                        - src__fact_lc_removed
+                        - src__dim_loyalty_card
+                        - src__dim_date
 */
 with
 lc_events as (select * from {{ ref("lc_trans") }}),
 
 dim_date as (
-    select distinct
-        start_of_month,
-        end_of_month
-    from {{ ref("dim_date") }}
+    select *
+    from {{ ref("stg_metrics__dim_date") }}
     where
         date >= (select min(from_date) from lc_events)
         and date <= current_date()
@@ -24,7 +27,7 @@ dim_date as (
 
 count_up_snap as (
     select
-        d.start_of_month as date,
+        d.date,
         u.loyalty_plan_name,
         u.loyalty_plan_company,
         coalesce(
@@ -95,15 +98,16 @@ count_up_snap as (
     left join
         dim_date d
         on
-            d.end_of_month >= date(u.from_date)
-            and d.end_of_month < coalesce(date(u.to_date), '9999-12-31')
-    group by d.start_of_month, u.loyalty_plan_name, u.loyalty_plan_company
+            d.date >= date(u.from_date)
+            and d.date < coalesce(date(u.to_date), '9999-12-31')
+    group by
+        d.date, u.loyalty_plan_name, u.loyalty_plan_company
     having date is not null
 ),
 
 count_up_abs as (
     select
-        d.start_of_month as date,
+        d.date,
         u.loyalty_plan_name,
         u.loyalty_plan_company,
         coalesce(
@@ -138,18 +142,6 @@ count_up_abs as (
             ),
             0
         ) as join_deletes,
-        coalesce(
-            sum(
-                case
-                    when
-                        event_type = 'SUCCESS'
-                        and add_journey = 'JOIN'
-                        and consent_response
-                        then 1
-                end
-            ),
-            0
-        ) as join_successes_mrkt_opt_in,
         coalesce(
             sum(
                 case
@@ -277,73 +269,11 @@ count_up_abs as (
             0
         ) as deletes_unique_users
 
-    from lc_events u
-    left join dim_date d on d.start_of_month = date_trunc('month', u.from_date)
-    group by d.start_of_month, u.loyalty_plan_name, u.loyalty_plan_company
-    having start_of_month is not null
-),
-
-adding_cumulative_abs as (
-
-    select
-        date,
-        loyalty_plan_name,
-        loyalty_plan_company,
-        join_requests,
-        join_fails,
-        join_successes,
-        join_successes_mrkt_opt_in,
-        join_deletes,
-        link_requests,
-        link_fails,
-        link_successes,
-        link_deletes,
-        sum(join_requests) over (
-            partition by loyalty_plan_company, loyalty_plan_name
-            order by date asc
-        ) as join_requests_cumulative,
-        sum(join_fails) over (
-            partition by loyalty_plan_company, loyalty_plan_name
-            order by date asc
-        ) as join_fails_cumulative,
-        sum(join_successes) over (
-            partition by loyalty_plan_company, loyalty_plan_name
-            order by date asc
-        ) as join_successes_cumulative,
-        sum(join_successes_mrkt_opt_in) over (
-            partition by loyalty_plan_company, loyalty_plan_name
-            order by date asc
-        ) as join_successes_mrkt_opt_in_cumulative,
-        sum(join_deletes) over (
-            partition by loyalty_plan_company, loyalty_plan_name
-            order by date asc
-        ) as join_deletes_cumulative,
-        sum(link_requests) over (
-            partition by loyalty_plan_company, loyalty_plan_name
-            order by date asc
-        ) as link_requests_cumulative,
-        sum(link_fails) over (
-            partition by loyalty_plan_company, loyalty_plan_name
-            order by date asc
-        ) as link_fails_cumulative,
-        sum(link_successes) over (
-            partition by loyalty_plan_company, loyalty_plan_name
-            order by date asc
-        ) as link_successes_cumulative,
-        sum(link_deletes) over (
-            partition by loyalty_plan_company, loyalty_plan_name
-            order by date asc
-        ) as link_deletes_cumulative,
-        join_requests_unique_users,
-        join_fails_unique_users,
-        join_successes_unique_users,
-        join_deletes_unique_users,
-        link_requests_unique_users,
-        link_fails_unique_users,
-        link_successes_unique_users,
-        link_deletes_unique_users
-
-    from count_up_abs
+    from dim_date d
+    left join lc_events u on d.date = date(u.from_date)
+    group by
+        d.date, u.loyalty_plan_name, u.loyalty_plan_company
+    having date is not null
 ),
 
 all_together as (
@@ -364,23 +294,11 @@ all_together as (
         coalesce(a.join_requests, 0) as join_requests,
         coalesce(a.join_fails, 0) as join_fails,
         coalesce(a.join_successes, 0) as join_successes,
-        coalesce(a.join_successes_mrkt_opt_in, 0) as join_successes_mrkt_opt_in,
         coalesce(a.join_deletes, 0) as join_deletes,
         coalesce(a.link_requests, 0) as link_requests,
         coalesce(a.link_fails, 0) as link_fails,
         coalesce(a.link_successes, 0) as link_successes,
         coalesce(a.link_deletes, 0) as link_deletes,
-        coalesce(a.join_requests_cumulative, 0) as join_requests_cumulative,
-        coalesce(a.join_fails_cumulative, 0) as join_fails_cumulative,
-        coalesce(a.join_successes_cumulative, 0) as join_successes_cumulative,
-        coalesce(
-            a.join_successes_mrkt_opt_in_cumulative, 0
-        ) as join_successes_mrkt_opt_in_cumulative,
-        coalesce(a.join_deletes_cumulative, 0) as join_deletes_cumulative,
-        coalesce(a.link_requests_cumulative, 0) as link_requests_cumulative,
-        coalesce(a.link_fails_cumulative, 0) as link_fails_cumulative,
-        coalesce(a.link_successes_cumulative, 0) as link_successes_cumulative,
-        coalesce(a.link_deletes_cumulative, 0) as link_deletes_cumulative,
         coalesce(a.join_requests_unique_users, 0) as join_requests_unique_users,
         coalesce(a.join_fails_unique_users, 0) as join_fails_unique_users,
         coalesce(a.join_successes_unique_users, 0)
@@ -391,7 +309,7 @@ all_together as (
         coalesce(a.link_successes_unique_users, 0)
             as link_successes_unique_users,
         coalesce(a.link_deletes_unique_users, 0) as link_deletes_unique_users
-    from adding_cumulative_abs a
+    from count_up_abs a
     full outer join
         count_up_snap s
         on
@@ -405,101 +323,119 @@ add_combine_rename as (
         loyalty_plan_name,
         loyalty_plan_company,
         join_success_state
+            as lc033__successful_loyalty_card_joins__daily_retailer__pit,
+        join_failed_state
+            as lc034__failed_loyalty_card_joins__daily_retailer__pit,
+        join_pending_state
+            as lc035__requests_loyalty_card_joins__daily_retailer__pit,
+        join_removed_state
+            as lc036__deleted_loyalty_card_joins__daily_retailer__pit,
+        link_success_state
+            as lc037__successful_loyalty_card_links__daily_retailer__pit,
+        link_failed_state
+            as lc038__failed_loyalty_card_links__daily_retailer__pit,
+        link_pending_state
+            as lc039__requests_loyalty_card_links__daily_retailer__pit,
+        link_removed_state
+            as lc040__deleted_loyalty_card_links__daily_retailer__pit,
+        join_success_state
         + link_success_state
-            as lc335__successful_loyalty_cards__monthly_retailer__pit,
+            as lc041__successful_loyalty_cards__daily_retailer__pit,
         join_pending_state
         + link_pending_state
-            as lc336__requests_loyalty_cards__monthly_retailer__pit
-        ,
+            as lc042__requests_loyalty_cards__daily_retailer__pit,
         join_failed_state
         + link_failed_state
-            as lc337__failed_loyalty_cards__monthly_retailer__pit,
+            as lc043__failed_loyalty_cards__daily_retailer__pit,
         link_removed_state
         + join_removed_state
-            as lc338__deleted_loyalty_cards__monthly_retailer__pit,
-        link_success_state
-            as lc359__successful_loyalty_card_links__monthly_retailer__pit,
-        link_pending_state
-            as lc360__requests_loyalty_card_links__monthly_retailer__pit,
-        link_failed_state
-            as lc361__failed_loyalty_card_links__monthly_retailer__pit
-        ,
-        link_removed_state
-            as lc362__deleted_loyalty_card_links__monthly_retailer__pit,
-        join_success_state
-            as lc363__successful_loyalty_card_joins__monthly_retailer__pit,
-        join_pending_state
-            as lc364__requests_loyalty_card_joins__monthly_retailer__pit,
-        join_failed_state
-            as lc365__failed_loyalty_card_joins__monthly_retailer__pit
-        ,
-        join_removed_state
-            as lc366__deleted_loyalty_card_joins__monthly_retailer__pit,
+            as lc044__deleted_loyalty_cards__daily_retailer__pit,
+        join_requests
+            as lc045__requests_loyalty_card_joins__daily_retailer__count,
+        join_fails
+            as lc046__failed_loyalty_card_joins__daily_retailer__count,
         join_successes
-        + link_successes
-            as lc339__successful_loyalty_cards__monthly_retailer__count
+            as lc047__successful_loyalty_card_joins__daily_retailer__count
         ,
+        join_deletes
+            as lc048__deleted_loyalty_card_joins__daily_retailer__count,
+        link_requests
+            as lc049__requests_loyalty_card_links__daily_retailer__count,
+        link_fails
+            as lc050__failed_loyalty_card_links__daily_retailer__count,
+        link_successes
+            as lc051__successful_loyalty_card_links__daily_retailer__count
+        ,
+        link_deletes
+            as lc052__deleted_loyalty_card_links__daily_retailer__count,
         join_requests
         + link_requests
-            as lc340__requests_loyalty_cards__monthly_retailer__count,
+            as lc053__requests_loyalty_cards__daily_retailer__count,
         join_fails
-        + link_fails as lc341__failed_loyalty_cards__monthly_retailer__count,
-        join_deletes
-        + link_deletes as lc342__deleted_loyalty_cards__monthly_retailer__count,
-        link_successes
-            as lc343__successful_loyalty_card_links__monthly_retailer__count,
-        link_requests
-            as lc344__requests_loyalty_card_links__monthly_retailer__count
-        ,
-        link_fails as lc345__failed_loyalty_card_links__monthly_retailer__count,
-        link_deletes
-            as lc346__deleted_loyalty_card_links__monthly_retailer__count,
+        + link_fails
+            as lc054__failed_loyalty_cards__daily_retailer__count,
         join_successes
-            as lc347__successful_loyalty_card_joins__monthly_retailer__count,
-        join_requests
-            as lc348__successful_loyalty_card_joins__monthly_retailer__count,
-        join_fails
-            as lc349__requests_loyalty_card_joins__monthly_retailer__count,
+        + link_successes
+            as lc055__successful_loyalty_cards__daily_retailer__count,
         join_deletes
-            as lc350__failed_loyalty_card_joins__monthly_retailer__count,
-        link_successes_cumulative
-            as lc375__successful_loyalty_card_links__monthly_retailer__csum,
-        link_requests_cumulative
-            as lc376__requests_loyalty_card_links__monthly_retailer__csum,
-        link_fails_cumulative
-            as lc377__failed_loyalty_card_links__monthly_retailer__csum,
-        link_deletes_cumulative
-            as lc378__deleted_loyalty_card_links__monthly_retailer__csum,
-        join_successes_cumulative
-            as lc379__successful_loyalty_card_joins__monthly_retailer__csum,
-        join_requests_cumulative
-            as lc380__requests_loyalty_card_joins__monthly_retailer__csum,
-        join_fails_cumulative
-            as lc381__failed_loyalty_card_joins__monthly_retailer__csum,
-        join_deletes_cumulative
-            as lc382__deleted_loyalty_card_joins__monthly_retailer__csum,
-        link_successes_unique_users
-            as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user,
-        link_requests_unique_users
-            as lc352__requests_loyalty_card_links__monthly_retailer__dcount_user,
-        link_fails_unique_users
-            as lc353__failed_loyalty_card_links__monthly_retailer__dcount_user,
-        link_deletes_unique_users
-            as lc354__deleted_loyalty_card_links__monthly_retailer__dcount_user,
-        join_successes_unique_users
-            as lc355__successful_loyalty_card_joins__monthly_retailer__dcount_user,
+        + link_deletes
+            as lc056__deleted_loyalty_cards__daily_retailer__count,
         join_requests_unique_users
-            as lc356__requests_loyalty_card_joins__monthly_retailer__dcount_user,
+            as lc057__requests_loyalty_card_joins__daily_retailer__dcount_user
+        ,
         join_fails_unique_users
-            as lc357__failed_loyalty_card_joins__monthly_retailer__dcount_user,
+            as lc058__failed_loyalty_card_joins__daily_retailer__dcount_user
+        ,
+        join_successes_unique_users
+            as lc059__successful_loyalty_card_joins__daily_retailer__dcount_user
+        ,
         join_deletes_unique_users
-            as lc358__deleted_loyalty_card_joins__monthly_retailer__dcount_user,
-        join_successes_mrkt_opt_in
-            as lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count,
-        DIV0(join_successes_mrkt_opt_in,join_successes)
-            as lc334__successful_loyalty_card_join_mrkt_opt_in_per_successful_loyalty_card_join__monthly_retailer__percentage,
-        join_successes_mrkt_opt_in_cumulative
-            as lc332__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__csum
+            as lc060__deleted_loyalty_card_joins__daily_retailer__dcount_user
+        ,
+        link_requests_unique_users
+            as lc061__requests_loyalty_card_links__daily_retailer__dcount_user
+        ,
+        link_fails_unique_users
+            as lc062__failed_loyalty_card_links__daily_retailer__dcount_user
+        ,
+        link_successes_unique_users
+            as lc063__successful_loyalty_card_links__daily_retailer__dcount_user
+        ,
+        link_deletes_unique_users
+            as lc064__deleted_loyalty_card_links__daily_retailer__dcount_user,
+        sum(join_requests) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as lc065__requests_loyalty_card_joins__daily_retailer__csum,
+        sum(join_fails) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as lc066__failed_loyalty_card_joins__daily_retailer__csum,
+        sum(join_successes) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as lc067__successful_loyalty_card_joins__daily_retailer__csum,
+        sum(join_deletes) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as lc068__deleted_loyalty_card_joins__daily_retailer__csum,
+        sum(link_requests) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as lc069__requests_loyalty_card_links__daily_retailer__csum,
+        sum(link_fails) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as lc070__failed_loyalty_card_links__daily_retailer__csum,
+        sum(link_successes) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as lc071__successful_loyalty_card_links__daily_retailer__csum,
+        sum(link_deletes) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as lc072__deleted_loyalty_card_links__daily_retailer__csum
+        
 
     from all_together
 )

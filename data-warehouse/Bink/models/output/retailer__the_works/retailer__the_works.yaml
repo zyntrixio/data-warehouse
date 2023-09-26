@@ -10,6 +10,24 @@ models:
         - accepted_values:
             values: ['The Works']
 
+  - name: the_works_dashboard_view__growth
+    description: Data source for the works overview growth metrics
+    columns:
+     - name: 'LOYALTY_PLAN_COMPANY'
+       tests:
+        - not_null  
+        - accepted_values:
+            values: ['The Works']
+
+  - name: the_works_dashboard_view_graphs
+    description: Data source for the works overview
+    columns:
+     - name: 'LOYALTY_PLAN_COMPANY'
+       tests:
+        - not_null  
+        - accepted_values:
+            values: ['The Works']
+
   - name: the_works_12_month
     description: Data source for the works 12 month dashboard
     columns:
