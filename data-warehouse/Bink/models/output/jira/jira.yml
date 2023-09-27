@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: jira_output
+    description: bi layer for jira metrics

@@ -1,5 +1,17 @@
 version: 2
 
+sources:
+  - name: JIRA
+    description: Jira Data Product Table
+    database: RAW
+    schema: JIRA
+    tags: ['source']
+
+    tables:
+      - name: DATA_PRODUCT
+      - name: RETAILER
+      - name: WALLET
+
 models:
   - name: stg_metrics__apistats
     description: placeholder
@@ -24,3 +36,12 @@ models:
 
   - name: stg_metrics__service_management
     description: placeholder
+
+  - name: src__jira_retailer
+    description: jira source for retailer squad
+
+  - name: src__jira_data_product
+    description: jira source for data product squad
+
+  - name: src__jira_wallet
+    description: jira source for wallet squad

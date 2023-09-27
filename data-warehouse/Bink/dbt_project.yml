@@ -73,6 +73,9 @@ models:
       commercial:
         +schema: "COMMERCIAL"
         materialized: table
+      jira:
+        +schema: "JIRA"
+        materialized: table
       retailer__the_works:
         +schema: "RETAILER__THE_WORKS"
         materialized: table

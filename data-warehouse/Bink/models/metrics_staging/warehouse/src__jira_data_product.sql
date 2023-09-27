@@ -1,0 +1,33 @@
+
+WITH source AS (
+    SELECT *
+    FROM {{ source("JIRA","DATA_PRODUCT") }}
+),
+
+RENAME AS (
+    SELECT
+        NAME,
+        GOAL,
+        START_DATE,
+        END_DATE,
+        TICKET_TOTAL,
+        TICKET_CARRY_OVER_COUNT,
+        USER_STORY_COUNT,
+        INVESTIGATION_COUNT,
+        BUG_COUNT,
+        DEFECT_COUNT,
+        TICKETS_ACCEPTED_IN_SPRINT,
+        STORY_POINTS_IN_SPRINT_GOAL,
+        STORY_POINTS_CARRIED_OVER,
+        DEFECTS_IN_SPRINT,
+        TECH_TICKETS,
+        SECURITY_TICKETS,
+        DEVOPS_TICKETS,
+        MISC_TECHNICAL_TICKETS,
+        PRODUCT_TICKETS,
+        BAU_PRODUCT,
+        PROJECT
+    FROM source
+)
+
+SELECT * FROM RENAME
