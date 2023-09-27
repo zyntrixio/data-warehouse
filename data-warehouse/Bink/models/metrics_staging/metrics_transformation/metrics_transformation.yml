@@ -18,3 +18,6 @@ models:
 
   - name: txns_trans
     description: to and from dates for fact transactions
+
+  - name: jira_trans
+    description: combining sources for jira into OBT
