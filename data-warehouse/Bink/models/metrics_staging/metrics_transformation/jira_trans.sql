@@ -114,6 +114,35 @@ combine AS (
         bau_product,
         project
     FROM wal_stage
+),
+
+date_trans AS (
+    SELECT
+        team,
+        name,
+        goal,
+        DATE(start_date) as start_date,
+        DATE(end_date) as end_date,
+        ticket_total,
+        ticket_carry_over_count,
+        user_story_count,
+        investigation_count,
+        bug_count,
+        defect_count,
+        tickets_accepted_in_sprint,
+        story_points_in_sprint_goal,
+        story_points_carried_over,
+        api_banking_release,
+        api_consumer_release,
+        defects_in_sprint,
+        tech_tickets,
+        security_tickets,
+        devops_tickets,
+        misc_technical_tickets,
+        product_tickets,
+        bau_product,
+        project
+    FROM combine
 )
 
-SELECT * FROM combine
+SELECT * FROM date_trans

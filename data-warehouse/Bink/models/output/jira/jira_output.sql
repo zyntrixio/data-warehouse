@@ -5,7 +5,7 @@ Last modified by:
 Last modified date:
 
 Description:
-    output layer for Jira Retailer BI
+    output layer for Jira metrics 
 Parameters:
     source_object       - jira_trans
 */
@@ -13,12 +13,13 @@ Parameters:
 with stage as (
     select *
     from {{ ref('jira_trans') }}
-    where team = 'Retailer'
 )
 
 select
     team,
     name,
+    start_date,
+    end_date,
     story_points_in_sprint_goal,
     story_points_carried_over,
     defects_in_sprint
