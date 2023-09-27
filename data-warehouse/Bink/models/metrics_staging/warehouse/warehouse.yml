@@ -37,8 +37,11 @@ models:
   - name: stg_metrics__service_management
     description: placeholder
 
-  - name: stg_metrics__jira_retailer
-    description: jira source for retailer
+  - name: src__jira_retailer
+    description: jira source for retailer squad
 
-  - name: stg_metrics__jira_data_product
-    description: jira source for data product
+  - name: src__jira_data_product
+    description: jira source for data product squad
+
+  - name: src__jira_wallet
+    description: jira source for wallet squad

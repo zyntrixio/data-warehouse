@@ -7,30 +7,30 @@ Last modified date:
 Description:
     Transformation for the Jira reporting soluiton, this does not include making metrics as this is just to combine the 3 teams into one big table for tableau use later in the data flow
 Parameters:
-    source_object       - stg_metrics__jira_data_product
-                        - stg_metrics__jira_retailer
-                        - stg_metrics__jira_wallet
+    source_object       - src__jira_data_product
+                        - src__jira_retailer
+                        - src__jira_wallet
 */
 
 WITH data_stage AS (
     SELECT
         *,
         'Data' AS team
-    FROM {{ ref('stg_metrics__jira_data_product') }}
+    FROM {{ ref('src__jira_data_product') }}
 ),
 
 ret_stage AS (
     SELECT
         *,
         'Retailer' AS team
-    FROM {{ ref('stg_metrics__jira_retailer') }}
+    FROM {{ ref('src__jira_retailer') }}
 ),
 
 wal_stage AS (
     SELECT
         *,
         'Wallet' AS team
-    FROM {{ ref('stg_metrics__jira_wallet') }}
+    FROM {{ ref('src__jira_wallet') }}
 ),
 
 combine AS (
