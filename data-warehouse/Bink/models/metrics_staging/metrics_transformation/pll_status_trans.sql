@@ -47,13 +47,12 @@ from_to_dates as (
         loyalty_plan_name,
         payment_account_id,
         event_date_time as from_date,
-        from_status,
         lead(event_date_time, 1) over (
             partition by loyalty_card_id, payment_account_id
             order by event_date_time asc
         ) as to_date,
-        to_status,
-        from_status = 'ACTIVE' as active_link
+        to_status as status,
+        to_status = 'ACTIVE' as active_link
     from pll_events
 )
 
