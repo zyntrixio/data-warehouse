@@ -5,7 +5,7 @@ Last modified by:
 Last modified date:
 
 Description:
-    Datasource to produce tableau dashboard for Itsu
+    Datasource to produce tableau dashboard for itsu
 Parameters:
     source_object       - lc__links_joins__monthly_retailer
                         - trans__trans__monthly_retailer
@@ -18,7 +18,7 @@ lc_metric as (
         *,
         'JOINS' as category
     from {{ ref("lc__links_joins__monthly_retailer__growth") }}
-    where loyalty_plan_company = 'Itsu'
+    where loyalty_plan_company = 'itsu'
 ),
 
 txn_metrics as (
@@ -26,7 +26,7 @@ txn_metrics as (
         *,
         'SPEND' as category
     from {{ ref("trans__trans__monthly_retailer__growth") }}
-    where loyalty_plan_company = 'Itsu'
+    where loyalty_plan_company = 'itsu'
 ),
 
 txn_avg as (
@@ -34,7 +34,7 @@ txn_avg as (
         *,
         'SPEND' as category
     from {{ ref("trans__avg__monthly_retailer__growth") }}
-    where loyalty_plan_company = 'Itsu'
+    where loyalty_plan_company = 'itsu'
 ),
 
 user_metrics as (
@@ -42,7 +42,7 @@ user_metrics as (
         *,
         'USERS' as category
     from {{ ref("user__transactions__monthly_retailer__growth") }}
-    where loyalty_plan_company = 'Itsu'
+    where loyalty_plan_company = 'itsu'
 ),
 
 pll_metrics as (
@@ -50,7 +50,7 @@ pll_metrics as (
         *,
         'JOINS' as category
     from {{ ref("lc__pll__monthly_retailer__growth") }}
-    where loyalty_plan_company = 'Itsu'
+    where loyalty_plan_company = 'itsu'
 ),
 
 combine_all as (

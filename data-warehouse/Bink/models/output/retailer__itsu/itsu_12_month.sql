@@ -5,7 +5,7 @@ Last modified by:
 Last modified date: 
 
 Description:
-    Datasource to produce tableau dashboard for Itsu 12 month rolling datasource
+    Datasource to produce tableau dashboard for itsu 12 month rolling datasource
 Parameters:
     source_object       - src__retailer_lookups_the_works_metrics_ref
 */
