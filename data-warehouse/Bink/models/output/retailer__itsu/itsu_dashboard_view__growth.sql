@@ -70,10 +70,7 @@ combine_all as (
         null as t009__spend__monthly_retailer__sum__growth,
         null as t014__aov__monthly_retailer__avg__growth,
         null as t015__arpu__monthly_retailer__avg__growth,
-        null as t016__atf__monthly_retailer__avg__growth,
-        null as t026__txns_and_dupes__monthly_retailer__dcount__growth,
-        null as t019__duplicate_txn_per_txn__monthly_retailer__percentage__growth,
-        null as t017__duplicate_txn__monthly_retailer__dcount__growth
+        null as t016__atf__monthly_retailer__avg__growth
     from lc_metric
     union all
     select
@@ -93,10 +90,7 @@ combine_all as (
         t009__spend__monthly_retailer__sum__growth,
         null as t014__aov__monthly_retailer__avg__growth,
         null as t015__arpu__monthly_retailer__avg__growth,
-        null as t016__atf__monthly_retailer__avg__growth,
-        t026__txns_and_dupes__monthly_retailer__dcount__growth,
-        t019__duplicate_txn_per_txn__monthly_retailer__percentage__growth,
-        t017__duplicate_txn__monthly_retailer__dcount__growth
+        null as t016__atf__monthly_retailer__avg__growth
     from txn_metrics
     union all
     select
@@ -116,10 +110,7 @@ combine_all as (
         null as t009__spend__monthly_retailer__sum__growth,
         t014__aov__monthly_retailer__avg__growth,
         t015__arpu__monthly_retailer__avg__growth,
-        t016__atf__monthly_retailer__avg__growth,
-        null as t026__txns_and_dupes__monthly_retailer__dcount__growth,
-        null as t019__duplicate_txn_per_txn__monthly_retailer__percentage__growth,
-        null as t017__duplicate_txn__monthly_retailer__dcount__growth
+        t016__atf__monthly_retailer__avg__growth
     from txn_avg
     union all
     select
@@ -139,10 +130,7 @@ combine_all as (
         null as t009__spend__monthly_retailer__sum__growth,
         null as t014__aov__monthly_retailer__avg__growth,
         null as t015__arpu__monthly_retailer__avg__growth,
-        null as t016__atf__monthly_retailer__avg__growth,
-        null as t026__txns_and_dupes__monthly_retailer__dcount__growth,
-        null as t019__duplicate_txn_per_txn__monthly_retailer__percentage__growth,
-        null as t017__duplicate_txn__monthly_retailer__dcount__growth
+        null as t016__atf__monthly_retailer__avg__growth
     from user_metrics
     union all
     select
@@ -162,10 +150,7 @@ combine_all as (
         null as t009__spend__monthly_retailer__sum__growth,
         null as t014__aov__monthly_retailer__avg__growth,
         null as t015__arpu__monthly_retailer__avg__growth,
-        null as t016__atf__monthly_retailer__avg__growth,
-        null as t026__txns_and_dupes__monthly_retailer__dcount__growth,
-        null as t019__duplicate_txn_per_txn__monthly_retailer__percentage__growth,
-        null as t017__duplicate_txn__monthly_retailer__dcount__growth
+        null as t016__atf__monthly_retailer__avg__growth
     from pll_metrics
 )
 
