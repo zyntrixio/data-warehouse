@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: itsu_dashboard_view
+    description: Data source for itsu overview
+    columns:
+     - name: 'LOYALTY_PLAN_COMPANY'
+       tests:
+        - not_null  
+        - accepted_values:
+            values: ['itsu']
+
+  - name: itsu_dashboard_view__growth
+    description: Data source for itsu overview growth metrics
+    columns:
+     - name: 'LOYALTY_PLAN_COMPANY'
+       tests:
+        - not_null  
+        - accepted_values:
+            values: ['itsu']
+
+  - name: itsu_dashboard_view_graphs
+    description: Data source for itsu overview
+    columns:
+     - name: 'LOYALTY_PLAN_COMPANY'
+       tests:
+        - not_null  
+        - accepted_values:
+            values: ['itsu']
+
+  - name: itsu_12_month
+    description: Data source for itsu 12 month dashboard
+    columns:
+     - name: 'LOYALTY_PLAN_COMPANY'
+       tests:
+        - not_null  
+        - accepted_values:
+            values: ['itsu']
