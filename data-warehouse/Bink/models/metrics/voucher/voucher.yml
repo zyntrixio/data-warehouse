@@ -6,3 +6,6 @@ models:
 
   - name: voucher__times__voucher_level_channel_brand
     description: placeholder
+
+  - name: voucher__counts__monthly_retailer
+    description: placeholder
