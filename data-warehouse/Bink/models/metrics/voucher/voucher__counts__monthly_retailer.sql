@@ -1,8 +1,8 @@
 /*
 Created by:         Christopher Mitchell
 Created date:       2023-10-03
-Last modified by:   
-Last modified date: 
+Last modified by:
+Last modified date:
 
 Description:
     Count of Voucher States daily by channel brand and retailer
@@ -15,7 +15,9 @@ with
 voucher_trans as (select * from {{ ref("voucher_trans") }}),
 
 dim_date as (
-    select start_of_month, end_of_month
+    select
+        start_of_month,
+        end_of_month
     from {{ ref("dim_date") }}
     where
         date >= (select min(date_issued) from voucher_trans)
@@ -66,7 +68,9 @@ voucher_metrics as (
             count(distinct case when state = 'EXPIRED' then voucher_code end), 0
         ) as monthly_expired_vouchers
     from dim_date d
-    left join voucher_staging v on d.start_of_month = date_trunc('month', v.date)
+    left join
+        voucher_staging v
+        on d.start_of_month = date_trunc('month', v.date)
     group by
         d.start_of_month, v.loyalty_plan_company, v.loyalty_plan_name
 ),
@@ -77,11 +81,11 @@ rename as (
         loyalty_plan_company,
         loyalty_plan_name,
         monthly_issued_vouchers
-            as v012__issued_vouchers__monthly_retailer__count,
+            as v012__issued_vouchers__monthly_retailer__dcount,
         monthly_redeemed_vouchers
-            as v013__redeemed_vouchers__monthly_retailer__count,
+            as v013__redeemed_vouchers__monthly_retailer__dcount,
         monthly_expired_vouchers
-            as v014__expired_vouchers__monthly_retailer__count,
+            as v014__expired_vouchers__monthly_retailer__dcount,
         sum(monthly_issued_vouchers) over (
             partition by loyalty_plan_company order by date asc
         ) as v009__issued_vouchers__monthly_retailer__cdsum_voucher,

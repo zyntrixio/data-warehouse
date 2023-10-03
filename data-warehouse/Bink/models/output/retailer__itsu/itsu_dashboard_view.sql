@@ -79,7 +79,7 @@ combine_all as (
         null as t014__aov__monthly_retailer__avg,
         null as t015__arpu__monthly_retailer__avg,
         null as t016__atf__monthly_retailer__avg,
-        null as v012__issued_vouchers__monthly_retailer__count,
+        null as v012__issued_vouchers__monthly_retailer__dcount,
         null as v009__issued_vouchers__monthly_retailer__cdsum_voucher
     from lc_metric
     union all
@@ -102,7 +102,7 @@ combine_all as (
         null as t014__aov__monthly_retailer__avg,
         null as t015__arpu__monthly_retailer__avg,
         null as t016__atf__monthly_retailer__avg,
-        null as v012__issued_vouchers__monthly_retailer__count,
+        null as v012__issued_vouchers__monthly_retailer__dcount,
         null as v009__issued_vouchers__monthly_retailer__cdsum_voucher
     from txn_metrics
     union all
@@ -125,7 +125,7 @@ combine_all as (
         t014__aov__monthly_retailer__avg,
         t015__arpu__monthly_retailer__avg,
         t016__atf__monthly_retailer__avg,
-        null as v012__issued_vouchers__monthly_retailer__count,
+        null as v012__issued_vouchers__monthly_retailer__dcount,
         null as v009__issued_vouchers__monthly_retailer__cdsum_voucher
     from txn_avg
     union all
@@ -148,7 +148,7 @@ combine_all as (
         null as t014__aov__monthly_retailer__avg,
         null as t015__arpu__monthly_retailer__avg,
         null as t016__atf__monthly_retailer__avg,
-        null as v012__issued_vouchers__monthly_retailer__count,
+        null as v012__issued_vouchers__monthly_retailer__dcount,
         null as v009__issued_vouchers__monthly_retailer__cdsum_voucher
     from user_metrics
     union all
@@ -171,7 +171,7 @@ combine_all as (
         null as t014__aov__monthly_retailer__avg,
         null as t015__arpu__monthly_retailer__avg,
         null as t016__atf__monthly_retailer__avg,
-        null as v012__issued_vouchers__monthly_retailer__count,
+        null as v012__issued_vouchers__monthly_retailer__dcount,
         null as v009__issued_vouchers__monthly_retailer__cdsum_voucher
     from pll_metrics
     union all
@@ -194,7 +194,7 @@ combine_all as (
         null as t014__aov__monthly_retailer__avg,
         null as t015__arpu__monthly_retailer__avg,
         null as t016__atf__monthly_retailer__avg,
-        v012__issued_vouchers__monthly_retailer__count,
+        v012__issued_vouchers__monthly_retailer__dcount,
         v009__issued_vouchers__monthly_retailer__cdsum_voucher
     from voucher_metrics
 )

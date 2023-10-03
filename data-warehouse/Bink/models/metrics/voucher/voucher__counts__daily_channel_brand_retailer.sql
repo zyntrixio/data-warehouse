@@ -86,10 +86,13 @@ rename as (
         loyalty_plan_company,
         loyalty_plan_name,
         daily_issued_vouchers
+            -- these should be d count metrics
             as v004__issued_vouchers__daily_channel_brand_retailer__count,
         daily_redeemed_vouchers
+            -- these should be d count metrics
             as v005__redeemed_vouchers__daily_channel_brand_retailer__count,
         daily_expired_vouchers
+            -- these should be d count metrics
             as v006__expired_vouchers__daily_channel_brand_retailer__count,
         sum(daily_issued_vouchers) over (
             partition by loyalty_plan_company, brand order by date asc
