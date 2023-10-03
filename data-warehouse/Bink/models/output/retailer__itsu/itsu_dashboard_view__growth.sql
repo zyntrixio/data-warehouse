@@ -78,8 +78,10 @@ combine_all as (
         category,
         loyalty_plan_name,
         loyalty_plan_company,
-        null as lc347__successful_loyalty_card_joins__monthly_retailer__count__growth__growth,
-        null as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user__growth,
+        null
+            as lc347__successful_loyalty_card_joins__monthly_retailer__count__growth__growth,
+        null
+            as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user__growth,
         null
             as lc334__successful_loyalty_card_join_mrkt_opt_in_per_successful_loyalty_card_join__monthly_retailer__percentage__growth,
         null as lc201__loyalty_card_active_pll__monthly_retailer__pit__growth,
@@ -98,8 +100,10 @@ combine_all as (
         category,
         loyalty_plan_name,
         loyalty_plan_company,
-        null as lc347__successful_loyalty_card_joins__monthly_retailer__count__growth__growth,
-        null as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user__growth,
+        null
+            as lc347__successful_loyalty_card_joins__monthly_retailer__count__growth__growth,
+        null
+            as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user__growth,
         null
             as lc334__successful_loyalty_card_join_mrkt_opt_in_per_successful_loyalty_card_join__monthly_retailer__percentage__growth,
         null as lc201__loyalty_card_active_pll__monthly_retailer__pit__growth,
@@ -118,8 +122,10 @@ combine_all as (
         category,
         loyalty_plan_name,
         loyalty_plan_company,
-        null as lc347__successful_loyalty_card_joins__monthly_retailer__count__growth__growth,
-        null as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user__growth,
+        null
+            as lc347__successful_loyalty_card_joins__monthly_retailer__count__growth__growth,
+        null
+            as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user__growth,
         null
             as lc334__successful_loyalty_card_join_mrkt_opt_in_per_successful_loyalty_card_join__monthly_retailer__percentage__growth,
         null as lc201__loyalty_card_active_pll__monthly_retailer__pit__growth,
@@ -138,8 +144,10 @@ combine_all as (
         category,
         loyalty_plan_name,
         loyalty_plan_company,
-        null as lc347__successful_loyalty_card_joins__monthly_retailer__count__growth__growth,
-        null as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user__growth,
+        null
+            as lc347__successful_loyalty_card_joins__monthly_retailer__count__growth__growth,
+        null
+            as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user__growth,
         null
             as lc334__successful_loyalty_card_join_mrkt_opt_in_per_successful_loyalty_card_join__monthly_retailer__percentage__growth,
         lc201__loyalty_card_active_pll__monthly_retailer__pit__growth,
