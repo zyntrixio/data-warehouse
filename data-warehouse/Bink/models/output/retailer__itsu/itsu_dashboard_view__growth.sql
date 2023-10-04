@@ -70,7 +70,9 @@ combine_all as (
         null as t009__spend__monthly_retailer__sum__growth,
         null as t014__aov__monthly_retailer__avg__growth,
         null as t015__arpu__monthly_retailer__avg__growth,
-        null as t016__atf__monthly_retailer__avg__growth
+        null as t016__atf__monthly_retailer__avg__growth,
+        null as v012__issued_vouchers__monthly_retailer__dcount__growth,
+        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher__growth
     from lc_metric
     union all
     select
@@ -92,7 +94,9 @@ combine_all as (
         t009__spend__monthly_retailer__sum__growth,
         null as t014__aov__monthly_retailer__avg__growth,
         null as t015__arpu__monthly_retailer__avg__growth,
-        null as t016__atf__monthly_retailer__avg__growth
+        null as t016__atf__monthly_retailer__avg__growth,
+        null as v012__issued_vouchers__monthly_retailer__dcount__growth,
+        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher__growth
     from txn_metrics
     union all
     select
@@ -114,7 +118,9 @@ combine_all as (
         null as t009__spend__monthly_retailer__sum__growth,
         t014__aov__monthly_retailer__avg__growth,
         t015__arpu__monthly_retailer__avg__growth,
-        t016__atf__monthly_retailer__avg__growth
+        t016__atf__monthly_retailer__avg__growth,
+        null as v012__issued_vouchers__monthly_retailer__dcount__growth,
+        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher__growth
     from txn_avg
     union all
     select
@@ -136,7 +142,9 @@ combine_all as (
         null as t009__spend__monthly_retailer__sum__growth,
         null as t014__aov__monthly_retailer__avg__growth,
         null as t015__arpu__monthly_retailer__avg__growth,
-        null as t016__atf__monthly_retailer__avg__growth
+        null as t016__atf__monthly_retailer__avg__growth,
+        null as v012__issued_vouchers__monthly_retailer__dcount__growth,
+        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher__growth
     from user_metrics
     union all
     select
@@ -158,7 +166,9 @@ combine_all as (
         null as t009__spend__monthly_retailer__sum__growth,
         null as t014__aov__monthly_retailer__avg__growth,
         null as t015__arpu__monthly_retailer__avg__growth,
-        null as t016__atf__monthly_retailer__avg__growth
+        null as t016__atf__monthly_retailer__avg__growth,
+        null as v012__issued_vouchers__monthly_retailer__dcount__growth,
+        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher__growth
     from pll_metrics
 )
 
