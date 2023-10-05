@@ -68,6 +68,7 @@ combine_all as (
         loyalty_plan_name,
         loyalty_plan_company,
         lc347__successful_loyalty_card_joins__monthly_retailer__count,
+        lc379__successful_loyalty_card_joins__monthly_retailer__csum,
         lc351__successful_loyalty_card_links__monthly_retailer__dcount_user,
         lc334__successful_loyalty_card_join_mrkt_opt_in_per_successful_loyalty_card_join__monthly_retailer__percentage,
         null as lc201__loyalty_card_active_pll__monthly_retailer__pit,
@@ -75,6 +76,7 @@ combine_all as (
         null as u108_active_users_retailer_monthly__cdcount_uid,
         null as t011__txns__monthly_retailer__dcount,
         null as t012__refund__monthly_retailer__dcount,
+        null as t010__refund__monthly_retailer__sum,
         null as t009__spend__monthly_retailer__sum,
         null as t014__aov__monthly_retailer__avg,
         null as t015__arpu__monthly_retailer__avg,
@@ -89,6 +91,7 @@ combine_all as (
         loyalty_plan_name,
         loyalty_plan_company,
         null as lc347__successful_loyalty_card_joins__monthly_retailer__count,
+        null as lc379__successful_loyalty_card_joins__monthly_retailer__csum,
         null
             as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user,
         null
@@ -98,6 +101,7 @@ combine_all as (
         null as u108_active_users_retailer_monthly__cdcount_uid,
         t011__txns__monthly_retailer__dcount,
         t012__refund__monthly_retailer__dcount,
+        t010__refund__monthly_retailer__sum,
         t009__spend__monthly_retailer__sum,
         null as t014__aov__monthly_retailer__avg,
         null as t015__arpu__monthly_retailer__avg,
@@ -112,6 +116,7 @@ combine_all as (
         loyalty_plan_name,
         loyalty_plan_company,
         null as lc347__successful_loyalty_card_joins__monthly_retailer__count,
+        null as lc379__successful_loyalty_card_joins__monthly_retailer__csum,
         null
             as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user,
         null
@@ -121,6 +126,7 @@ combine_all as (
         null as u108_active_users_retailer_monthly__cdcount_uid,
         null as t011__txns__monthly_retailer__dcount,
         null as t012__refund__monthly_retailer__dcount,
+        null as t010__refund__monthly_retailer__sum,
         null as t009__spend__monthly_retailer__sum,
         t014__aov__monthly_retailer__avg,
         t015__arpu__monthly_retailer__avg,
@@ -135,6 +141,7 @@ combine_all as (
         loyalty_plan_name,
         loyalty_plan_company,
         null as lc347__successful_loyalty_card_joins__monthly_retailer__count,
+        null as lc379__successful_loyalty_card_joins__monthly_retailer__csum,
         null
             as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user,
         null
@@ -144,6 +151,7 @@ combine_all as (
         u108_active_users_retailer_monthly__cdcount_uid,
         null as t011__txns__monthly_retailer__dcount,
         null as t012__refund__monthly_retailer__dcount,
+        null as t010__refund__monthly_retailer__sum,
         null as t009__spend__monthly_retailer__sum,
         null as t014__aov__monthly_retailer__avg,
         null as t015__arpu__monthly_retailer__avg,
@@ -158,6 +166,7 @@ combine_all as (
         loyalty_plan_name,
         loyalty_plan_company,
         null as lc347__successful_loyalty_card_joins__monthly_retailer__count,
+        null as lc379__successful_loyalty_card_joins__monthly_retailer__csum,
         null
             as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user,
         null
@@ -167,6 +176,7 @@ combine_all as (
         null as u108_active_users_retailer_monthly__cdcount_uid,
         null as t011__txns__monthly_retailer__dcount,
         null as t012__refund__monthly_retailer__dcount,
+        null as t010__refund__monthly_retailer__sum,
         null as t009__spend__monthly_retailer__sum,
         null as t014__aov__monthly_retailer__avg,
         null as t015__arpu__monthly_retailer__avg,
@@ -181,6 +191,7 @@ combine_all as (
         loyalty_plan_name,
         loyalty_plan_company,
         null as lc347__successful_loyalty_card_joins__monthly_retailer__count,
+        null as lc379__successful_loyalty_card_joins__monthly_retailer__csum,
         null
             as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user,
         null
@@ -190,6 +201,7 @@ combine_all as (
         null as u108_active_users_retailer_monthly__cdcount_uid,
         null as t011__txns__monthly_retailer__dcount,
         null as t012__refund__monthly_retailer__dcount,
+        null as t010__refund__monthly_retailer__sum,
         null as t009__spend__monthly_retailer__sum,
         null as t014__aov__monthly_retailer__avg,
         null as t015__arpu__monthly_retailer__avg,

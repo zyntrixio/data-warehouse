@@ -79,7 +79,7 @@ status_change_events_case as (
                 then 'ACTIVE'
             when 2
                 then 'INACTIVE'
-            else null
+            else 'INACTIVE' --THIS MAY NEED TO GET CHANGED FOR FUTURE ANALYSIS?
         end as from_status,
         to_status_id,
         case
@@ -90,7 +90,7 @@ status_change_events_case as (
                 then 'ACTIVE'
             when 2
                 then 'INACTIVE'
-            else null
+            else 'INACTIVE' --THIS MAY NEED TO GET CHANGED FOR FUTURE ANALYSIS?
         end as to_status,
         case
             when channel_name in ('Bank of Scotland', 'Lloyds', 'Halifax')
