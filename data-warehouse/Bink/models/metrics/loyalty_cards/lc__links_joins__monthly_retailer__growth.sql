@@ -5,7 +5,7 @@ Last modified by:
 Last modified date:
 
 Description:
-    todo
+        Macro to convert the lc__links_joins__monthly_retailer table to growth metrics.
 Parameters:
     source_object       - lc__links_joins__monthly_retailer
 */

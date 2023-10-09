@@ -5,9 +5,10 @@ Last modified by:
 Last modified date:
 
 Description:
-    todo
+    This query is used to create the monthly Payment Link metrics table by retailer.
 Parameters:
     source_object       - pll_status_trans
+                        - dim_date
 */
 with
 pll_events as (select * from {{ ref("pll_status_trans") }}),

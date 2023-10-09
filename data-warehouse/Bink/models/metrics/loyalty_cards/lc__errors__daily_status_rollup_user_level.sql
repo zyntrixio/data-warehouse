@@ -7,8 +7,7 @@ Last modified date:
 Description:
     data source for errors broken down daily and by user / status rollup.
 Parameters:
-    source_object       - lc__errors__daily_user_level
-                        - lc__links_joins__daily_retailer_channel
+    source_object       - lc_status_trans
 */
 with
 lc_errors as (
