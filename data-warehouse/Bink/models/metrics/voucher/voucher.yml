@@ -2,13 +2,13 @@ version: 2
 
 models:
   - name: voucher__counts__daily_channel_brand_retailer
-    description: placeholder
+    description: Daily Granulatiry Count of Issued, Redeemed, and Expired Vouchers by Channel, Brand, and Retailer
 
   - name: voucher__times__voucher_level_channel_brand
-    description: placeholder
+    description: Times remaining, and Time to Redeemed on Vouchers by Channel, Brand, and Retailer
 
   - name: voucher__counts__monthly_retailer
-    description: placeholder
+    description: Monthly Granulatiry Count of Issued, Redeemed, and Expired Vouchers by Retailer
 
   - name: voucher__counts__monthly_retailer_growth
-    description: placeholder
+    description: Monthly Granulatiry Growth of Issued, Redeemed, and Expired Vouchers by Retailer

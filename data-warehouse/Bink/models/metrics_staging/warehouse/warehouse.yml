@@ -14,28 +14,28 @@ sources:
 
 models:
   - name: stg_metrics__apistats
-    description: placeholder
+    description: staging layer for api stats
     
   - name: stg_metrics__dim_date
-    description: placeholder
+    description: staging layer for date dimension
 
   - name: stg_metrics__fact_lc_status_change
-    description: placeholder
+    description: staging layer for loyalty card status change fact
 
   - name: stg_metrics__fact_lc
-    description: placeholder
+    description: staging layer for loyalty card fact
 
   - name: stg_metrics__fact_transaction
-    description: placeholder
+    description: staging layer for transaction fact
     
   - name: stg_metrics__fact_user
-    description: placeholder
+    description: staging layer for user fact
 
   - name: stg_metrics__fact_voucher
-    description: placeholder
+    description: staging layer for voucher fact
 
   - name: stg_metrics__service_management
-    description: placeholder
+    description: staging layer for freshservice
 
   - name: src__jira_retailer
     description: jira source for retailer squad
