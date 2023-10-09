@@ -5,7 +5,7 @@ Last modified by:
 Last modified date:
 
 Description:
-    todo
+    Macro to convert user__transactions__monthly_retailer to growth
 Parameters:
     source_object       - user__transactions__monthly_retailer
 */

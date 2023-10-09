@@ -6,7 +6,7 @@ Last modified date: 2023-08-24
 
 Description:
     User Transaction metrics daily user level
-
+Parameters:
     source_object       - stg_metrics__fact_transaction
 */
 with

@@ -9,16 +9,14 @@ Description:
     dynamically. This can also seperate out metrics from categorical inputs.
 
 Parameters:
-    node     - takes in table reference
-    categorical       - takes list of string inputs which are columns from base table not to be converted to growth but included in select
+    node            - takes in table reference
+    categorical     - takes list of string inputs which are columns from base table not to be converted to growth but included in select
     exclusion       - takes list of string inputs referencing columns in base table to exclude from query
-    partition      - takes list of string inputs referencing columns in base table to exclude from query
-    order      - takes a string to order data by
+    partition       - takes list of string inputs referencing columns in base table to exclude from query
+    order           - takes a string to order data by
 
 Returns:
         Returns a select statement to generate model
-    
-    
 #}
 
 {% macro convert_to_growth(node, categorical, exclusion, partition, order) %}
