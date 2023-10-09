@@ -5,7 +5,7 @@ Last modified by:   Christopher Mitchell
 Last modified date: 2023-08-23
 
 Description:
-    Rewrite of metrics for transactions, monthly by retailer
+    Transaction metrics by retailer on a daily granularity. 
 Notes:
     source_object       - txns_trans
 */
