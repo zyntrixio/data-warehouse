@@ -20,3 +20,6 @@ sources:
     tables:
       - name: SANKEY_MODEL
         description: Sankey distribution model
+
+      - name: TESTERS
+        description: list of testers by user_id, external_user_ref and email
