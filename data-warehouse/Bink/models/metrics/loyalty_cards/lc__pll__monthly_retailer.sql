@@ -5,7 +5,7 @@ Last modified by:
 Last modified date:
 
 Description:
-    This query is used to create the monthly Payment Link metrics table by retailer.
+    This query is used to create the monthly PLL metrics table by retailer.
 Parameters:
     source_object       - pll_status_trans
                         - dim_date

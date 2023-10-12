@@ -5,7 +5,7 @@ Last modified by:
 Last modified date:
 
 Description:
-    Macro to convert the lc__pll__monthly_retailer table to growth metrics.
+    Convert the lc__pll__monthly_retailer table to growth metrics.
 Parameters:
     source_object       - lc__pll__monthly_retailer
 */

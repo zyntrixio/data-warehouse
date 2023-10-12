@@ -5,7 +5,7 @@ Last modified by:
 Last modified date:
 
 Description:
-    Macro to convert the trans__trans__monthly_retailer table to growth metrics.
+    Convert the trans__trans__monthly_retailer table to growth metrics.
 Parameters:
     source_object       - trans__trans__monthly_retailer
 */
