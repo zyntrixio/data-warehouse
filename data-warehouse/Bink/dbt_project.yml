@@ -85,6 +85,9 @@ models:
       retailer__viator:
         +schema: "RETAILER__VIATOR"
         materialized: table
+      self_service:
+        +schema: "SELF_SERVICE"
+        materialized: table
 
 seeds:
   Bink:

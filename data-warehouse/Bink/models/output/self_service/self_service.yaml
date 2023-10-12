@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: metrics_union
+    description: "Data source for all metrics unioned"
