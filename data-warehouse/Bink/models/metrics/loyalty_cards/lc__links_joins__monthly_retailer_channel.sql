@@ -5,9 +5,10 @@ Last modified by:
 Last modified date:
 
 Description:
-    todo
+        This query is used to create the monthly loyalty card links and joins metrics table by retailer and channel.
 Parameters:
-    source_object       - src__fact_lc_add
+    source_object       - lc_trans
+                        - dim_date
 */
 with
 lc_events as (select * from {{ ref("lc_trans") }}),

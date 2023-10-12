@@ -5,9 +5,10 @@ Last modified by:   Christopher Mitchell
 Last modified date: 2023-08-23
 
 Description:
-    Rewrite of metrics for transactions, monthly by retailer
+    Transaction metrics by retailer on a monthly granularity. 
 Notes:
     source_object       - txns_trans
+                        - stg_metrics__dim_date
 */
 with
 txn_events as (select * from {{ ref("txns_trans") }}),

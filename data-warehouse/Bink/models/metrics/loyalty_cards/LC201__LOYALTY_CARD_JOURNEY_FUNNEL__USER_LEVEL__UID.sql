@@ -7,7 +7,7 @@ Last modified date:
 Description:
     Sankey funnel data for lloyds to be joined with the sankey model table
 Parameters:
-    source_object      - src__fact_lc_add
+    source_object      - stg_metrics__fact_lc
 */
 with
 lc as (

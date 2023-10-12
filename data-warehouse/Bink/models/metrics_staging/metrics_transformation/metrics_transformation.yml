@@ -11,10 +11,10 @@ models:
     description: loyalty card error metric transformation layer
 
   - name: voucher_trans
-    description: placeholder
+    description: voucher metrics transformation layer
 
   - name: pll_status_trans
-    description: placeholder
+    description: payment linking metrics transformation layer
 
   - name: txns_trans
     description: to and from dates for fact transactions
