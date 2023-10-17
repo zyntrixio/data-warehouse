@@ -66,6 +66,7 @@ def run(
     is_run_source_tests: bool = True,
     is_run_transformations: bool = True,
     is_run_output_tests: bool = True,
+    is_grant_share: bool = True,
 ):
     if is_trigger_extractions:
         trigger_extractions()
@@ -78,3 +79,5 @@ def run(
     if is_run_output_tests:
         dbt_cli_task(dbt_cli_profile, 'dbt test --exclude tag:"source" tag:"business"')
         dbt_cli_task(dbt_cli_profile, "dbt test --select tag:business")
+    if is_grant_share:
+        dbt_cli_task(dbt_cli_profile, f'dbt run-operation uat_grants --args "env: {env}"')
