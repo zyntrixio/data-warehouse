@@ -13,9 +13,18 @@ Returns:
         Returns no results but executes queries in line
 #}
 
-{% macro uat_grants() %}
+{% macro uat_grants(env) %}
 {# DO I NEED TO DO THE INITAL SHARE GRANT OR IS THAT PERM#}
-    {% set get_schemas_query %}
+
+    {% set share_name %}
+        {% if env == 'dev'%}
+        "DEV_RAW"
+        {% elif env == 'prod' %}
+        "PROD-RAW"
+        {% endif %}
+    {% endset %}
+
+   {% set get_schemas_query %}
         select schema_name from raw.information_schema.schemata;
     {% endset %}
 
@@ -28,18 +37,23 @@ Returns:
     {% set schemas_list = [] %}
     {% endif %}
 
+
     {% for schema in schemas_list | unique -%}
 
+        {% if schema != 'INFORMATION_SCHEMA'%}
+
         {% set grant_query_1%}
-        GRANT USAGE ON SCHEMA RAW.{{schema}} TO SHARE "PROD-RAW"
+        GRANT USAGE ON SCHEMA RAW.{{schema}} TO SHARE {{share_name}}
         {% endset %}
 
         {% set grant_query_2%}
-        GRANT SELECT ON ALL TABLES IN SCHEMA RAW.{{schema}} TO SHARE "PROD-RAW";
+        GRANT SELECT ON ALL TABLES IN SCHEMA RAW.{{schema}} TO SHARE {{share_name}}
         {% endset %}
 
         {% do run_query(grant_query_1) %}
         {% do run_query(grant_query_2) %}
+
+        {% endif %}
 
     {% endfor %}
 
