@@ -14,7 +14,6 @@ Returns:
 #}
 
 {% macro uat_grants(env) %}
-{# DO I NEED TO DO THE INITAL SHARE GRANT OR IS THAT PERM#}
 
     {% set share_name %}
         {% if env == 'dev'%}
