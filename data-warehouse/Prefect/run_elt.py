@@ -1,5 +1,5 @@
 from prefect import flow, task
-from prefect.blocks.system import Secret, String
+from prefect.blocks.system import String
 from prefect_airbyte.connections import trigger_sync
 from prefect_dask.task_runners import DaskTaskRunner
 from prefect_dbt.cli.commands import trigger_dbt_cli_command
