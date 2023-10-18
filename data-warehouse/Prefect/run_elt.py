@@ -80,4 +80,6 @@ def run(
         dbt_cli_task(dbt_cli_profile, 'dbt test --exclude tag:"source" tag:"business"')
         dbt_cli_task(dbt_cli_profile, "dbt test --select tag:business")
     if is_grant_share:
-        dbt_cli_task(dbt_cli_profile, f'dbt run-operation uat_grants --args "env: {env}"')
+        dbt_cli_task(
+            dbt_cli_profile, f'dbt run-operation uat_grants --args "env: {env}"'
+        )
