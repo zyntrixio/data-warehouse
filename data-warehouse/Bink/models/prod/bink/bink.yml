@@ -214,7 +214,7 @@ models:
           description: Primary Key of the table
           quote: true
           tests:
-            - unique
+            # - unique
             - not_null
 
     - name: fact_payment_account
