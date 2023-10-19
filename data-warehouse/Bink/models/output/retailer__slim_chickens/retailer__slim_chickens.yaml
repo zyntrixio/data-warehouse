@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: slim_chickens_dashboard_view
+    description: Data source for slim_chickens overview
+    columns:
+     - name: 'LOYALTY_PLAN_COMPANY'
+       tests:
+        - not_null  
+        - accepted_values:
+            values: ['Slim Chickens']
+
+  - name: slim_chickens_dashboard_view__growth
+    description: Data source for slim_chickens overview growth metrics
+    columns:
+     - name: 'LOYALTY_PLAN_COMPANY'
+       tests:
+        - not_null  
+        - accepted_values:
+            values: ['Slim Chickens']
+
+  - name: slim_chickens_dashboard_view_graphs
+    description: Data source for slim_chickens overview
+    columns:
+     - name: 'LOYALTY_PLAN_COMPANY'
+       tests:
+        - not_null  
+        - accepted_values:
+            values: ['Slim Chickens']
+
+  - name: slim_chickens_12_month
+    description: Data source for slim_chickens 12 month dashboard
+    columns:
+     - name: 'LOYALTY_PLAN_COMPANY'
+       tests:
+        - not_null  
+        - accepted_values:
+            values: ['Slim Chickens']
