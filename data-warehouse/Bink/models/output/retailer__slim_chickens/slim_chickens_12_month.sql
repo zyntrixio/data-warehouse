@@ -5,7 +5,7 @@ Last modified by:
 Last modified date: 
 
 Description:
-    Datasource to produce tableau dashboard for itsu 12 month rolling datasource
+    Datasource to produce tableau dashboard for Slim Chickens 12 month rolling datasource
 Parameters:
     source_object       - src__retailer_lookups_the_works_metrics_ref
 */
@@ -13,7 +13,7 @@ with
     unpivot as (
         {{
             dbt_utils.unpivot(
-                relation=ref("itsu_dashboard_view"),
+                relation=ref("slim_chickens_dashboard_view"),
                 cast_to="number(38,2)",
                 exclude=[
                     "date",
@@ -28,7 +28,7 @@ with
     ),
     refs as (
         select *
-        from {{ ref("src__retailer_lookups_itsu_metrics_ref") }}
+        from {{ ref("src__retailer_lookups_slim_chickens_metrics_ref") }}
         where dashboard = '12_MONTH_ROLLING'
     ),
     rename as (

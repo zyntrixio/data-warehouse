@@ -5,7 +5,7 @@ Last modified by:
 Last modified date:
 
 Description:
-    Datasource to produce tableau dashboard for itsu graphs
+    Datasource to produce tableau dashboard for Slim Chickens graphs
 Parameters:
     source_object       - lc__links_joins__monthly_retailer
                         - trans__trans__monthly_retailer
@@ -18,7 +18,7 @@ lc_metric as (
         *,
         'JOINS' as category
     from {{ ref("lc__links_joins__daily_retailer") }}
-    where loyalty_plan_company = 'itsu'
+    where loyalty_plan_company = 'Slim Chickens'
 ),
 
 txn_metrics as (
@@ -26,7 +26,7 @@ txn_metrics as (
         *,
         'SPEND' as category
     from {{ ref("trans__trans__daily_retailer") }}
-    where loyalty_plan_company = 'itsu'
+    where loyalty_plan_company = 'Slim Chickens'
 ),
 
 combine_all as (
