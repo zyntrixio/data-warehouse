@@ -59,10 +59,6 @@ team_metrics_stage as (
 team_metrics_calc as (
     select
         team,
-        total_story_points_in_sprint_goal,
-        total_story_points_carried_over,
-        total_tickets_accepted_in_sprints,
-        total_defects_in_sprints,
         iff(
             total_story_points_in_sprint_goal = 0, 0,
             100

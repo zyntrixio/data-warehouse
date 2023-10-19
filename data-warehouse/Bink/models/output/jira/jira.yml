@@ -3,3 +3,6 @@ version: 2
 models:
   - name: jira_output
     description: bi layer for jira metrics
+    config:
+      grants:
+        select: ['BI_ANALYST','ANALYTICS_ENGINEER']

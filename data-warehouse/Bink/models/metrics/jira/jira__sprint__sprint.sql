@@ -22,7 +22,7 @@ WITH stage AS (
 rename AS (
     SELECT
         team,
-        name AS sprint_name,
+        IFF(team IS NOT NULL, CONCAT(team, ' - ', name), name) AS sprint_name,
         -- goal,
         start_date,
         end_date,

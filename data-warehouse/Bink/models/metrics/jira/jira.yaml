@@ -2,5 +2,11 @@ version: 2
 
 models:
     - name: jira__team__sprint
+      config:
+        grants:
+            select: ['ANALYTICS_ENGINEER','BI_ANALYST']
 
     - name: jira__sprint__sprint
+      config:
+        grants:
+            select: ['ANALYTICS_ENGINEER','BI_ANALYST']

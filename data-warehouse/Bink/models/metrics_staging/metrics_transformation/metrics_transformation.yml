@@ -21,3 +21,6 @@ models:
 
   - name: jira_trans
     description: combining sources for jira into OBT
+    config:
+      grants:
+        select: ['ANALYTICS_ENGINEER']

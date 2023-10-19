@@ -22,13 +22,21 @@ models:
       bink:
         +schema: "BINK"
         materialized: table
+        config:
+          grants:
+            select: ['ANALYTICS_ENGINEER', 'BI_ANALYST']
       bink_secure:
         +schema: "BINK_SECURE"
         materialized: table
+        config:
+          grants:
+            select: ['ANALYTICS_ENGINEER']
       service_data:
         +schema: "SERVICE_DATA"
         materialized: table
-
+        config:
+          grants:
+            select: ['ANALYTICS_ENGINEER']
     staging:
       +database: "STAGING"
       staging:
@@ -37,7 +45,9 @@ models:
       transformation:
         +schema: "TRANSFORMATION"
         materialized: view
-    
+        config:
+          grants:
+            select: ['ANALYTICS_ENGINEER']
     metrics_staging:
       +database: "METRICS_STAGING"
       +materialized: view
@@ -49,48 +59,83 @@ models:
         +schema: "RETAILER_LOOKUP"
       metrics_transformation:
         +schema: "TRANSFORMATION"
-
     metrics:
       +database: "METRICS"
       loyalty_cards:
         +schema: "LOYALTY_CARDS"
         materialized: table
+        config:
+          grants:
+            select: ['ANALYTICS_ENGINEER', 'BI_ANALYST']
       transactions:
         +schema: "TRANSACTIONS"
         materialized: table
+        config:
+          grants:
+            select: ['ANALYTICS_ENGINEER', 'BI_ANALYST']
       users:
         +schema: "USERS"
         materialized: table
+        config:
+          grants:
+            select: ['ANALYTICS_ENGINEER', 'BI_ANALYST']
       voucher:
         +schema: "VOUCHER"
         materialized: table
+        config:
+          grants:
+            select: ['ANALYTICS_ENGINEER', 'BI_ANALYST']
       jira:
         +schema: "JIRA"
         materialized: table
-
+        config:
+          grants:
+            select: ['ANALYTICS_ENGINEER', 'BI_ANALYST']
     output:
       +database: "OUTPUT"
       lbg:
         +schema: "LBG"
         materialized: table
+        config:
+          grants:
+            select: ['ANALYTICS_ENGINEER', 'BI_ANALYST']
       commercial:
         +schema: "COMMERCIAL"
         materialized: table
+        config:
+          grants:
+            select: ['ANALYTICS_ENGINEER', 'BI_ANALYST']
       jira:
         +schema: "JIRA"
         materialized: table
+        config:
+          grants:
+            select: ['ANALYTICS_ENGINEER', 'BI_ANALYST']
       retailer__the_works:
         +schema: "RETAILER__THE_WORKS"
         materialized: table
+        config:
+          grants:
+            select: ['ANALYTICS_ENGINEER', 'BI_ANALYST']
       retailer__itsu:
         +schema: "RETAILER__ITSU"
         materialized: table
+        config:
+          grants:
+            select: ['ANALYTICS_ENGINEER', 'BI_ANALYST']
       retailer__viator:
         +schema: "RETAILER__VIATOR"
         materialized: table
+        config:
+          grants:
+            select: ['ANALYTICS_ENGINEER', 'BI_ANALYST']
       self_service:
         +schema: "SELF_SERVICE"
         materialized: table
+        config:
+          grants:
+            select: ['ANALYTICS_ENGINEER', 'BI_ANALYST']
+
 
 seeds:
   Bink:
@@ -104,7 +149,7 @@ seeds:
   elementary:
     +database: 'MONITORING'
     +schema: 'MONITORING'
-    +materialized: table
+    +materialized: table #ignore
     +transient: false
 vars:
  dbt_artifacts_database: 'DEV'
