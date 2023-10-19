@@ -24,6 +24,7 @@ ret_stage AS (
         *,
         'Retailer' AS team
     FROM {{ ref('src__jira_retailer') }}
+    WHERE start_date >= '2023-02-27'
 ),
 
 wal_stage AS (
@@ -31,6 +32,7 @@ wal_stage AS (
         *,
         'Wallet' AS team
     FROM {{ ref('src__jira_wallet') }}
+    WHERE start_date >= '2023-02-27'
 ),
 
 combine AS (
