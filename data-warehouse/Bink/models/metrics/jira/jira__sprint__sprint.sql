@@ -5,20 +5,24 @@ LAST MODIFIED BY:
 LAST MODIFIED DATE:
 
 DESCRIPTION:
-    JIRA METRICS FOR SPRINTS BROKEN DOWN MONTHLY BY TEAM
+    JIRA METRICS FOR SPRINTS BROKEN DOWN MONTHLY BY SPRINT
 PARAMETERS:
     SOURCE_OBJECT       - JIRA_TRANS
+TEAM METRICS:
+    DEFECTS IN SPRINT -> TOTAL DEFECTS IN SPRINT
+    SPRINT QUALITY -> 100 - (100 * (TOTAL NUMBER OF DEFECTS FROM EACH SPRINT/TOTAL STORY POINTS COMPLETED FROM EACH SPRINT))
+
 */
 
-with stage as (
-    select *
-    from {{ ref('jira_trans') }}
+WITH stage AS (
+    SELECT *
+    FROM metrics_staging.transformation.jira_trans
 ),
 
-rename as (
-    select
+rename AS (
+    SELECT
         team,
-        name as sprint_name,
+        name AS sprint_name,
         -- goal,
         start_date,
         end_date,
@@ -41,44 +45,40 @@ rename as (
     -- product_tickets,
     -- bau_product,
     -- project,
-    from stage
+    FROM stage
 ),
 
-
-team_metrics_stage as (
-    select
-        team,
-        sum(story_points_in_sprint_goal) as total_story_points_in_sprint_goal,
-        sum(story_points_carried_over) as total_story_points_carried_over,
-        sum(tickets_accepted_in_sprint) as total_tickets_accepted_in_sprints,
-        sum(defects_in_sprint) as total_defects_in_sprints
-    from rename
-    group by team
+sprint_metrics_stage AS (
+    SELECT
+        sprint_name,
+        SUM(defect_count) AS total_defects_in_sprint,
+        SUM(story_points_in_sprint_goal) AS total_story_points_in_sprint_goal,
+        SUM(story_points_carried_over) AS total_story_points_carried_over,
+        SUM(tickets_accepted_in_sprint) AS total_tickets_accepted_in_sprints
+    FROM rename
+    GROUP BY sprint_name
 ),
 
-team_metrics_calc as (
-    select
-        team,
+sprint_metrics_calc AS (
+    SELECT
+        sprint_name,
+        total_defects_in_sprint,
         total_story_points_in_sprint_goal,
         total_story_points_carried_over,
         total_tickets_accepted_in_sprints,
-        total_defects_in_sprints,
-        iff(
+        IFF(
             total_story_points_in_sprint_goal = 0, 0,
             100
-            - (
-                100
-                * (total_defects_in_sprints / total_story_points_in_sprint_goal)
-            )
-        ) as team_overall_sprint_quality,
-        iff(
+            - (100 * (total_defects_in_sprint / total_story_points_in_sprint_goal))
+        ) AS sprint_quality,
+        IFF(
             total_story_points_in_sprint_goal = 0,
             0,
             total_tickets_accepted_in_sprints
             / total_story_points_in_sprint_goal
-        ) as team_velocity
-    from team_metrics_stage
+        ) AS sprint_velocity
+    FROM sprint_metrics_stage
 )
 
-select *
-from team_metrics_calc
+SELECT *
+FROM sprint_metrics_calc
