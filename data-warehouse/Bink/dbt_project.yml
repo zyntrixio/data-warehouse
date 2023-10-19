@@ -82,6 +82,9 @@ models:
       retailer__itsu:
         +schema: "RETAILER__ITSU"
         materialized: table
+      retailer__slim_chickens:
+        +schema: "RETAILER__SLIM_CHICKENS"
+        materialized: table
       retailer__viator:
         +schema: "RETAILER__VIATOR"
         materialized: table
