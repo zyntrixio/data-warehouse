@@ -1,13 +1,13 @@
 /*
-Created by:         Christopher Mitchell
-Created date:       2023-10-02
+Created by:         Anand Bhakta
+Created date:       2023-10-19
 Last modified by:   
 Last modified date: 
 
 Description:
     Datasource to produce tableau dashboard for Slim Chickens 12 month rolling datasource
 Parameters:
-    source_object       - src__retailer_lookups_the_works_metrics_ref
+    source_object       - src__retailer_lookups_slim_chickens_metrics_ref
 */
 with
     unpivot as (
