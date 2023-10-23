@@ -64,6 +64,9 @@ models:
       voucher:
         +schema: "VOUCHER"
         materialized: table
+      jira:
+        +schema: "JIRA"
+        materialized: table
 
     output:
       +database: "OUTPUT"
