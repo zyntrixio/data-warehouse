@@ -1,15 +1,15 @@
 /*
-Created by:         Christopher Mitchell
-Created date:       2023-09-27
-Last modified by:
-Last modified date:
+CREATED BY:         CHRISTOPHER MITCHELL
+CREATED DATE:       2023-09-27
+LAST MODIFIED BY:   CHRISTOPHER MITCHELL
+LAST MODIFIED DATE: 2023-10-23
 
-Description:
-    Transformation for the Jira reporting soluiton, this does not include making metrics as this is just to combine the 3 teams into one big table for tableau use later in the data flow
-Parameters:
-    source_object       - src__jira_data_product
-                        - src__jira_retailer
-                        - src__jira_wallet
+DESCRIPTION:
+    TRANSFORMATION FOR THE JIRA REPORTING SOLUITON, THIS DOES NOT INCLUDE MAKING METRICS AS THIS IS JUST TO COMBINE THE 3 TEAMS INTO ONE BIG TABLE FOR TABLEAU USE LATER IN THE DATA FLOW
+PARAMETERS:
+    SOURCE_OBJECT       - SRC__JIRA_DATA_PRODUCT
+                        - SRC__JIRA_RETAILER
+                        - SRC__JIRA_WALLET
 */
 
 WITH data_stage AS (
@@ -24,6 +24,7 @@ ret_stage AS (
         *,
         'Retailer' AS team
     FROM {{ ref('src__jira_retailer') }}
+    WHERE start_date >= '2023-02-27'
 ),
 
 wal_stage AS (
@@ -31,6 +32,7 @@ wal_stage AS (
         *,
         'Wallet' AS team
     FROM {{ ref('src__jira_wallet') }}
+    WHERE start_date >= '2023-02-27'
 ),
 
 combine AS (

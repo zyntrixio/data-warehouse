@@ -1,0 +1,6 @@
+version: 2
+
+models:
+    - name: jira__team__sprint
+
+    - name: jira__sprint__sprint
