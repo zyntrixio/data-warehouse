@@ -22,7 +22,7 @@ WITH stage AS (
 rename AS (
     SELECT
         team,
-        IFF(team IS NOT NULL, CONCAT(team, ' - ', name), name) AS sprint_name,
+        name AS sprint_name,
         -- goal,
         start_date,
         end_date,
@@ -50,17 +50,19 @@ rename AS (
 
 sprint_metrics_stage AS (
     SELECT
+        team,
         sprint_name,
         SUM(defect_count) AS total_defects_in_sprint,
         SUM(story_points_in_sprint_goal) AS total_story_points_in_sprint_goal,
         SUM(story_points_carried_over) AS total_story_points_carried_over,
         SUM(tickets_accepted_in_sprint) AS total_tickets_accepted_in_sprints
     FROM rename
-    GROUP BY sprint_name
+    GROUP BY team, sprint_name
 ),
 
 sprint_metrics_calc AS (
     SELECT
+        team,
         sprint_name,
         total_defects_in_sprint,
         total_story_points_in_sprint_goal,
@@ -69,7 +71,10 @@ sprint_metrics_calc AS (
         IFF(
             total_story_points_in_sprint_goal = 0, 0,
             100
-            - (100 * (total_defects_in_sprint / total_story_points_in_sprint_goal))
+            - (
+                100
+                * (total_defects_in_sprint / total_story_points_in_sprint_goal)
+            )
         ) AS sprint_quality,
         IFF(
             total_story_points_in_sprint_goal = 0,
