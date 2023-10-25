@@ -39,12 +39,13 @@ stage as (
     inner join reward_rules r on r.loyalty_plan_company = t.loyalty_plan_company and r.value <= t.spend_amount
 ),
 
+-- Slim chickens counts concat of date and user to limit rewards to 1 per day
 txn_period as (
     select
         d.start_of_month as date,
         s.loyalty_plan_company,
         s.loyalty_plan_name,
-        count(distinct case loyalty_plan_company when 'Slim Chickens' then user_ref||date
+        count(distinct case loyalty_plan_company when 'Slim Chickens' then user_ref||date 
                 else transaction_id
                 end) as stamps_issued
     from stage s
