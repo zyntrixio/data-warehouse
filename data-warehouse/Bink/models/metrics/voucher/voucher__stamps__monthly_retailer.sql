@@ -45,8 +45,8 @@ txn_period as (
         d.start_of_month as date,
         s.loyalty_plan_company,
         s.loyalty_plan_name,
-        count(distinct case loyalty_plan_company when 'Slim Chickens' then user_ref||date 
-                else transaction_id
+        count(distinct case loyalty_plan_company when 'Slim Chickens' then user_ref||date --count date and user to limit to 1 per day
+                else transaction_id -- all other merchants count full txn list
                 end) as stamps_issued
     from stage s
     left join dim_date d on d.start_of_month = date_trunc('month', s.date)
