@@ -71,9 +71,9 @@ combine_all as (
             s.loyalty_plan_company, p.loyalty_plan_company
         ) as loyalty_plan_company,
         coalesce(s.loyalty_plan_name, p.loyalty_plan_name) as loyalty_plan_name,
-        coalesce(p.stamps_issued, 0) as t004__spend__monthly_retailer__csum,
+        coalesce(p.stamps_issued, 0) as v013__stamps_issued__monthly_retailer__dcount,
         coalesce(s.cumulative_stamps_issued, 0)
-            as t005__refund__monthly_retailer__csum
+            as v014__stamps_issued__monthly_retailer__cdcount
     from txn_cumulative s
     full outer join
         txn_period p
