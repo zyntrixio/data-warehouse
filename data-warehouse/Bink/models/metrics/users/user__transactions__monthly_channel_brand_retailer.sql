@@ -28,8 +28,8 @@ user_snap as (
         u.loyalty_plan_company,
         u.loyalty_plan_name,
         coalesce(count(
-            DISTINCT CASE WHEN STATUS = 'TXNS' THEN user_ref END
-        ),0) as u110__active_users__monthly_channel_brand_retailer__cdcount_uid
+            distinct case when status = 'TXNS' then user_ref end
+        ), 0) as u110__active_users__monthly_channel_brand_retailer__cdcount_uid
     from user_events u
     left join dim_date d on date(u.date) <= d.end_of_month
     group by d.start_of_month, u.channel, u.brand, u.loyalty_plan_company, u.loyalty_plan_name
@@ -43,7 +43,7 @@ user_period as (
         u.loyalty_plan_company,
         u.loyalty_plan_name,
         coalesce(
-            count(DISTINCT CASE WHEN STATUS = 'TXNS' THEN user_ref END), 0
+            count(distinct case when status = 'TXNS' then user_ref end), 0
         ) as u109__active_users__monthly_channel_brand_retailer__dcount_uid
     from user_events u
     left join dim_date d on d.start_of_month = date_trunc('month', u.date)

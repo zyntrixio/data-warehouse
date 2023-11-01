@@ -14,15 +14,15 @@ TEAM METRICS:
 
 */
 
-WITH stage AS (
-    SELECT *
-    FROM metrics_staging.transformation.jira_trans
+with stage as (
+    select *
+    from metrics_staging.transformation.jira_trans
 ),
 
-rename AS (
-    SELECT
+rename as (
+    select
         team,
-        IFF(team IS NOT NULL, CONCAT(team, ' - ', name), name) AS sprint_name,
+        iff(team is not null, concat(team, ' - ', name), name) as sprint_name,
         -- goal,
         start_date,
         end_date,
@@ -45,40 +45,40 @@ rename AS (
     -- product_tickets,
     -- bau_product,
     -- project,
-    FROM stage
+    from stage
 ),
 
-sprint_metrics_stage AS (
-    SELECT
+sprint_metrics_stage as (
+    select
         sprint_name,
-        SUM(defect_count) AS total_defects_in_sprint,
-        SUM(story_points_in_sprint_goal) AS total_story_points_in_sprint_goal,
-        SUM(story_points_carried_over) AS total_story_points_carried_over,
-        SUM(tickets_accepted_in_sprint) AS total_tickets_accepted_in_sprints
-    FROM rename
-    GROUP BY sprint_name
+        sum(defect_count) as total_defects_in_sprint,
+        sum(story_points_in_sprint_goal) as total_story_points_in_sprint_goal,
+        sum(story_points_carried_over) as total_story_points_carried_over,
+        sum(tickets_accepted_in_sprint) as total_tickets_accepted_in_sprints
+    from rename
+    group by sprint_name
 ),
 
-sprint_metrics_calc AS (
-    SELECT
+sprint_metrics_calc as (
+    select
         sprint_name,
         total_defects_in_sprint,
         total_story_points_in_sprint_goal,
         total_story_points_carried_over,
         total_tickets_accepted_in_sprints,
-        IFF(
+        iff(
             total_story_points_in_sprint_goal = 0, 0,
             100
             - (100 * (total_defects_in_sprint / total_story_points_in_sprint_goal))
-        ) AS sprint_quality,
-        IFF(
+        ) as sprint_quality,
+        iff(
             total_story_points_in_sprint_goal = 0,
             0,
             total_tickets_accepted_in_sprints
             / total_story_points_in_sprint_goal
-        ) AS sprint_velocity
-    FROM sprint_metrics_stage
+        ) as sprint_velocity
+    from sprint_metrics_stage
 )
 
-SELECT *
-FROM sprint_metrics_calc
+select *
+from sprint_metrics_calc

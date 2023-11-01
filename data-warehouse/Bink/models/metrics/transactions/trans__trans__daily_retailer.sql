@@ -5,7 +5,7 @@ Last modified by:   Christopher Mitchell
 Last modified date: 2023-08-23
 
 Description:
-    Transaction metrics by retailer on a daily granularity. 
+    Transaction metrics by retailer on a daily granularity.
 Notes:
     source_object       - txns_trans
 */
@@ -13,8 +13,7 @@ with
 txn_events as (select * from {{ ref("txns_trans") }}),
 
 dim_date as (
-    select distinct
-        date
+    select distinct date
     from {{ ref("stg_metrics__dim_date") }}
     where date >= (select min(date) from txn_events) and date <= current_date()
 ),
@@ -26,7 +25,7 @@ stage as (
         loyalty_plan_name,
         loyalty_plan_company,
         status,
-        DATE(date) as date,
+        date(date) as date,
         spend_amount,
         loyalty_card_id
     from txn_events
@@ -44,7 +43,7 @@ txn_period as (
             case when status = 'REFUND' then s.spend_amount end
         ) as refund_amount_period,
         sum(
-            case when status in ('TXNS','REFUND') then s.spend_amount end
+            case when status in ('TXNS', 'REFUND') then s.spend_amount end
         ) as net_spend_amount_period,
         count(
             distinct case when status = 'BNPL' then transaction_id end
@@ -139,8 +138,8 @@ combine_all as (
             and s.loyalty_plan_company = p.loyalty_plan_company
 ),
 
-finalise as 
-    (select
+finalise as (
+    select
         date,
         loyalty_plan_company,
         loyalty_plan_name,
@@ -158,9 +157,12 @@ finalise as
         t038__bnpl_txns__daily_retailer__dcount,
         t039__net_spend__daily_retailer__sum,
         t040__net_spend__daily_retailer__csum,
-        t035__txns__daily_retailer__dcount+t036__refund__daily_retailer__dcount as t041__txns_and_refunds__daily_retailer__dcount,
-        t037__duplicate_txn__daily_retailer__dcount+t035__txns__daily_retailer__dcount as t042__txns_and_dupes__daily_retailer__dcount,
-        DIV0(t037__duplicate_txn__daily_retailer__dcount,t042__txns_and_dupes__daily_retailer__dcount) as t043__duplicate_txn_per_txn__daily_retailer__percentage
+        t035__txns__daily_retailer__dcount
+        + t036__refund__daily_retailer__dcount as t041__txns_and_refunds__daily_retailer__dcount,
+        t037__duplicate_txn__daily_retailer__dcount
+        + t035__txns__daily_retailer__dcount as t042__txns_and_dupes__daily_retailer__dcount,
+        div0(t037__duplicate_txn__daily_retailer__dcount, t042__txns_and_dupes__daily_retailer__dcount)
+            as t043__duplicate_txn_per_txn__daily_retailer__percentage
 
     from combine_all
 )

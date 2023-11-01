@@ -431,7 +431,7 @@ add_combine_rename as (
             partition by loyalty_plan_company, loyalty_plan_name
             order by date asc
         ) as lc072__deleted_loyalty_card_links__daily_retailer__csum
-        
+
 
     from all_together
 )

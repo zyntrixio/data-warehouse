@@ -497,7 +497,7 @@ add_combine_rename as (
             as lc358__deleted_loyalty_card_joins__monthly_retailer__dcount_user,
         join_successes_mrkt_opt_in
             as lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count,
-        DIV0(join_successes_mrkt_opt_in,join_successes)
+        div0(join_successes_mrkt_opt_in, join_successes)
             as lc334__successful_loyalty_card_join_mrkt_opt_in_per_successful_loyalty_card_join__monthly_retailer__percentage,
         join_successes_mrkt_opt_in_cumulative
             as lc332__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__csum
