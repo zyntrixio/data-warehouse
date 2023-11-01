@@ -5,7 +5,7 @@ Last modified by:   Christopher Mitchell
 Last modified date: 2023-08-23
 
 Description:
-    Daily user level transaction metrics such as active user and transactions per user.
+    Daily user level transaction metrics such as active user and transactions per user. 
 Notes:
     source_object       - stg_metrics__fact_transaction
 */

@@ -5,7 +5,7 @@ Last modified by:   Christopher Mitchell
 Last modified date: 2023-08-23
 
 Description:
-    Transaction Average metrics such as Average revenue per users, per month by retailer.
+    Transaction Average metrics such as Average revenue per users, per month by retailer. 
 Notes:
     source_object       - trans__trans__monthly_retailer
                         - user__transactions__monthly_retailer

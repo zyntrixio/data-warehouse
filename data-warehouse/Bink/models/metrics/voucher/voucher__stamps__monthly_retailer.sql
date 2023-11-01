@@ -5,7 +5,7 @@ Last modified by:   Christopher Mitchell
 Last modified date: 2023-08-23
 
 Description:
-    Transaction metrics by retailer on a monthly granularity.
+    Transaction metrics by retailer on a monthly granularity. 
 Notes:
     source_object       - txns_trans
                         - stg_metrics__dim_date
@@ -22,7 +22,7 @@ dim_date as (
 ),
 
 reward_rules as (
-    select * from {{ ref("src__retailer_lookups_reward_rules") }}
+    select * from {{ref("src__retailer_lookups_reward_rules") }}
 ),
 
 stage as (
@@ -45,10 +45,9 @@ txn_period as (
         d.start_of_month as date,
         s.loyalty_plan_company,
         s.loyalty_plan_name,
-        --count date and user to limit to 1 per day
-        count(distinct case loyalty_plan_company when 'Slim Chickens' then user_ref || date
-            else transaction_id -- all other merchants count full txn list
-        end) as stamps_issued
+        count(distinct case loyalty_plan_company when 'Slim Chickens' then user_ref||date --count date and user to limit to 1 per day
+                else transaction_id -- all other merchants count full txn list
+                end) as stamps_issued
     from stage s
     left join dim_date d on d.start_of_month = date_trunc('month', s.date)
     group by d.start_of_month, s.loyalty_plan_company, s.loyalty_plan_name

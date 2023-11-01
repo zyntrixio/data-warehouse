@@ -537,10 +537,9 @@ add_combine_rename as (
         join_successes_mrkt_opt_in
             as lc384__successful_loyalty_card_join_mrkt_opt_in__monthly_channel_brand_retailer__count,
 
-        div0(join_successes_mrkt_opt_in, join_successes)
-            as lc385__successful_loyalty_card_join_mrkt_opt_in_percentage__monthly_channel_brand_retailer__percentage
+        DIV0(join_successes_mrkt_opt_in,join_successes) as lc385__successful_loyalty_card_join_mrkt_opt_in_percentage__monthly_channel_brand_retailer__percentage
 
-
+        
 
     from all_together
 )
