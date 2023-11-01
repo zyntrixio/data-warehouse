@@ -1,5 +1,11 @@
 version: 2
 
 models:
-  - name: metrics_union
-    description: "Data source for all metrics unioned"
+  - name: metrics_union_retailer
+    description: "Data source for all metrics unioned wwith granularity of retailer"
+
+  - name: metrics_union_retailer_channel
+    description: "Data source for all metrics unioned wwith granularity of retailer and channel"
+
+  - name: metrics_union_channel
+    description: "Data source for all metrics unioned wwith granularity of channel"

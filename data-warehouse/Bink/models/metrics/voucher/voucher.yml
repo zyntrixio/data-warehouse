@@ -12,3 +12,6 @@ models:
 
   - name: voucher__counts__monthly_retailer_growth
     description: Monthly Granularity Growth of Issued, Redeemed, and Expired Vouchers by Retailer
+
+  - name: voucher__stamps__monthly_retailer
+    description: Monthly Granularity Issued Stamps by Retailer

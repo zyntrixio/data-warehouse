@@ -24,3 +24,7 @@ sources:
       - name: SLIM_CHICKENS_REF_FILE
         identifier: SLIM_CHICKENS_REF_FILE
         description: Reference for naming convention
+
+      - name: REWARD_RULES
+        identifier: REWARD_RULES
+        description: Reference for naming convention
