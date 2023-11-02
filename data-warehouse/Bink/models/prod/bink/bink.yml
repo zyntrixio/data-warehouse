@@ -384,7 +384,7 @@ models:
 
         - name: loyalty_card_id
           description: "FK to dim loyalty card table"
-          tests:
+          # tests:
             # - relationships:
             #     to: ref('dim_loyalty_card')
             #     field: LOYALTY_CARD_ID
