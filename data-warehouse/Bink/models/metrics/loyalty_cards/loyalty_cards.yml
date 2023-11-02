@@ -13,6 +13,9 @@ models:
   - name: lc__links_joins__monthly_retailer
     description: Loyalty card link and join metrics broken down by month and retailer
 
+  - name: lc__links_joins__monthly_retailer_channel__growth
+    description: TO DO
+    
   - name: lc__errors__daily_status_rollup_user_level
     description: Loyalty card error metrics broken down by date, status groups and user level aggregation
 
@@ -27,3 +30,9 @@ models:
 
   - name: lc__pll__monthly_retailer__growth
     description: Growth for loyalty card metrics relating to pll links
+
+  - name: lc__pll__monthly_retailer_channel
+    description: TO DO
+
+  - name: lc__pll__monthly_retailer_channel_growth
+    description: TO DO
