@@ -1,0 +1,18 @@
+/*
+CREATED BY:         CHRISTOPHER MITCHELL
+CREATED DATE:       2023-11-02
+LAST MODIFIED BY:
+LAST MODIFIED DATE:
+
+DESCRIPTION:
+    CONVERT USER__TRANSACTIONS__MONTHLY_RETAILER_CHANNEL TO GROWTH
+PARAMETERS:
+    SOURCE_OBJECT       - USER__TRANSACTIONS__MONTHLY_RETAILER_CHANNEL
+*/
+
+{{convert_to_growth("user__transactions__monthly_retailer_channel",
+                    ["DATE", "LOYALTY_PLAN_NAME", "LOYALTY_PLAN_COMPANY"],
+                    [],
+                    ["LOYALTY_PLAN_NAME", "LOYALTY_PLAN_COMPANY"],
+                    "DATE" )
+}}
