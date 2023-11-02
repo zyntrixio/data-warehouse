@@ -27,6 +27,7 @@ Parameters:
                 {{ ref('user__registrations__daily_channel_brand') }}
                 {{ ref('user__transactions__monthly_retailer') }}
                 {{ ref('user__loyalty_card__daily_channel_brand') }}
+                {{ ref('voucher__stamps__monthly_retailer') }}
 */
 
 
