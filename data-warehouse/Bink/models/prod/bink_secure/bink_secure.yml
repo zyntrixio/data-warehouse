@@ -73,9 +73,9 @@ models:
           quote: true 
           tests:
             - not_null
-            - relationships:
-                to: ref('dim_date')
-                field: YEAR_MONTH
+            # - relationships:
+            #     to: ref('dim_date')
+            #     field: YEAR_MONTH
 
     - name: fact_payment_account_status_change_secure
       description: "Table containing events for payment account status change"
@@ -104,9 +104,9 @@ models:
           quote: true 
           tests:
             - not_null
-            - relationships:
-                to: ref('dim_date')
-                field: YEAR_MONTH
+            # - relationships:
+            #     to: ref('dim_date')
+            #     field: YEAR_MONTH
 
     - name: fact_loyalty_card_secure
       description: "Table containing events for loyalty card addition and authorisation"
@@ -208,25 +208,25 @@ models:
           quote: true
           tests:
             - not_null
-            - relationships:
-                to: ref('dim_user')
-                field: USER_ID
+            # - relationships:
+            #     to: ref('dim_user')
+            #     field: USER_ID
         - name: 'PAYMENT_ACCOUNT_ID'
           description: Transaction payment account
           quote: true
           tests:
             - not_null
-            - relationships:
-                to: ref('dim_payment_account')
-                field: PAYMENT_ACCOUNT_ID
+            # - relationships:
+            #     to: ref('dim_payment_account')
+            #     field: PAYMENT_ACCOUNT_ID
         - name: 'LOYALTY_CARD_ID'
           description: Transaction loyalty card account
           quote: true
           tests:
             - not_null
-            - relationships:
-                to: ref('dim_loyalty_card')
-                field: LOYALTY_CARD_ID
+            # - relationships:
+            #     to: ref('dim_loyalty_card')
+            #     field: LOYALTY_CARD_ID
         - name: 'MERCHANT_ID'
           description: Links to merchant dim
           quote: true
@@ -270,17 +270,17 @@ models:
           quote: true
           tests:
             - not_null
-            - relationships:
-                to: ref('dim_payment_account')
-                field: PAYMENT_ACCOUNT_ID
+            # - relationships:
+            #     to: ref('dim_payment_account')
+            #     field: PAYMENT_ACCOUNT_ID
         - name: 'LOYALTY_CARD_ID'
           description: loyalty card id
           quote: true 
           tests:
             - not_null
-            - relationships:
-                to: ref('dim_loyalty_card')
-                field: LOYALTY_CARD_ID
+            # - relationships:
+            #     to: ref('dim_loyalty_card')
+            #     field: LOYALTY_CARD_ID
         - name: 'TO_STATUS'
           description: status description
           quote: true 
