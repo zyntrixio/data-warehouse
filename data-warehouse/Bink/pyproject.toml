@@ -13,7 +13,7 @@ prefect-dbt = "^0.3.1"
 prefect-snowflake = "^0.26.1"
 prefect-airbyte = "^0.2.0"
 prefect-dask = "^0.2.4"
-prefect = "2.10.21"
+prefect = "2.14.2"
 prefect-shell = "^0.1.5"
 
 [tool.poetry.group.dev.dependencies]
