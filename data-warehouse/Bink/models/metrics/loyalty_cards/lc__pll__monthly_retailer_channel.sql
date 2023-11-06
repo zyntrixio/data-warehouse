@@ -52,7 +52,7 @@ rename as (
         loyalty_plan_name,
         loyalty_plan_company,
         pll_active_link_count
-            as lc201__loyalty_card_active_pll__monthly_retailer__pit
+            as lc386__loyalty_card_active_pll__monthly_retailer_channel__pit
     from count_up_snap
 )
 

@@ -30,10 +30,10 @@ user_snap as (
         u.loyalty_plan_name,
         coalesce(count(
             DISTINCT CASE WHEN STATUS = 'TXNS' THEN user_ref END
-        ),0) as u108_active_users_retailer_monthly__cdcount_uid,
+        ),0) as U201_ACTIVE_USERS_RETAILER_MONTHLY_CHANNEL__CDCOUNT_UID,
         coalesce(count(
             DISTINCT CASE WHEN STATUS IN ('TXNS', 'REFUND') THEN user_ref END
-        ),0) as u111_active_users_inc_refunds__retailer_monthly__cdcount_uid
+        ),0) as U202_ACTIVE_USERS_INC_REFUNDS__RETAILER_MONTHLY_CHANNEL__CDCOUNT_UID
     from user_events u
     left join dim_date d on date(u.date) <= d.end_of_month
     group by d.start_of_month, u.channel, u.brand, u.loyalty_plan_company, u.loyalty_plan_name
@@ -48,10 +48,10 @@ user_period as (
         u.loyalty_plan_name,
         coalesce(
             count(DISTINCT CASE WHEN STATUS = 'TXNS' THEN user_ref END), 0
-        ) as u107_active_users__retailer_monthly__dcount_uid,
+        ) as U200_ACTIVE_USERS__RETAILER_MONTHLY_CHANNEL__DCOUNT_UID,
         coalesce(
             count(DISTINCT CASE WHEN STATUS IN ('TXNS', 'REFUND') THEN user_ref END), 0
-        ) as u112_active_users_inc_refunds__retailer_monthly__dcount_uid
+        ) as U203_ACTIVE_USERS_INC_REFUNDS__RETAILER_MONTHLY_CHANNEL__DCOUNT_UID
     from user_events u
     left join dim_date d on d.start_of_month = date_trunc('month', u.date)
     group by d.start_of_month, u.channel, u.brand, u.loyalty_plan_company, u.loyalty_plan_name
@@ -67,17 +67,17 @@ combine_all as (
         ) as loyalty_plan_company,
         coalesce(s.loyalty_plan_name, p.loyalty_plan_name) as loyalty_plan_name,
         coalesce(
-            s.u108_active_users_retailer_monthly__cdcount_uid, 0
-        ) as u108_active_users_retailer_monthly__cdcount_uid,
+            s.U201_ACTIVE_USERS_RETAILER_MONTHLY_CHANNEL__CDCOUNT_UID, 0
+        ) as U201_ACTIVE_USERS_RETAILER_MONTHLY_CHANNEL__CDCOUNT_UID,
         coalesce(
-            p.u107_active_users__retailer_monthly__dcount_uid, 0
-        ) as u107_active_users__retailer_monthly__dcount_uid,
+            p.U200_ACTIVE_USERS__RETAILER_MONTHLY_CHANNEL__DCOUNT_UID, 0
+        ) as U200_ACTIVE_USERS__RETAILER_MONTHLY_CHANNEL__DCOUNT_UID,
         coalesce(
-            s.u111_active_users_inc_refunds__retailer_monthly__cdcount_uid, 0
-        ) as u111_active_users_inc_refunds__retailer_monthly__cdcount_uid,
+            s.U202_ACTIVE_USERS_INC_REFUNDS__RETAILER_MONTHLY_CHANNEL__CDCOUNT_UID, 0
+        ) as U202_ACTIVE_USERS_INC_REFUNDS__RETAILER_MONTHLY_CHANNEL__CDCOUNT_UID,
         coalesce(
-            p.u112_active_users_inc_refunds__retailer_monthly__dcount_uid, 0
-        ) as u112_active_users_inc_refunds__retailer_monthly__dcount_uid
+            p.U203_ACTIVE_USERS_INC_REFUNDS__RETAILER_MONTHLY_CHANNEL__DCOUNT_UID, 0
+        ) as U203_ACTIVE_USERS_INC_REFUNDS__RETAILER_MONTHLY_CHANNEL__DCOUNT_UID
     from user_snap s
     full outer join
         user_period p

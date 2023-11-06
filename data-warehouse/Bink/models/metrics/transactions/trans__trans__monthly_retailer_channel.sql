@@ -110,38 +110,38 @@ combine_all as (
             s.loyalty_plan_company, p.loyalty_plan_company
         ) as loyalty_plan_company,
         coalesce(s.loyalty_plan_name, p.loyalty_plan_name) as loyalty_plan_name,
-        coalesce(s.cumulative_spend, 0) as t004__spend__monthly_retailer__csum,
+        coalesce(s.cumulative_spend, 0) as T044__SPEND__MONTHLY_RETAILER_CHANNEL__CSUM,
         coalesce(s.cumulative_refund, 0)
-            as t005__refund__monthly_retailer__csum,
-        coalesce(s.cumulative_txns, 0) as t006__txns__monthly_retailer__csum,
+            as T045__REFUND__MONTHLY_RETAILER_CHANNEL__CSUM,
+        coalesce(s.cumulative_txns, 0) as T046__TXNS__MONTHLY_RETAILER_CAHNNEL__CSUM,
         coalesce(
             s.cumulative_refund_txns, 0
-        ) as t007__refund__monthly_retailer__csum,
+        ) as T047__REFUND__MONTHLY_RETAILER_CHANNEL__CSUM,
         coalesce(
             s.cumulative_dupe_txns, 0
-        ) as t018__duplicate_txn__monthly_retailer__csum,
+        ) as T058__DUPLICATE_TXN__MONTHLY_RETAILER_CHANNEL__CSUM,
         coalesce(
             s.cumulative_bnpl_txns, 0
-        ) as t008__bnpl_txns__monthly_retailer__csum,
+        ) as T048__BNPL_TXNS__MONTHLY_RETAILER_CHANNEL__CSUM,
         coalesce(
             p.spend_amount_period_positive, 0
-        ) as t009__spend__monthly_retailer__sum,
+        ) as T049__SPEND__MONTHLY_RETAILER_CHANNEL__SUM,
         coalesce(p.refund_amount_period, 0)
-            as t010__refund__monthly_retailer__sum,
+            as T050__REFUND__MONTHLY_RETAILER_CHANNEL__SUM,
         coalesce(
             p.count_transaction_period, 0
-        ) as t011__txns__monthly_retailer__dcount,
+        ) as T051__TXNS__MONTHLY_RETAILER_CHANNEL__DCOUNT,
         coalesce(p.count_refund_period, 0)
-            as t012__refund__monthly_retailer__dcount,
+            as T052__REFUND__MONTHLY_RETAILER_CHANNEL__DCOUNT,
         coalesce(
             p.count_bnpl_period, 0
-        ) as t013__bnpl_txns__monthly_retailer__dcount,
+        ) as T053__BNPL_TXNS__MONTHLY_RETAILER_CHANNEL__DCOUNT,
         coalesce(p.count_dupe_period, 0)
-            as t017__duplicate_txn__monthly_retailer__dcount,
+            as T057__DUPLICATE_TXN__MONTHLY_RETAILER_CHANNEL__DCOUNT,
         coalesce(p.net_spend_amount_period, 0)
-            as t020__net_spend__monthly_retailer__sum,
+            as T060__NET_SPEND__MONTHLY_RETAILER_CHANNEL__SUM,
         coalesce(p.net_spend_amount_period, 0)
-            as t021__net_spend__monthly_retailer__csum
+            as T061__NET_SPEND__MONTHLY_RETAILER_CHANNEL__CSUM
     from txn_cumulative s
     full outer join
         txn_period p
@@ -159,23 +159,23 @@ finalise as
         brand,
         loyalty_plan_company,
         loyalty_plan_name,
-        t004__spend__monthly_retailer__csum,
-        t005__refund__monthly_retailer__csum,
-        t006__txns__monthly_retailer__csum,
-        t007__refund__monthly_retailer__csum,
-        t018__duplicate_txn__monthly_retailer__csum,
-        t008__bnpl_txns__monthly_retailer__csum,
-        t009__spend__monthly_retailer__sum,
-        t010__refund__monthly_retailer__sum,
-        t011__txns__monthly_retailer__dcount,
-        t012__refund__monthly_retailer__dcount,
-        t017__duplicate_txn__monthly_retailer__dcount,
-        t013__bnpl_txns__monthly_retailer__dcount,
-        t020__net_spend__monthly_retailer__sum,
-        t021__net_spend__monthly_retailer__csum,
-        t011__txns__monthly_retailer__dcount+t012__refund__monthly_retailer__dcount as t025__txns_and_refunds__monthly_retailer__dcount,
-        t017__duplicate_txn__monthly_retailer__dcount+t011__txns__monthly_retailer__dcount as t026__txns_and_dupes__monthly_retailer__dcount,
-        DIV0(t017__duplicate_txn__monthly_retailer__dcount,t026__txns_and_dupes__monthly_retailer__dcount) as t019__duplicate_txn_per_txn__monthly_retailer__percentage
+        T044__SPEND__MONTHLY_RETAILER_CHANNEL__CSUM,
+        T045__REFUND__MONTHLY_RETAILER_CHANNEL__CSUM,
+        T046__TXNS__MONTHLY_RETAILER_CAHNNEL__CSUM,
+        T047__REFUND__MONTHLY_RETAILER_CHANNEL__CSUM,
+        T058__DUPLICATE_TXN__MONTHLY_RETAILER_CHANNEL__CSUM,
+        T048__BNPL_TXNS__MONTHLY_RETAILER_CHANNEL__CSUM,
+        T049__SPEND__MONTHLY_RETAILER_CHANNEL__SUM,
+        T050__REFUND__MONTHLY_RETAILER_CHANNEL__SUM,
+        T051__TXNS__MONTHLY_RETAILER_CHANNEL__DCOUNT,
+        T052__REFUND__MONTHLY_RETAILER_CHANNEL__DCOUNT,
+        T057__DUPLICATE_TXN__MONTHLY_RETAILER_CHANNEL__DCOUNT,
+        T053__BNPL_TXNS__MONTHLY_RETAILER_CHANNEL__DCOUNT,
+        T060__NET_SPEND__MONTHLY_RETAILER_CHANNEL__SUM,
+        T061__NET_SPEND__MONTHLY_RETAILER_CHANNEL__CSUM,
+        T051__TXNS__MONTHLY_RETAILER_CHANNEL__DCOUNT+T052__REFUND__MONTHLY_RETAILER_CHANNEL__DCOUNT as t025__txns_and_refunds__monthly_retailer__dcount,
+        T057__DUPLICATE_TXN__MONTHLY_RETAILER_CHANNEL__DCOUNT+T051__TXNS__MONTHLY_RETAILER_CHANNEL__DCOUNT as T066__TXNS_AND_DUPES__MONTHLY_RETAILER_CHANNEL__DCOUNT,
+        DIV0(T057__DUPLICATE_TXN__MONTHLY_RETAILER_CHANNEL__DCOUNT,T066__TXNS_AND_DUPES__MONTHLY_RETAILER_CHANNEL__DCOUNT) as T059__DUPLICATE_TXN_PER_TXN__MONTHLY_RETAILER_CHANNEL__PERCENTAGE
 
     from combine_all
 )
