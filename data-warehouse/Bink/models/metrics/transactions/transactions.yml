@@ -18,3 +18,9 @@ models:
 
   - name: trans__avg__monthly_retailer__growth
     description: Growth for transactions average calculations by month and retailer (eg ARPU for Viator etc)
+
+  - name: trans__trans__monthly_retailer_channel
+    description: TO DO
+
+  - name: trans__avg__monthly_retailer_channel
+    description: TO DO
