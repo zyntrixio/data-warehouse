@@ -24,15 +24,15 @@ joins as (
         t.brand,
         t.loyalty_plan_company,
         t.loyalty_plan_name,
-        t.t009__spend__monthly_retailer__sum,
-        t.t010__refund__monthly_retailer__sum,
-        t.t011__txns__monthly_retailer__dcount,
-        t.t012__refund__monthly_retailer__dcount,
-        t.t013__bnpl_txns__monthly_retailer__dcount,
-        u.U200_ACTIVE_USERS__RETAILER_MONTHLY_CHANNEL__DCOUNT_UID,
-        t.t020__net_spend__monthly_retailer__sum,
-        t.T065__TXNS_AND_REFUNDS__MONTHLY_RETAILER_CHANNEL__DCOUNT,
-        u.U203_ACTIVE_USERS_INC_REFUNDS__RETAILER_MONTHLY_CHANNEL__DCOUNT_UID
+        t.t049__spend__monthly_retailer_channel__sum,
+        t.t050__refund__monthly_retailer_channel__sum,
+        t.t051__txns__monthly_retailer_channel__dcount,
+        t.t052__refund__monthly_retailer_channel__dcount,
+        t.t053__bnpl_txns__monthly_retailer_channel__dcount,
+        u.u200_active_users__retailer_monthly_channel__dcount_uid,
+        t.t060__net_spend__monthly_retailer_channel__sum,
+        t.t065__txns_and_refunds__monthly_retailer_channel__dcount,
+        u.u203_active_users_inc_refunds__retailer_monthly_channel__dcount_uid
     from trans_events t
     left join
         user_events u
@@ -51,29 +51,29 @@ aggs as (
         loyalty_plan_company,
         loyalty_plan_name,
         div0(
-            t009__spend__monthly_retailer__sum,
-            t011__txns__monthly_retailer__dcount
-        ) as T054__AOV__MONTHLY_RETAILER_CHANNEL__AVG,
+            t049__spend__monthly_retailer_channel__sum,
+            t051__txns__monthly_retailer_channel__dcount
+        ) as t054__aov__monthly_retailer_channel__avg,
         div0(
-            t009__spend__monthly_retailer__sum,
-            U200_ACTIVE_USERS__RETAILER_MONTHLY_CHANNEL__DCOUNT_UID
-        ) as T055__ARPU__MONTHLY_RETAILER_CHANNEL__AVG,
+            t049__spend__monthly_retailer_channel__sum,
+            u200_active_users__retailer_monthly_channel__dcount_uid
+        ) as t055__arpu__monthly_retailer_channel__avg,
         div0(
-            t011__txns__monthly_retailer__dcount,
-            U200_ACTIVE_USERS__RETAILER_MONTHLY_CHANNEL__DCOUNT_UID
-        ) as T056__ATF__MONTHLY_RETAILER_CHANNEL__AVG,
+            t051__txns__monthly_retailer_channel__dcount,
+            u200_active_users__retailer_monthly_channel__dcount_uid
+        ) as t056__atf__monthly_retailer_channel__avg,
         div0(
-            t020__net_spend__monthly_retailer__sum,
-            T065__TXNS_AND_REFUNDS__MONTHLY_RETAILER_CHANNEL__DCOUNT
-        ) as T062__AOV_INC_REFUNDS__MONTHLY_RETAILER_CHANNEL__AVG,
+            t060__net_spend__monthly_retailer_channel__sum,
+            t065__txns_and_refunds__monthly_retailer_channel__dcount
+        ) as t062__aov_inc_refunds__monthly_retailer_channel__avg,
         div0(
-            t020__net_spend__monthly_retailer__sum,
-            U203_ACTIVE_USERS_INC_REFUNDS__RETAILER_MONTHLY_CHANNEL__DCOUNT_UID
-        ) as T063__ARPU_INC_REFUNDS__MONTHLY_RETAILER_CHANNEL__AVG,
+            t060__net_spend__monthly_retailer_channel__sum,
+            u203_active_users_inc_refunds__retailer_monthly_channel__dcount_uid
+        ) as t063__arpu_inc_refunds__monthly_retailer_channel__avg,
         div0(
-            T065__TXNS_AND_REFUNDS__MONTHLY_RETAILER_CHANNEL__DCOUNT,
-            U203_ACTIVE_USERS_INC_REFUNDS__RETAILER_MONTHLY_CHANNEL__DCOUNT_UID
-        ) as T064__ATF_INC_REFUNDS__MONTHLY_RETAILER_CHANNEL__AVG
+            t065__txns_and_refunds__monthly_retailer_channel__dcount,
+            u203_active_users_inc_refunds__retailer_monthly_channel__dcount_uid
+        ) as t064__atf_inc_refunds__monthly_retailer_channel__avg
     from joins
 )
 
