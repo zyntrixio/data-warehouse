@@ -13,6 +13,7 @@ Parameters:
                         - user__transactions__monthly_retailer
 
  depends_on:    {{ ref('lc__pll__monthly_retailer') }}
+                {{ ref('lc__pll__monthly_retailer_channel')}}
                 {{ ref('lc__links_joins__daily_retailer_channel') }}
                 {{ ref('lc__links_joins__monthly_retailer') }}
                 {{ ref('lc__links_joins__daily_retailer') }}
@@ -27,6 +28,9 @@ Parameters:
                 {{ ref('user__registrations__daily_channel_brand') }}
                 {{ ref('user__transactions__monthly_retailer') }}
                 {{ ref('user__loyalty_card__daily_channel_brand') }}
+                {{ ref('trans__avg__monthly_retailer_channel')}}
+                {{ ref('trans__trans__monthly_retailer_channel')}}
+                {{ ref('user__transactions__monthly_retailer_channel')}}
 */
 
 
