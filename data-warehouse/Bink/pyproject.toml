@@ -7,13 +7,13 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-dbt-snowflake = "^1.2.0"
+dbt-snowflake = "^1.5.5"
 adlfs = "^2023.4.0"
 prefect-dbt = "^0.3.1"
 prefect-snowflake = "^0.26.1"
 prefect-airbyte = "^0.2.0"
-prefect-dask = "^0.2.4"
-prefect = "2.14.2"
+prefect-dask = "^0.2.5"
+prefect = "^2.14.2"
 prefect-shell = "^0.1.5"
 
 [tool.poetry.group.dev.dependencies]
