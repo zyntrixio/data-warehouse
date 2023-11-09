@@ -62,6 +62,8 @@ transform_brand_time as (
                 then 'BARCLAYS'
             when channel in ('com.bink.wallet')
                 then 'BINK'
+            when channel in ('com.stonegate.mixr')
+                then 'MiXR'
             else channel
         end as channel,
         case
