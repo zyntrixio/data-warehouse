@@ -29,4 +29,7 @@ models:
     description: Growth for loyalty card metrics relating to pll links
 
   - name: lc__pll__monthly_retailer_channel
-    description: TO DO
+    description: Loyalty card metrics relating to pll links
+
+  - name: lc__pll__monthly_retailer_channel__growth
+    description: Growth for loyalty card metrics relating to pll links

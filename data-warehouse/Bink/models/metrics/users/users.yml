@@ -21,4 +21,7 @@ models:
 
   - name: user__transactions__monthly_retailer_channel
     description: TO DO
+
+  - name: user__transactions__monthly_retailer_channel__growth
+    description: TO DO
     
