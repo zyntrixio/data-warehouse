@@ -1,5 +1,5 @@
 with
-ref_file as (select * from {{ source("RETAILER_FORECAST", "RETAILER_FORECAST") }}
+ref_file as (select * from {{ source("RETAILER_FORECAST", "RETAILER_FORECASTS") }}
 ),
 
 ref_select as (
@@ -9,6 +9,8 @@ ref_select as (
         // MONTH,
         loyalty_plan_company,
         loyalty_plan_name,
+        channel,
+        null as brand,
         JOINS,
         ACTIVE_USERS,
         SPEND

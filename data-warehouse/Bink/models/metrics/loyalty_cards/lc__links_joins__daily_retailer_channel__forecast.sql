@@ -15,11 +15,15 @@ lc_events as (select * from {{ ref("src__retailer_forecast") }})
 ,lc_select as (
     select
         DATE,
-        JOINS AS lc047__successful_loyalty_card_joins__daily_retailer__count__forecast,
+        LOYALTY_PLAN_COMPANY,
+        loyalty_plan_name,
+        channel,
+        brand,
+        JOINS AS lc013__successful_loyalty_card_joins__daily_channel_brand_retailer__count__forecast,
         sum(JOINS) over (
-            partition by loyalty_plan_company, loyalty_plan_name
+            partition by loyalty_plan_company, loyalty_plan_name, channel
             order by date asc
-        ) as lc067__successful_loyalty_card_joins__daily_retailer__csum__forecast
+        ) as LC075__SUCCESSFUL_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__CSUM__forecast
     FROM
         lc_events
 )
