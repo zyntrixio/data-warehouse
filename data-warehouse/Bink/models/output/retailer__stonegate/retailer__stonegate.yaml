@@ -10,15 +10,6 @@ models:
           - accepted_values:
               values: ['Stonegate Group']
 
-  - name: stonegate_dashboard_mixr
-    description: To do
-    columns:
-      - name: 'LOYALTY_PLAN_COMPANY'
-        tests:
-          - not_null
-          - accepted_values:
-              values: ['Stonegate Group']
-
   - name: stonegate_dashboard_bink
     description: To do
     columns:
@@ -27,3 +18,17 @@ models:
           - not_null
           - accepted_values:
               values: ['Stonegate Group']
+
+  - name: stonegate_dashboard_mixr
+    description: To do
+    columns:
+      - name: 'LOYALTY_PLAN_COMPANY'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Stonegate Group']
+      - name: 'CHANNEL'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['MIXR']
