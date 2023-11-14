@@ -18,7 +18,7 @@ WITH lc_metric AS (
     SELECT
         *,
         'JOINS' AS category
-    FROM {{ ref('LC__LINKS_JOINS__MONTHLY_RETAILER') }}
+    FROM {{ ref('lc__links_joins__monthly_retailer') }}
     WHERE loyalty_plan_company = 'Stonegate Group'
 ),
 
