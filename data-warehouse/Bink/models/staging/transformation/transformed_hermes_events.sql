@@ -62,6 +62,8 @@ transform_brand_time as (
                 then 'BARCLAYS'
             when channel in ('com.bink.wallet')
                 then 'BINK'
+            when channel in ('com.stonegate.mixr')
+                then 'MIXR'
             else channel
         end as channel,
         case
@@ -75,7 +77,7 @@ transform_brand_time as (
             when channel in ('com.bink.wallet')
                 then 'BINK'
             when channel in ('com.stonegate.mixr')
-                then 'MiXR'
+                then 'MIXR'
             else channel
         end as brand,
         sysdate() as inserted_date_time
