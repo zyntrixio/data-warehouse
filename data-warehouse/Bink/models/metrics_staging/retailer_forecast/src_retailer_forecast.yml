@@ -9,6 +9,6 @@ sources:
     tags: ['source']
 
     tables:
-      - name: STONEGATE_FORECAST
-        identifier: STONEGATE_FORECAST
-        description: Forecasted joins, active users and spend for stonegate
+      - name: RETAILER_FORECAST
+        identifier: RETAILER_FORECAST
+        description: Forecasted joins, active users and spend for retailers
