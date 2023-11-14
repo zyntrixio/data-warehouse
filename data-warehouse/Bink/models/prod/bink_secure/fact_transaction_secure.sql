@@ -72,7 +72,7 @@ select_transactions as (
                 then 'BARCLAYS'
             when c.channel_name = 'Bink'
                 then 'BINK'
-            else null
+            else upper(c.channel_name)
         end as channel,
         case
             when c.channel_name in ('Bink', 'Lloyds', 'Halifax')
@@ -81,7 +81,7 @@ select_transactions as (
                 then 'BARCLAYS'
             when c.channel_name = 'Bank of Scotland'
                 then 'BOS'
-            else null
+            else upper(c.channel_name)
         end as brand,
         transaction_id,
         provider_slug,
