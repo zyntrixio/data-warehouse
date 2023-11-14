@@ -1,0 +1,29 @@
+version: 2
+
+models:
+  - name: stonegate_dashboard_agg
+    description: To do
+    columns:
+      - name: 'LOYALTY_PLAN_COMPANY'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Stonegate Group']
+
+  - name: stonegate_dashboard_mixr
+    description: To do
+    columns:
+      - name: 'LOYALTY_PLAN_COMPANY'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Stonegate Group']
+
+  - name: stonegate_dashboard_bink
+    description: To do
+    columns:
+      - name: 'LOYALTY_PLAN_COMPANY'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Stonegate Group']
