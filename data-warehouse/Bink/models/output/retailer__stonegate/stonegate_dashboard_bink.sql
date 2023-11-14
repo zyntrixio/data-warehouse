@@ -18,7 +18,7 @@ WITH lc_metric AS (
     SELECT
         *,
         'JOINS' AS category
-    FROM {{ ref('LC__LINKS_JOINS__MONTHLY_RETAILER_CHANNEL') }}
+    FROM {{ ref('lc__links_joins__monthly_retailer_channel') }}
     WHERE
         loyalty_plan_company = 'Stonegate Group'
         AND channel = 'LLOYDS'
@@ -28,7 +28,7 @@ txn_metrics AS (
     SELECT
         *,
         'SPEND' AS category
-    FROM {{ ref('TRANS__TRANS__MONTHLY_RETAILER_CHANNEL') }}
+    FROM {{ ref('trans__trans__monthly_retailer_channel') }}
     WHERE
         loyalty_plan_company = 'Stonegate Group'
         AND channel = 'LLOYDS'
@@ -38,7 +38,7 @@ txn_avg AS (
     SELECT
         *,
         'SPEND' AS category
-    FROM {{ ref('TRANS__AVG__MONTHLY_RETAILER_CHANNEL') }}
+    FROM {{ ref('trans__avg__monthly_retailer_channel') }}
     WHERE
         loyalty_plan_company = 'Stonegate Group'
         AND channel = 'LLOYDS'
@@ -48,7 +48,7 @@ user_metrics AS (
     SELECT
         *,
         'USERS' AS category
-    FROM {{ ref('USER__TRANSACTIONS__MONTHLY_RETAILER_CHANNEL') }}
+    FROM {{ ref('user__transactions__monthly_retailer_channel') }}
     WHERE
         loyalty_plan_company = 'Stonegate Group'
         AND channel = 'LLOYDS'
@@ -58,7 +58,7 @@ pll_metrics AS (
     SELECT
         *,
         'JOINS' AS category
-    FROM {{ ref('LC__PLL__MONTHLY_RETAILER_CHANNEL') }}
+    FROM {{ ref('lc__pll__monthly_retailer_channel') }}
     WHERE
         loyalty_plan_company = 'Stonegate Group'
         AND channel = 'LLOYDS'
