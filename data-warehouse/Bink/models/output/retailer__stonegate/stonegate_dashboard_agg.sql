@@ -18,7 +18,7 @@ WITH lc_metric AS (
     SELECT
         *,
         'JOINS' AS category
-    FROM metrics.loyalty_cards.lc__links_joins__monthly_retailer
+    FROM {{ ref('lc__links_joins__monthly_retailer') }}
     WHERE loyalty_plan_company = 'Stonegate Group'
 ),
 
@@ -26,7 +26,7 @@ txn_metrics AS (
     SELECT
         *,
         'SPEND' AS category
-    FROM metrics.transactions.trans__trans__monthly_retailer
+    FROM {{ ref('trans__trans__monthly_retailer') }}
     WHERE loyalty_plan_company = 'Stonegate Group'
 ),
 
@@ -34,7 +34,7 @@ txn_avg AS (
     SELECT
         *,
         'SPEND' AS category
-    FROM metrics.transactions.trans__avg__monthly_retailer
+    FROM {{ ref('trans__avg__monthly_retailer') }}
     WHERE loyalty_plan_company = 'Stonegate Group'
 ),
 
@@ -42,7 +42,7 @@ user_metrics AS (
     SELECT
         *,
         'USERS' AS category
-    FROM metrics.users.user__transactions__monthly_retailer
+    FROM {{ ref('user__transactions__monthly_retailer') }}
     WHERE loyalty_plan_company = 'Stonegate Group'
 ),
 
@@ -50,7 +50,7 @@ pll_metrics AS (
     SELECT
         *,
         'JOINS' AS category
-    FROM metrics.loyalty_cards.lc__pll__monthly_retailer
+    FROM {{ ref('lc__pll__monthly_retailer') }}
     WHERE loyalty_plan_company = 'Stonegate Group'
 ),
 
