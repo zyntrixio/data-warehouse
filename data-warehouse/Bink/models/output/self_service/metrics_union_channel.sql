@@ -20,6 +20,7 @@ Parameters:
                 {{ ref('trans__trans__monthly_retailer') }}
                 {{ ref('trans__avg__monthly_retailer') }}
                 {{ ref('trans__trans__daily_retailer') }}
+                {{ ref('trans__trans__daily_retailer_channel') }}
                 {{ ref('voucher__counts__monthly_retailer') }}
                 {{ ref('voucher__counts__daily_channel_brand_retailer') }}
                 {{ ref('voucher__times__voucher_level_channel_brand') }}
@@ -37,7 +38,8 @@ Parameters:
         "USER_LEVEL" not in model.name and
         "level" not in model.name and
         'retailer' not in model.name and
-        'channel' in model.name
+        'channel' in model.name and
+        'forecast' not in model.name
     %}
                 {{
             dbt_utils.unpivot(

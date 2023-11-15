@@ -46,3 +46,12 @@ models:
           - not_null
           - accepted_values:
               values: ['Stonegate Group']
+
+  - name: stonegate_dashboard_view_graphs_channel
+    description: To do
+    columns:
+      - name: 'LOYALTY_PLAN_COMPANY'
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Stonegate Group']

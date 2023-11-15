@@ -20,6 +20,7 @@ Parameters:
                 {{ ref('trans__trans__monthly_retailer') }}
                 {{ ref('trans__avg__monthly_retailer') }}
                 {{ ref('trans__trans__daily_retailer') }}
+                {{ ref('trans__trans__daily_retailer_channel') }}
                 {{ ref('voucher__counts__monthly_retailer') }}
                 {{ ref('voucher__counts__daily_channel_brand_retailer') }}
                 {{ ref('voucher__times__voucher_level_channel_brand') }}
@@ -28,6 +29,8 @@ Parameters:
                 {{ ref('user__transactions__monthly_retailer') }}
                 {{ ref('user__loyalty_card__daily_channel_brand') }}
                 {{ ref('voucher__stamps__monthly_retailer') }}
+                
+
 */
 
 
@@ -38,7 +41,8 @@ Parameters:
         "USER_LEVEL" not in model.name and
         "level" not in model.name and
         'retailer' in model.name and
-        'channel' not in model.name
+        'channel' not in model.name and
+        'forecast' not in model.name
     %}
                 {{
             dbt_utils.unpivot(
