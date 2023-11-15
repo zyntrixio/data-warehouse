@@ -1,14 +1,16 @@
 /*
-Created by:         Anand Bhakta
-Created date:       2023-10-19
+Created by:         CHRISTOPHER MITCHELL
+Created date:       2023-11-15
 Last modified by:   
 Last modified date: 
 
 Description:
-    Datasource to produce tableau dashboard for Slim Chickens 12 month rolling datasource
+    Datasource to produce tableau dashboard for Stonegate 12 month rolling datasource
 Parameters:
     source_object       - src__retailer_lookups_slim_chickens_metrics_ref
+                        - stonegate_dashboard_agg
 */
+
 with
     unpivot as (
         {{

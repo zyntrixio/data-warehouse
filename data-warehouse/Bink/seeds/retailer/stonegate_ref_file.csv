@@ -1,0 +1,29 @@
+﻿DASHBOARD,METRIC_REF,METRIC_NAME,CATEGORY
+MONTHLY_DASHBOARD,"lc347__successful_loyalty_card_joins__monthly_retailer__count,",JOINS,
+MONTHLY_DASHBOARD,"lc379__successful_loyalty_card_joins__monthly_retailer__csum,",JOINS SINCE LAUNCH,
+MONTHLY_DASHBOARD,"lc351__successful_loyalty_card_links__monthly_retailer__dcount_user,",LINKS,
+MONTHLY_DASHBOARD,"lc334__successful_loyalty_card_join_mrkt_opt_in_per_successful_loyalty_card_join__monthly_retailer__percentage,",OPT-IN %,
+MONTHLY_DASHBOARD,"lc201__loyalty_card_active_pll__monthly_retailer__pit,",ADDS,
+MONTHLY_DASHBOARD,"u107_active_users__retailer_monthly__dcount_uid,",ACTIVE USERS,
+MONTHLY_DASHBOARD,"u108_active_users_retailer_monthly__cdcount_uid,",ACTIVE USERS SINCE LAUNCH,
+MONTHLY_DASHBOARD,"t011__txns__monthly_retailer__dcount,",TOTAL TRANSACTIONS,
+MONTHLY_DASHBOARD,"t012__refund__monthly_retailer__dcount,",TOTAL REFUNDS,
+MONTHLY_DASHBOARD,"t010__refund__monthly_retailer__sum,",TOTAL REFUND VALUE,
+MONTHLY_DASHBOARD,"t009__spend__monthly_retailer__sum,",TOTAL SPEND,
+MONTHLY_DASHBOARD,"t014__aov__monthly_retailer__avg,",AOV,
+MONTHLY_DASHBOARD,"t015__arpu__monthly_retailer__avg,",ARPU,
+MONTHLY_DASHBOARD,t016__atf__monthly_retailer__avg,ATF,
+12_MONTH_ROLLING,"lc347__successful_loyalty_card_joins__monthly_retailer__count,",JOINS,JOINS
+12_MONTH_ROLLING,"lc379__successful_loyalty_card_joins__monthly_retailer__csum,",JOINS SINCE LAUNCH,JOINS
+12_MONTH_ROLLING,"lc351__successful_loyalty_card_links__monthly_retailer__dcount_user,",LINKS,JOINS
+12_MONTH_ROLLING,"lc334__successful_loyalty_card_join_mrkt_opt_in_per_successful_loyalty_card_join__monthly_retailer__percentage,",OPT-IN %,JOINS
+12_MONTH_ROLLING,"lc201__loyalty_card_active_pll__monthly_retailer__pit,",ADDS,ADDS
+12_MONTH_ROLLING,"u107_active_users__retailer_monthly__dcount_uid,",ACTIVE USERS,USERS
+12_MONTH_ROLLING,"u108_active_users_retailer_monthly__cdcount_uid,",ACTIVE USERS SINCE LAUNCH,USERS
+12_MONTH_ROLLING,"t011__txns__monthly_retailer__dcount,",TOTAL TRANSACTIONS,SPEND
+12_MONTH_ROLLING,"t012__refund__monthly_retailer__dcount,",TOTAL REFUNDS,SPEND
+12_MONTH_ROLLING,"t010__refund__monthly_retailer__sum,",TOTAL REFUND VALUE,SPEND
+12_MONTH_ROLLING,"t009__spend__monthly_retailer__sum,",TOTAL SPEND,SPEND
+12_MONTH_ROLLING,"t014__aov__monthly_retailer__avg,",AOV,SPEND
+12_MONTH_ROLLING,"t015__arpu__monthly_retailer__avg,",ARPU,SPEND
+12_MONTH_ROLLING,t016__atf__monthly_retailer__avg,ATF,SPEND
