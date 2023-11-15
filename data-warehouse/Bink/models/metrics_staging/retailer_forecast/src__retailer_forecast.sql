@@ -1,11 +1,11 @@
 with
-ref_file as (select * from {{ source("RETAILER_FORECAST", "RETAILER_FORECASTS") }}
+ref_file as (select * from {{ source("RETAILER_FORECAST", "RETAILER_FORECAST") }}
 ),
 
 ref_select as (
     select
         // DAY,
-        DATE,
+        DATE::date as DATE,
         // MONTH,
         loyalty_plan_company,
         loyalty_plan_name,

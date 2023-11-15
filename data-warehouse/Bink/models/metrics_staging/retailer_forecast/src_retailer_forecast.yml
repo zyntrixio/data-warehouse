@@ -9,6 +9,6 @@ sources:
     tags: ['source']
 
     tables:
-      - name: RETAILER_FORECASTS
-        identifier: RETAILER_FORECASTS
+      - name: RETAILER_FORECAST
+        identifier: RETAILER_FORECAST
         description: Forecasted joins, active users and spend for retailers
