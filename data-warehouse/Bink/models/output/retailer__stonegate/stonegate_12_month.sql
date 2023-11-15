@@ -1,14 +1,14 @@
 /*
-Created by:         CHRISTOPHER MITCHELL
-Created date:       2023-11-15
-Last modified by:   
-Last modified date: 
+CREATED BY:         CHRISTOPHER MITCHELL
+CREATED DATE:       2023-11-15
+LAST MODIFIED BY:   
+LAST MODIFIED DATE: 
 
-Description:
-    Datasource to produce tableau dashboard for Stonegate 12 month rolling datasource
-Parameters:
-    source_object       - src__retailer_lookups_slim_chickens_metrics_ref
-                        - stonegate_dashboard_agg
+DESCRIPTION:
+    DATASOURCE TO PRODUCE TABLEAU DASHBOARD FOR STONEGATE 12 MONTH ROLLING DATASOURCE
+PARAMETERS:
+    SOURCE_OBJECT       - SRC__RETAILER_LOOKUPS_STONEGATE_METRICS_REF
+                        - STONEGATE_DASHBOARD_AGG
 */
 
 with
@@ -30,7 +30,7 @@ with
     ),
     refs as (
         select *
-        from {{ ref("src__retailer_lookups_slim_chickens_metrics_ref") }}
+        from {{ ref("src__retailer_lookups_stonegate_metrics_ref") }}
         where dashboard = '12_MONTH_ROLLING'
     ),
     rename as (
