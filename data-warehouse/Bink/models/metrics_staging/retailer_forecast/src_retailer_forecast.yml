@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+ 
+  - name: RETAILER_FORECAST
+    description: Bink retailer forecast tables schema
+    database: RAW
+    schema: RETAILER_FORECAST
+    tags: ['source']
+
+    tables:
+      - name: RETAILER_FORECAST
+        identifier: RETAILER_FORECAST
+        description: Forecasted joins, active users and spend for retailers

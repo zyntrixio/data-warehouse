@@ -407,7 +407,40 @@ add_combine_rename as (
             as lc017__successful_loyalty_card_links__daily_channel_brand_retailer__dcount_user
         ,
         link_deletes_unique_users
-            as lc020__deleted_loyalty_card_links__daily_channel_brand_retailer__dcount_user
+            as lc020__deleted_loyalty_card_links__daily_channel_brand_retailer__dcount_user,
+        sum(join_requests) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as LC073__REQUESTS_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
+        sum(join_fails) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as LC074__FAILED_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
+        sum(join_successes) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as LC075__SUCCESSFUL_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
+        sum(join_deletes) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as LC076__DELETED_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
+        sum(link_requests) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as LC077__REQUESTS_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
+        sum(link_fails) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as LC078_FAILED_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
+        sum(link_successes) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as LC079__SUCCESSFUL_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
+        sum(link_deletes) over (
+            partition by loyalty_plan_company, loyalty_plan_name
+            order by date asc
+        ) as LC080__DELETED_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__CSUM
+
 
     from all_together
 )
