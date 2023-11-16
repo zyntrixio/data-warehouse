@@ -54,6 +54,7 @@ combine_all as (
         channel,
         brand,
         LC075__SUCCESSFUL_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
+        LC079__SUCCESSFUL_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
         null as T067__SPEND__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
         null as LC075__SUCCESSFUL_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__CSUM__forecast,
         null as t067__spend__daily_channel_brand_retailer__csum__forecast
@@ -67,6 +68,7 @@ combine_all as (
         channel,
         brand,
         null as LC075__SUCCESSFUL_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
+        null as LC079__SUCCESSFUL_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
         T067__SPEND__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
         null as LC075__SUCCESSFUL_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__CSUM__forecast,
         null as t067__spend__daily_channel_brand_retailer__csum__forecast
@@ -80,6 +82,7 @@ combine_all as (
         channel,
         brand,
         null as LC075__SUCCESSFUL_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
+        null as LC079__SUCCESSFUL_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
         null as T067__SPEND__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
         LC075__SUCCESSFUL_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__CSUM__forecast,
         null as t067__spend__daily_channel_brand_retailer__csum__forecast
@@ -93,6 +96,7 @@ combine_all as (
         channel,
         brand,
         null as LC075__SUCCESSFUL_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
+        null as LC079__SUCCESSFUL_LOYALTY_CARD_LINKS__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
         null as T067__SPEND__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
         null as LC075__SUCCESSFUL_LOYALTY_CARD_JOINS__DAILY_CHANNEL_BRAND_RETAILER__CSUM__forecast,
         t067__spend__daily_channel_brand_retailer__csum__forecast
