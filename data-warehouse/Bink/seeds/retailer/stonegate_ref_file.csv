@@ -1,0 +1,29 @@
+﻿DASHBOARD         ,METRIC_REF                                                                                                     ,METRIC_NAME               ,CATEGORY
+MONTHLY_DASHBOARD ,LC347__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_RETAILER__COUNT                                                  ,JOINS                     ,
+MONTHLY_DASHBOARD ,LC379__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_RETAILER__CSUM                                                   ,JOINS SINCE LAUNCH        ,
+MONTHLY_DASHBOARD ,LC351__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__DCOUNT_USER                                            ,LINKS                     ,
+MONTHLY_DASHBOARD ,LC334__SUCCESSFUL_LOYALTY_CARD_JOIN_MRKT_OPT_IN_PER_SUCCESSFUL_LOYALTY_CARD_JOIN__MONTHLY_RETAILER__PERCENTAGE ,OPT-IN %                  ,
+MONTHLY_DASHBOARD ,LC201__LOYALTY_CARD_ACTIVE_PLL__MONTHLY_RETAILER__PIT                                                          ,ADDS                      ,
+MONTHLY_DASHBOARD ,U107_ACTIVE_USERS__RETAILER_MONTHLY__DCOUNT_UID                                                                ,ACTIVE USERS              ,
+MONTHLY_DASHBOARD ,U108_ACTIVE_USERS_RETAILER_MONTHLY__CDCOUNT_UID                                                                ,ACTIVE USERS SINCE LAUNCH ,
+MONTHLY_DASHBOARD ,T011__TXNS__MONTHLY_RETAILER__DCOUNT                                                                           ,TOTAL TRANSACTIONS        ,
+MONTHLY_DASHBOARD ,T012__REFUND__MONTHLY_RETAILER__DCOUNT                                                                         ,TOTAL REFUNDS             ,
+MONTHLY_DASHBOARD ,T010__REFUND__MONTHLY_RETAILER__SUM                                                                            ,TOTAL REFUND VALUE        ,
+MONTHLY_DASHBOARD ,T009__SPEND__MONTHLY_RETAILER__SUM                                                                             ,TOTAL SPEND               ,
+MONTHLY_DASHBOARD ,T014__AOV__MONTHLY_RETAILER__AVG                                                                               ,AOV                       ,
+MONTHLY_DASHBOARD ,T015__ARPU__MONTHLY_RETAILER__AVG                                                                              ,ARPU                      ,
+MONTHLY_DASHBOARD ,T016__ATF__MONTHLY_RETAILER__AVG                                                                               ,ATF                       ,
+12_MONTH_ROLLING  ,LC347__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_RETAILER__COUNT                                                  ,JOINS                     ,JOINS
+12_MONTH_ROLLING  ,LC379__SUCCESSFUL_LOYALTY_CARD_JOINS__MONTHLY_RETAILER__CSUM                                                   ,JOINS SINCE LAUNCH        ,JOINS
+12_MONTH_ROLLING  ,LC351__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_RETAILER__DCOUNT_USER                                            ,LINKS                     ,JOINS
+12_MONTH_ROLLING  ,LC334__SUCCESSFUL_LOYALTY_CARD_JOIN_MRKT_OPT_IN_PER_SUCCESSFUL_LOYALTY_CARD_JOIN__MONTHLY_RETAILER__PERCENTAGE ,OPT-IN %                  ,JOINS
+12_MONTH_ROLLING  ,LC201__LOYALTY_CARD_ACTIVE_PLL__MONTHLY_RETAILER__PIT                                                          ,ADDS                      ,ADDS
+12_MONTH_ROLLING  ,U107_ACTIVE_USERS__RETAILER_MONTHLY__DCOUNT_UID                                                                ,ACTIVE USERS              ,USERS
+12_MONTH_ROLLING  ,U108_ACTIVE_USERS_RETAILER_MONTHLY__CDCOUNT_UID                                                                ,ACTIVE USERS SINCE LAUNCH ,USERS
+12_MONTH_ROLLING  ,T011__TXNS__MONTHLY_RETAILER__DCOUNT                                                                           ,TOTAL TRANSACTIONS        ,SPEND
+12_MONTH_ROLLING  ,T012__REFUND__MONTHLY_RETAILER__DCOUNT                                                                         ,TOTAL REFUNDS             ,SPEND
+12_MONTH_ROLLING  ,T010__REFUND__MONTHLY_RETAILER__SUM                                                                            ,TOTAL REFUND VALUE        ,SPEND
+12_MONTH_ROLLING  ,T009__SPEND__MONTHLY_RETAILER__SUM                                                                             ,TOTAL SPEND               ,SPEND
+12_MONTH_ROLLING  ,T014__AOV__MONTHLY_RETAILER__AVG                                                                               ,AOV                       ,SPEND
+12_MONTH_ROLLING  ,T015__ARPU__MONTHLY_RETAILER__AVG                                                                              ,ARPU                      ,SPEND
+12_MONTH_ROLLING  ,T016__ATF__MONTHLY_RETAILER__AVG                                                                               ,ATF                       ,SPEND
