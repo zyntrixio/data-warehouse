@@ -40,5 +40,6 @@ CODE,STATUS,STATUS_GROUP,JOURNEY_TYPE,STATUS_TYPE,STATUS_ROLLUP,API2_STATUS,API2
 900,Join,Join,,Error,Join Failed,FAILED,JOIN_FAILED
 901,Enrol Failed,Enrol Failed,Join Journey,Error,Join Failed,FAILED,JOIN_FAILED
 902,Ghost Card Registration Failed,Ghost Card Registration Failed,Join Journey,Error,Account not registered,FAILED,ACCOUNT_NOT_REGISTERED
+905,Join password too weak,User Error,Join Journey,Error,Join password too weak,FAILED,JOIN_WEAK_PASSWORD
 1001,Add and Auth pending,Link Pending,,Pending,Pending,PENDING,NULL
 2001,Auth pending,Link Pending,,Pending,Pending,PENDING,NULL
