@@ -27,7 +27,7 @@ user_events as (
     select *
     from {{ ref("transformed_hermes_events") }}
     where
-        event_type like 'user%' and event_type != 'user.session.start'
+        event_type like 'user%' and event_type not in ('user.session.start', 'user.wallet_view')
         {% if is_incremental() %}
             and _airbyte_emitted_at
             >= (select max(inserted_date_time) from {{ this }})
