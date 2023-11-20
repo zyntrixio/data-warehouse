@@ -2,7 +2,7 @@
 Created by:         Sam Pibworth
 Created date:       2022-05-04
 Last modified by:   Anand Bhakta
-Last modified date: 2023-05-17
+Last modified date: 2023-11-20
 
 Description:
     Loads user created and user deleted from the events table
