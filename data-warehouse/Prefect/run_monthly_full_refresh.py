@@ -1,5 +1,6 @@
 from prefect import flow, task
-from prefect.blocks.system import Secret, String
+from prefect.blocks.system import String
+from prefect_dask.task_runners import DaskTaskRunner
 from prefect_dbt.cli.commands import trigger_dbt_cli_command
 from prefect_dbt.cli.configs import SnowflakeTargetConfigs
 from prefect_dbt.cli.credentials import DbtCliProfile
@@ -11,12 +12,12 @@ from prefect_snowflake.database import SnowflakeConnector
 def get_dbt_cli_profile(env):
     dbt_connector = SnowflakeConnector(
         schema="BINK",
-        database={"dev": "DEV", "prod": "BINK"}[env],
+        database="SANDBOX",
         warehouse="ENGINEERING",
         credentials=SnowflakeCredentials.load("snowflake-transform-user"),
     )
     dbt_cli_profile = DbtCliProfile(
-        name="Bink",
+        name="Bink_New",
         target="target",
         target_configs=SnowflakeTargetConfigs(connector=dbt_connector),
     )
