@@ -116,5 +116,8 @@ vars:
  dbt_artifacts_database: 'DEV'
  dbt_artifacts_schema: 'MONITORING'
  qa_data_suffix: ''
- retailor_start_date: {"The Works": "2023-08-22 00:00:00", "itsu": "2023-09-11 22:40:00", "Slim Chickens": "2023-11-01 00:00:00"}
+ retailor_live_dates: {"The Works": ["2023-08-22 00:00:00", "9999-12-31 00:00:00"], 
+                  "itsu": ["2023-09-11 22:40:00", "9999-12-31 00:00:00"], 
+                  "Slim Chickens": ["2023-11-01 00:00:00", "9999-12-31 00:00:00"], 
+                  "Iceland": ["2021-01-01 00:00:00", "2023-10-10 00:00:00"]}
  retailor_exclusion_lists: {"The Works": {"CHANNEL": ['BARCLAYS', 'BINK']}}

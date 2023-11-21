@@ -17,8 +17,8 @@ filter_data as (
     select *
     from trans_events
     where
-    {% for retailor, start_date in var("retailor_start_date").items() %}
-        ((loyalty_plan_company = '{{retailor}}' and date >= '{{start_date}}') or loyalty_plan_company != '{{retailor}}')
+    {% for retailor, dates in var("retailor_live_dates").items() %}
+        ((loyalty_plan_company = '{{retailor}}' and date >= '{{dates[0]}}' and date <= '{{dates[1]}}') or loyalty_plan_company != '{{retailor}}')
     {%- if not loop.last %} and {% endif -%}
     {% endfor %}
 ),
