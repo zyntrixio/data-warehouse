@@ -27,8 +27,8 @@ where
     {%- if not loop.last %} and {% endif -%}
     {% endfor %}) -- ridiculous solution for excluding values per merchant
 #}
-    {% for retailor, start_date in var("retailor_start_date").items() %}
-        ((loyalty_plan_company = '{{retailor}}' and event_date_time >= '{{start_date}}') or loyalty_plan_company != '{{retailor}}')
+    {% for retailor, dates in var("retailor_live_dates").items() %}
+        ((loyalty_plan_company = '{{retailor}}' and event_date_time >= '{{dates[0]}}' and event_date_time <= '{{dates[1]}}') or loyalty_plan_company != '{{retailor}}')
     {%- if not loop.last %} and {% endif -%}
     {% endfor %}
 ), 
@@ -47,9 +47,17 @@ from_to_dates as (
         loyalty_plan_name,
         payment_account_id,
         event_date_time as from_date,
-        lead(event_date_time, 1) over (
+        coalesce(
+            lead(event_date_time, 1) over (
             partition by loyalty_card_id, payment_account_id
             order by event_date_time asc
+        ),
+            case loyalty_plan_company
+                {% for retailor, dates in var("retailor_live_dates").items() %}
+                     when '{{retailor}}' then '{{dates[1]}}'
+                {% endfor %}
+            else current_timestamp
+            end
         ) as to_date,
         to_status as status,
         to_status = 'ACTIVE' as active_link

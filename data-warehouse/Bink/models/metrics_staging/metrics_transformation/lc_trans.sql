@@ -29,8 +29,8 @@ where
     {%- if not loop.last %} and {% endif -%}
     {% endfor %}) -- ridiculous solution for excluding values per merchant
 #}
-    {% for retailor, start_date in var("retailor_start_date").items() %}
-        ((loyalty_plan_company = '{{retailor}}' and event_date_time >= '{{start_date}}') or loyalty_plan_company != '{{retailor}}')
+    {% for retailor, dates in var("retailor_live_dates").items() %}
+        ((loyalty_plan_company = '{{retailor}}' and event_date_time >= '{{dates[0]}}' and event_date_time <= '{{dates[1]}}') or loyalty_plan_company != '{{retailor}}')
     {%- if not loop.last %} and {% endif -%}
     {% endfor %}
 
@@ -88,7 +88,12 @@ to_from_dates as (
                 partition by user_ref, loyalty_plan_name
                 order by event_date_time
             ),
-            current_timestamp
+            case loyalty_plan_company
+                {% for retailor, dates in var("retailor_live_dates").items() %}
+                     when '{{retailor}}' then '{{dates[1]}}'
+                {% endfor %}
+            else current_timestamp
+            end
         ) as to_date,
         consent_slug,
         consent_response
