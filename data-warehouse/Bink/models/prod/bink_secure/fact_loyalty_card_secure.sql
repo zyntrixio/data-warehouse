@@ -58,7 +58,7 @@ add_auth_events_select AS (
         event_id,
         event_date_time,
         CASE
-            WHEN event_type LIKE 'lc.addandauth%'
+            WHEN event_type LIKE 'lc.addandauth%' OR event_type = 'lc.addtrusted.success'
                 THEN 'ADD AUTH'
             WHEN event_type LIKE 'lc.auth%'
                 THEN 'AUTH'
@@ -68,8 +68,6 @@ add_auth_events_select AS (
                 THEN 'REGISTER'
             WHEN event_type LIKE 'lc.remove%'
                 THEN 'REMOVED'
-            WHEN event_type = 'lc.addtrusted.success'
-                THEN 'ADD TRUSTED'
             ELSE 'NO MATCH'
         END AS auth_type,
         CASE
