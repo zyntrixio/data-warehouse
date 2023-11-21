@@ -1,135 +1,117 @@
 /*
-Created by:         Sam Pibworth
-Created date:       2022-05-18
-Last modified by:
-Last modified date:
+CREATED BY:         SAM PIBWORTH
+CREATED DATE:       2022-05-18
+LAST MODIFIED BY:   CHRISTOPHER MITCHELL
+LAST MODIFIED DATE: 2023-11-21
 
-Description:
-    Fact table for loyalty card add & auth events.
-	Incremental strategy: loads all newly inserted records, transforms, then loads
-	all loyalty card events which require updating, finally calculating is_most_recent
-	flag, and merging based on the event id
+DESCRIPTION:
+    FACT TABLE FOR LOYALTY CARD ADD & AUTH EVENTS.
+	INCREMENTAL STRATEGY: LOADS ALL NEWLY INSERTED RECORDS, TRANSFORMS, THEN LOADS
+	ALL LOYALTY CARD EVENTS WHICH REQUIRE UPDATING, FINALLY CALCULATING IS_MOST_RECENT
+	FLAG, AND MERGING BASED ON THE EVENT ID
 
-Parameters:
-    ref_object      - transformed_hermes_events
+PARAMETERS:
+    REF_OBJECT      - TRANSFORMED_HERMES_EVENTS
 */
-{{
-    config(
-        alias="fact_loyalty_card",
-        materialized="incremental",
-        unique_key="EVENT_ID",
-        merge_update_columns=["IS_MOST_RECENT", "UPDATED_DATE_TIME"],
+
+WITH add_auth_events AS (
+
+    SELECT *
+    FROM staging.transformation.transformed_hermes_events
+    WHERE (
+        event_type LIKE 'lc.addandauth%'
+        OR event_type LIKE 'lc.auth%'
+        OR event_type LIKE 'lc.join%'
+        OR event_type LIKE 'lc.register%'
+        OR event_type LIKE 'lc.remove%'
+        -- DON'T WANT TO PROCESS TRUSTED CHANNEL FAILURES YET
+        OR event_type = 'lc.addtrusted.success'
     )
-}}
-
-with
-add_auth_events as (
-
-    select *
-    from {{ ref("transformed_hermes_events") }}
-    where
-        (
-            event_type like 'lc.addandauth%'
-            or event_type like 'lc.auth%'
-            or event_type like 'lc.join%'
-            or event_type like 'lc.register%'
-            or event_type like 'lc.remove%'
-        )
-
-        {% if is_incremental() %}
-            and _airbyte_emitted_at
-            >= (select max(inserted_date_time) from {{ this }})
-        {% endif %}
 ),
 
-loyalty_plan as (select * from {{ ref("stg_hermes__SCHEME_SCHEME") }}),
+loyalty_plan AS (
+    SELECT *
+    FROM staging.staging.stg_hermes__scheme_scheme
+),
 
-add_auth_events_unpack as (
-    select
+add_auth_events_unpack AS (
+    SELECT
         event_id,
         event_type,
         event_date_time,
         channel,
         brand,
-        json:origin::varchar as origin,
-        json:external_user_ref::varchar as external_user_ref,
-        json:internal_user_ref::varchar as user_id,
-        json:email::varchar as email,
-        json:loyalty_plan::varchar as loyalty_plan,
-        json:main_answer::varchar as main_answer,
-        json:scheme_account_id::varchar as loyalty_card_id,
-        json:consents[0]:slug::varchar as consent_slug,
-        json:consents[0]:response::boolean as consent_response
-    from add_auth_events
+        json:origin::VARCHAR AS origin,
+        json:external_user_ref::VARCHAR AS external_user_ref,
+        json:internal_user_ref::VARCHAR AS user_id,
+        json:email::VARCHAR AS email,
+        json:loyalty_plan::VARCHAR AS loyalty_plan,
+        json:main_answer::VARCHAR AS main_answer,
+        json:scheme_account_id::VARCHAR AS loyalty_card_id,
+        json:consents[0]:slug::VARCHAR AS consent_slug,
+        json:consents[0]:response::BOOLEAN AS consent_response
+    FROM add_auth_events
 ),
 
-add_auth_events_select as (
-    select
+add_auth_events_select AS (
+    SELECT
         event_id,
         event_date_time,
-        case
-            when event_type like 'lc.addandauth%'
-                then 'ADD AUTH'
-            when event_type like 'lc.auth%'
-                then 'AUTH'
-            when event_type like 'lc.join%'
-                then 'JOIN'
-            when event_type like 'lc.register%'
-                then 'REGISTER'
-            when event_type like 'lc.remove%'
-                then 'REMOVED'
-            else 'NO MATCH'
-        end as auth_type,
-        case
-            when event_type like '%request'
-                then 'REQUEST'
-            when event_type like '%success'
-                then 'SUCCESS'
-            when event_type like '%failed'
-                then 'FAILED'
-            when event_type like '%removed'
-                then 'REMOVED'
-            else null
-        end as event_type,
+        CASE
+            WHEN event_type LIKE 'lc.addandauth%'
+                THEN 'ADD AUTH'
+            WHEN event_type LIKE 'lc.auth%'
+                THEN 'AUTH'
+            WHEN event_type LIKE 'lc.join%'
+                THEN 'JOIN'
+            WHEN event_type LIKE 'lc.register%'
+                THEN 'REGISTER'
+            WHEN event_type LIKE 'lc.remove%'
+                THEN 'REMOVED'
+            WHEN event_type = 'lc.addtrusted.success'
+                THEN 'ADD TRUSTED'
+            ELSE 'NO MATCH'
+        END AS auth_type,
+        CASE
+            WHEN event_type LIKE '%request'
+                THEN 'REQUEST'
+            WHEN event_type LIKE '%success'
+                THEN 'SUCCESS'
+            WHEN event_type LIKE '%failed'
+                THEN 'FAILED'
+            WHEN event_type LIKE '%removed'
+                THEN 'REMOVED'
+            ELSE NULL
+        END AS event_type,
         loyalty_card_id,
         loyalty_plan,
         lp.loyalty_plan_name,
         lp.loyalty_plan_company,
-        null as is_most_recent,
-        main_answer,  -- Unique identifier for schema account record,
+        NULL AS is_most_recent,
+        main_answer, -- Unique identifier for schema account record,
         channel,
         brand,
         origin,
         user_id,
         external_user_ref,
-        lower(email) as email,
-        split_part(email, '@', 2) as email_domain,
+        LOWER(email) AS email,
+        SPLIT_PART(email, '@', 2) AS email_domain,
         consent_slug,
         consent_response,
-        sysdate() as inserted_date_time,
-        null as updated_date_time
-    from add_auth_events_unpack e
-    left join loyalty_plan lp on lp.loyalty_plan_id = e.loyalty_plan
-    order by event_date_time desc
+        SYSDATE() AS inserted_date_time,
+        NULL AS updated_date_time
+    FROM add_auth_events_unpack e
+    LEFT JOIN loyalty_plan lp ON lp.loyalty_plan_id = e.loyalty_plan
+    ORDER BY event_date_time DESC
 ),
 
-union_old_lc_records as (
-    select *
-    from add_auth_events_select
-
-    {% if is_incremental() %}
-        union
-        select *
-        from {{ this }}
-        where
-            loyalty_card_id in (
-                select loyalty_card_id from add_auth_events_select
-            )
-    {% endif %}
+union_old_lc_records AS (
+    SELECT *
+    FROM add_auth_events_select
 ),
 
-alter_is_most_recent_flag as (
-    select
+alter_is_most_recent_flag AS (
+    SELECT
         event_id,
         event_date_time,
         auth_type,
@@ -138,15 +120,15 @@ alter_is_most_recent_flag as (
         loyalty_plan,
         loyalty_plan_name,
         loyalty_plan_company,
-        case
-            when
+        CASE
+            WHEN
                 (
                     event_date_time
-                    = max(event_date_time) over (partition by loyalty_card_id)
+                    = MAX(event_date_time) OVER (PARTITION BY loyalty_card_id)
                 )
-                then true
-            else false
-        end as is_most_recent,
+                THEN TRUE
+            ELSE FALSE
+        END AS is_most_recent,
         main_answer,
         channel,
         brand,
@@ -158,9 +140,9 @@ alter_is_most_recent_flag as (
         consent_slug,
         consent_response,
         inserted_date_time,
-        sysdate() as updated_date_time
-    from union_old_lc_records
+        SYSDATE() AS updated_date_time
+    FROM union_old_lc_records
 )
 
-select *
-from alter_is_most_recent_flag
+SELECT *
+FROM alter_is_most_recent_flag
