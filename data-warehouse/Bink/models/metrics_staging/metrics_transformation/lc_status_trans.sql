@@ -47,6 +47,11 @@ event_ordering as (  -- Get Future And previous events per LC & User
             order by event_date_time
         ) as prev_status_id
     from lc_sc
+    where
+    {% for retailor, dates in var("retailor_live_dates").items() %}
+        ((loyalty_plan_company = '{{retailor}}' and event_date_time >= '{{dates[0]}}' and event_date_time <= '{{dates[1]}}') or loyalty_plan_company != '{{retailor}}')
+        {%- if not loop.last %} and {% endif -%}
+    {% endfor %}
 ),
 
 -- Join in lookup table to determine which status' are errors
@@ -129,7 +134,15 @@ filter_non_error_events as (  -- Filter out all non Error events
         is_resolved,
         is_final_state,
         status_start_time,
-        status_end_time,
+        coalesce(
+            status_end_time,
+            case loyalty_plan_company
+                {% for retailor, dates in var("retailor_live_dates").items() %}
+                     when '{{retailor}}' then '{{dates[1]}}'
+                {% endfor %}
+            else current_timestamp
+            end
+        ) as status_end_time,
         timediff_days,
         timediff_hours,
         timediff_mins,
