@@ -1,8 +1,8 @@
 /*
 Created by:         Anand Bhakta
 Created date:       2023-05-05
-Last modified by:   2023
-Last modified date:
+Last modified by:   Christopher Mitchell
+Last modified date: 2023-11-23
 
 Description:
     Rewrite of the LL table lc_joins_links_snapshot and lc_joins_links containing both snapshot and daily absolute data of all link and join journeys split by merchant.
