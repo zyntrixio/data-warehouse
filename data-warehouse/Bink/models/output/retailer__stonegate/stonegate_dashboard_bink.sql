@@ -72,7 +72,7 @@ combine_all AS (
         brand,
         loyalty_plan_name,
         loyalty_plan_company,
-        lc312__successful_loyalty_cards__monthly_channel_brand_retailer__count,
+        lc320__successful_loyalty_card_joins__monthly_channel_brand_retailer__count,
         lc324__successful_loyalty_card_links__monthly_channel_brand_retailer__dcount_user,
         lc371__successful_loyalty_card_joins__monthly_channel_brand_retailer__csum,
         lc385__successful_loyalty_card_join_mrkt_opt_in_percentage__monthly_channel_brand_retailer__percentage,
@@ -94,7 +94,7 @@ combine_all AS (
         loyalty_plan_name,
         loyalty_plan_company,
         NULL
-            AS lc312__successful_loyalty_cards__monthly_channel_brand_retailer__count,
+            AS lc320__successful_loyalty_card_joins__monthly_channel_brand_retailer__count,
         NULL
             AS lc324__successful_loyalty_card_links__monthly_channel_brand_retailer__dcount_user,
         NULL
@@ -119,7 +119,7 @@ combine_all AS (
         loyalty_plan_name,
         loyalty_plan_company,
         NULL
-            AS lc312__successful_loyalty_cards__monthly_channel_brand_retailer__count,
+            AS lc320__successful_loyalty_card_joins__monthly_channel_brand_retailer__count,
         NULL
             AS lc324__successful_loyalty_card_links__monthly_channel_brand_retailer__dcount_user,
         NULL
@@ -144,7 +144,7 @@ combine_all AS (
         loyalty_plan_name,
         loyalty_plan_company,
         NULL
-            AS lc312__successful_loyalty_cards__monthly_channel_brand_retailer__count,
+            AS lc320__successful_loyalty_card_joins__monthly_channel_brand_retailer__count,
         NULL
             AS lc324__successful_loyalty_card_links__monthly_channel_brand_retailer__dcount_user,
         NULL
@@ -169,7 +169,7 @@ combine_all AS (
         loyalty_plan_name,
         loyalty_plan_company,
         NULL
-            AS lc312__successful_loyalty_cards__monthly_channel_brand_retailer__count,
+            AS lc320__successful_loyalty_card_joins__monthly_channel_brand_retailer__count,
         NULL
             AS lc324__successful_loyalty_card_links__monthly_channel_brand_retailer__dcount_user,
         NULL
