@@ -1,17 +1,17 @@
 /*
-Created by:         Anand Bhakta
-Created date:       2023-05-17
-Last modified by:
-Last modified date:
+CREATED BY:         ANAND BHAKTA
+CREATED DATE:       2023-05-17
+LAST MODIFIED BY:   CHRISTOPHER MITCHELL
+LAST MODIFIED DATE: 2023-11-21
 
-Description:
-    Loads user wallet refresh events from event table
-	Incremental strategy: loads all newly inserted records, transforms, then loads
-	all user events which require updating, finally calculating is_most_recent flag,
-	and merging based on the event id
+DESCRIPTION:
+    LOADS USER WALLET REFRESH EVENTS FROM EVENT TABLE
+	INCREMENTAL STRATEGY: LOADS ALL NEWLY INSERTED RECORDS, TRANSFORMS, THEN LOADS
+	ALL USER EVENTS WHICH REQUIRE UPDATING, FINALLY CALCULATING IS_MOST_RECENT FLAG,
+	AND MERGING BASED ON THE EVENT ID
 
-Parameters:
-    ref_object      - transformed_hermes_events
+PARAMETERS:
+    REF_OBJECT      - TRANSFORMED_HERMES_EVENTS
 */
 {{
     config(
@@ -21,71 +21,60 @@ Parameters:
         merge_update_columns=["IS_MOST_RECENT", "UPDATED_DATE_TIME"],
     )
 }}
-
-with
-user_events as (
-    select *
-    from {{ ref("transformed_hermes_events") }}
-    where
-        event_type = 'user.session.start'
-        {% if is_incremental() %}
-            and _airbyte_emitted_at
-            >= (select max(inserted_date_time) from {{ this }})
-        {% endif %}
+WITH user_events AS (
+    SELECT *
+    FROM {{ ref('transformed_hermes_events') }}
+    WHERE event_type IN ('user.wallet_view', 'user.session.start')
 ),
 
-user_events_unpack as (
-    select
+user_events_unpack AS (
+    SELECT
         event_id,
         event_type,
         event_date_time,
         channel,
         brand,
-        json:internal_user_ref::varchar as user_id,
-        json:origin::varchar as origin,
-        json:external_user_ref::varchar as external_user_ref,
-        json:email::varchar as email
-    from user_events
+        json:internal_user_ref::VARCHAR AS user_id,
+        json:origin::VARCHAR AS origin,
+        json:external_user_ref::VARCHAR AS external_user_ref,
+        json:email::VARCHAR AS email
+    FROM user_events
 ),
 
-user_events_select as (
-    select
+user_events_select AS (
+    SELECT
         event_id,
         event_date_time,
         user_id,
-        case
-            when event_type = 'user.session.start' then 'REFRESH' else null
-        end as event_type,
-        null as is_most_recent,
+        CASE
+            WHEN event_type = 'user.session.start' THEN 'WALLET_REFRESH'
+            WHEN event_type = 'user.wallet_view' THEN 'WALLET_VIEW'
+            ELSE NULL
+        END AS event_type,
+        NULL AS is_most_recent,
         origin,
         channel,
         brand,
-        nullif(external_user_ref, '') as external_user_ref,
-        lower(email) as email,
-        split_part(email, '@', 2) as domain,
-        sysdate() as inserted_date_time,
-        null as updated_date_time
-    from user_events_unpack
+        NULLIF(external_user_ref, '') AS external_user_ref,
+        LOWER(email) AS email,
+        SPLIT_PART(email, '@', 2) AS domain,
+        SYSDATE() AS inserted_date_time,
+        NULL AS updated_date_time
+    FROM user_events_unpack
 ),
 
-union_old_user_records as (
-    select *
-    from user_events_select
-    {% if is_incremental() %}
-        union
-        select *
-        from {{ this }}
-        where user_id in (select user_id from user_events_select)
-    {% endif %}
+union_old_user_records AS (
+    SELECT *
+    FROM user_events_select
 ),
 
-alter_is_most_recent_flag as (
-    select
+alter_is_most_recent_flag AS (
+    SELECT
         event_id,
         event_date_time,
         user_id,
         event_type,
-        null as is_most_recent,
+        NULL AS is_most_recent,
         origin,
         channel,
         brand,
@@ -93,9 +82,9 @@ alter_is_most_recent_flag as (
         email,
         domain,
         inserted_date_time,
-        sysdate() as updated_date_time
-    from union_old_user_records
+        SYSDATE() AS updated_date_time
+    FROM union_old_user_records
 )
 
-select *
-from alter_is_most_recent_flag
+SELECT *
+FROM alter_is_most_recent_flag
