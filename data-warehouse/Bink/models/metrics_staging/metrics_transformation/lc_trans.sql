@@ -75,7 +75,7 @@ to_from_dates as (
         user_ref,
         loyalty_card_id,
         coalesce(
-            case when auth_type in ('ADD AUTH', 'AUTH') then 'LINK' end,
+            case when auth_type in ('ADD AUTH', 'AUTH', 'ADD TRUSTED') then 'LINK' end,
             case when auth_type in ('JOIN', 'REGISTER') then 'JOIN' end
         ) as add_journey,
         event_type,

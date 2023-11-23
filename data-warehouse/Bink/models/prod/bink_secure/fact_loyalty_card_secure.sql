@@ -58,8 +58,10 @@ add_auth_events_select AS (
         event_id,
         event_date_time,
         CASE
-            WHEN event_type LIKE 'lc.addandauth%' OR event_type = 'lc.addtrusted.success'
+            WHEN event_type LIKE 'lc.addandauth%'
                 THEN 'ADD AUTH'
+            WHEN event_type = 'lc.addtrusted.success'
+                THEN 'ADD TRUSTED'
             WHEN event_type LIKE 'lc.auth%'
                 THEN 'AUTH'
             WHEN event_type LIKE 'lc.join%'
