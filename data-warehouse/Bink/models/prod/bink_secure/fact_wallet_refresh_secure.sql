@@ -25,6 +25,10 @@ WITH user_events AS (
     SELECT *
     FROM {{ ref('transformed_hermes_events') }}
     WHERE event_type IN ('user.wallet_view', 'user.session.start')
+    {% if is_incremental() %}
+            and _airbyte_emitted_at
+            >= (select max(inserted_date_time) from {{ this }})
+        {% endif %}
 ),
 
 user_events_unpack AS (
@@ -66,6 +70,12 @@ user_events_select AS (
 union_old_user_records AS (
     SELECT *
     FROM user_events_select
+    {% if is_incremental() %}
+        union
+        select *
+        from {{ this }}
+        where user_id in (select user_id from user_events_select)
+    {% endif %}
 ),
 
 alter_is_most_recent_flag AS (

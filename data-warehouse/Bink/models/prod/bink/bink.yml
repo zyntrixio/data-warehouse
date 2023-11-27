@@ -154,9 +154,9 @@ models:
           tests:
             - not_null
             - accepted_values:
-                values: ['REFRESH']              
+                values: ['WALLET_REFRESH','WALLET_VIEW']              
             - sd_daily_spike:
-                vals: ['REFRESH']
+                vals: ['WALLET_REFRESH','WALLET_VIEW']
                 datetime_col: EVENT_DATE_TIME
                 unique_id_col: EVENT_ID
                 max_sd: 2
