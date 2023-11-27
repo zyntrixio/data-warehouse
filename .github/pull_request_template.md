@@ -15,9 +15,15 @@ Please delete options that are not relevant.
 
 Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce. Please also list any relevant details for your test configuration
 
-- [ ] DBT Run on Dev
-- [ ] DBT Run on UAT (Not always applicable)
-- [ ] DBT Run on Dev/UAT with Full Refresh tag
+## Development tests
+- [ ] `dbt run -t dev` run sucessful
+- [ ] `dbt run -t uat` run sucessful
+- [ ] `dbt run -t uat --full-refresh` run sucessful
+- [ ] `dbt test -t uat` run sucessful
+
+## Hotfix tests
+- [ ] `dbt run -t prod` run sucessful
+- [ ] `dbt test -t prod` run sucessful
 
 # Checklist:
 
