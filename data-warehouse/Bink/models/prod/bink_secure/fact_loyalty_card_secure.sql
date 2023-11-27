@@ -2,7 +2,7 @@
 CREATED BY:         SAM PIBWORTH
 CREATED DATE:       2022-05-18
 LAST MODIFIED BY:   CHRISTOPHER MITCHELL
-LAST MODIFIED DATE: 2023-11-21
+LAST MODIFIED DATE: 2023-11-27
 
 DESCRIPTION:
     FACT TABLE FOR LOYALTY CARD ADD & AUTH EVENTS.
@@ -14,10 +14,22 @@ PARAMETERS:
     REF_OBJECT      - TRANSFORMED_HERMES_EVENTS
 */
 
-WITH add_auth_events AS (
+{{
+    config(
+        alias="fact_loyalty_card",
+        materialized="incremental",
+        unique_key="EVENT_ID",
+        merge_update_columns=["IS_MOST_RECENT", "UPDATED_DATE_TIME"],
+    )
+}}
 
+WITH add_auth_events AS (
+    {% if is_incremental() %}
+            and _airbyte_emitted_at
+            >= (select max(inserted_date_time) from {{ this }})
+        {% endif %}
     SELECT *
-    FROM staging.transformation.transformed_hermes_events
+    FROM {{ ref('transformed_hermes_events') }}
     WHERE (
         event_type LIKE 'lc.addandauth%'
         OR event_type LIKE 'lc.auth%'
@@ -31,7 +43,7 @@ WITH add_auth_events AS (
 
 loyalty_plan AS (
     SELECT *
-    FROM staging.staging.stg_hermes__scheme_scheme
+    FROM {{ ref('stg_hermes__scheme_scheme') }}
 ),
 
 add_auth_events_unpack AS (
