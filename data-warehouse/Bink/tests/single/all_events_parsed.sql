@@ -36,6 +36,7 @@ with
                 'transaction.duplicate',
                 'user.created',
                 'user.session.start',
+                'user.wallet_view',
                 'user.deleted'
             -- ,'pll_link.statuschange'
             -- ,'transaction.exported.response'
