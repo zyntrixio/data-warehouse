@@ -24,10 +24,6 @@ PARAMETERS:
 }}
 
 WITH add_auth_events AS (
-    {% if is_incremental() %}
-            and _airbyte_emitted_at
-            >= (select max(inserted_date_time) from {{ this }})
-        {% endif %}
     SELECT *
     FROM {{ ref('transformed_hermes_events') }}
     WHERE (
@@ -39,6 +35,10 @@ WITH add_auth_events AS (
         -- DON'T WANT TO PROCESS TRUSTED CHANNEL FAILURES YET
         OR event_type = 'lc.addtrusted.success'
     )
+    {% if is_incremental() %}
+            and _airbyte_emitted_at
+            >= (select max(inserted_date_time) from {{ this }})
+        {% endif %}
 ),
 
 loyalty_plan AS (
