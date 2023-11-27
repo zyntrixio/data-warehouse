@@ -43,7 +43,7 @@ WITH add_auth_events AS (
 
 loyalty_plan AS (
     SELECT *
-    FROM {{ ref('stg_hermes__scheme_scheme') }}
+    FROM {{ ref('stg_hermes__SCHEME_SCHEME') }}
 ),
 
 add_auth_events_unpack AS (
