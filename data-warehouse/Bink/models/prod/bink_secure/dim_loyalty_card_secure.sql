@@ -12,7 +12,8 @@ Parameters:
     ref_object      - stg_hermes__SCHEME_SCHEME
     ref_object      - stg_hermes__SCHEME_CATEGORY
 */
-{{ config(alias="dim_loyalty_card") }}
+{{ config(alias="dim_loyalty_card",
+            enabled =false) }}
 
 with
 loyalty_card as (select * from {{ ref("stg_hermes__SCHEME_SCHEMEACCOUNT") }}),

@@ -16,7 +16,7 @@ Parameters:
 with
 vouchers as (select * from {{ ref("transformed_voucher_keys") }}),
 
-loyalty_card as (select * from {{ ref("dim_loyalty_card") }}),
+loyalty_card as (select * from {{ ref("stg_hermes__SCHEME_SCHEME") }}),
 
 add_company as (
 
@@ -39,7 +39,7 @@ add_company as (
             else 'TRUE'
         end as redemption_tracked
     from vouchers v
-    left join loyalty_card lc on v.loyalty_card_id = lc.loyalty_card_id
+    left join loyalty_card lc on v.loyalty_plan_id = lc.loyalty_plan_id
 
 ),
 

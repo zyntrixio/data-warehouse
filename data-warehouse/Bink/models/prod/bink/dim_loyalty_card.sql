@@ -10,6 +10,11 @@ Description:
 Parameters:
     ref_object      - dim_loyalty_card_secure
 */
+
+{{ config(
+  enabled=false
+) }}
+
 with
 loyalty_card as (select * from {{ ref("dim_loyalty_card_secure") }}),
 

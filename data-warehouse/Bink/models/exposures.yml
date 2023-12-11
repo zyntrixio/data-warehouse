@@ -15,7 +15,6 @@ exposures:
     depends_on:
       - ref('dim_channel')
       - ref('dim_date')
-      - ref('dim_loyalty_card')
       - ref('dim_merchant')
       - ref('dim_user')
       - ref('fact_loyalty_card')
@@ -39,7 +38,6 @@ exposures:
     depends_on:
       - ref('dim_channel')
       - ref('dim_date')
-      - ref('dim_loyalty_card_secure')
       - ref('dim_merchant')
       - ref('dim_user_secure')
       - ref('fact_loyalty_card_secure')
