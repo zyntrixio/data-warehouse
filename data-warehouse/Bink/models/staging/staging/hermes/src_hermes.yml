@@ -138,6 +138,7 @@ sources:
       - name: SCHEME_CATEGORY
         identifier: SCHEME_CATEGORY
         description: Look up table for loyalty plan categorys
+        +enabled: false
         freshness:
           warn_after: { count: 2, period: hour }
         meta:

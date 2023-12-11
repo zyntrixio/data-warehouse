@@ -36,8 +36,7 @@ loyalty_card_select as (
         loyalty_plan_tier,
         loyalty_plan_name_card,
         loyalty_plan_name,
-        loyalty_plan_category_id,
-        loyalty_plan_category
+        loyalty_plan_category_id
     from loyalty_card
 )
 

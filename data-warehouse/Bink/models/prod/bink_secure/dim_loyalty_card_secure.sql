@@ -19,9 +19,6 @@ loyalty_card as (select * from {{ ref("stg_hermes__SCHEME_SCHEMEACCOUNT") }}),
 
 loyalty_plan as (select * from {{ ref("stg_hermes__SCHEME_SCHEME") }}),
 
-loyalty_plan_category as (select * from {{ ref("stg_hermes__SCHEME_CATEGORY") }}
-),
-
 join_to_base as (
     select
         -- BALANCES -- is this a json field
@@ -50,13 +47,9 @@ join_to_base as (
         lp.loyalty_plan_tier,
         lp.loyalty_plan_name_card,
         lp.loyalty_plan_name,
-        lp.loyalty_plan_category_id,
-        lpc.loyalty_plan_category
+        lp.loyalty_plan_category_id
     from loyalty_card lc
     left join loyalty_plan lp on lc.loyalty_plan_id = lp.loyalty_plan_id
-    left join
-        loyalty_plan_category lpc
-        on lp.loyalty_plan_category_id = lpc.loyalty_plan_category_id
 )
 
 select *
