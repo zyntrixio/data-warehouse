@@ -34,7 +34,7 @@ renaming as (
         -- plan_popularity,
         -- digital_only,
         -- plan_name,
-        -- slug as loyalty_plan_slug,
+        slug as loyalty_plan_slug,
         -- text_colour,
         -- tier as loyalty_plan_tier,
         -- max_points_value_length,
