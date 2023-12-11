@@ -1,8 +1,8 @@
 /*
 Created by:         Sam Pibworth
 Created date:       2022-05-04
-Last modified by:   Christopher Mitchell
-Last modified date: 2023-06-05
+Last modified by:   Anand Bhakta
+Last modified date: 2023-12-11
 
 Description:
     One row per voucher with links loyalty_card_id and loyalty_plan

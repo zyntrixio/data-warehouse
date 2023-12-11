@@ -1,8 +1,8 @@
 /*
 Created by:         Sam Pibworth
 Created date:       2022-04-20
-Last modified by:
-Last modified date:
+Last modified by:   Anand Bhakta
+Last modified date: 2023-12-11
 
 Description:
     Unions the payment and export transaction tables, and then joins in data from the matched transactions table

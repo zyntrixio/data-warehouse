@@ -1,8 +1,8 @@
 /*
 Created by:         Sam Pibworth
 Created date:       2022-06-14
-Last modified by:
-Last modified date:
+Last modified by:   Anand Bhakta
+Last modified date: 2023-12-11
 
 Description:
 	Dim loyalty card with reduced columns
