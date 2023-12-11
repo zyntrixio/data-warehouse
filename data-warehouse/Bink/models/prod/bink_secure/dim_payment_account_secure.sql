@@ -10,7 +10,8 @@ Description:
 Parameters:
     ref_object      - transformed_payment_accounts
 */
-{{ config(alias="dim_payment_account") }}
+{{ config(alias="dim_payment_account",
+            enabled=false) }}
 
 with
 payment_accounts as (select * from {{ ref("transformed_payment_accounts") }}),

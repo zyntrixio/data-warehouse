@@ -10,6 +10,11 @@ Description:
 Parameters:
     ref_object      - dim_payment_account_secure
 */
+
+{{ config(
+  enabled=false
+) }}
+
 with
 payment_account as (select * from {{ ref("dim_payment_account_secure") }}),
 

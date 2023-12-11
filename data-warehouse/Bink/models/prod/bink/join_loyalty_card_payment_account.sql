@@ -11,6 +11,11 @@
  ref_object      	- stg_hermes__SCHEME_SCHEMEACCOUNT
  				 	- stg_hermes__PAYMENT_ACCOUNT
  */
+
+ {{ config(
+  enabled=false
+) }}
+
 with
 scheme as (
     select

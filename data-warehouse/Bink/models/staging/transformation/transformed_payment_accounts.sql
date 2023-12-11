@@ -12,6 +12,11 @@ Parameters:
                     - stg_hermes__payment_status
 					- stg_hermes__payment_card
 */
+
+{{ config(
+  enabled=false
+) }}
+
 with
 payment_accounts as (select * from {{ ref("stg_hermes__PAYMENT_ACCOUNT") }}),
 
