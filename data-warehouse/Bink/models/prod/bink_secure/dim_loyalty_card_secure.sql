@@ -1,8 +1,8 @@
 /*
 Created by:         Aidan Summerville
 Created date:       2022-04-21
-Last modified by:
-Last modified date:
+Last modified by:   Anand Bhakta
+Last modified date: 2023-12-11
 
 Description:
 	The output Dimension table for loyalty cards
@@ -12,15 +12,13 @@ Parameters:
     ref_object      - stg_hermes__SCHEME_SCHEME
     ref_object      - stg_hermes__SCHEME_CATEGORY
 */
-{{ config(alias="dim_loyalty_card") }}
+{{ config(alias="dim_loyalty_card",
+            enabled =false) }}
 
 with
 loyalty_card as (select * from {{ ref("stg_hermes__SCHEME_SCHEMEACCOUNT") }}),
 
 loyalty_plan as (select * from {{ ref("stg_hermes__SCHEME_SCHEME") }}),
-
-loyalty_plan_category as (select * from {{ ref("stg_hermes__SCHEME_CATEGORY") }}
-),
 
 join_to_base as (
     select
@@ -50,13 +48,9 @@ join_to_base as (
         lp.loyalty_plan_tier,
         lp.loyalty_plan_name_card,
         lp.loyalty_plan_name,
-        lp.loyalty_plan_category_id,
-        lpc.loyalty_plan_category
+        lp.loyalty_plan_category_id
     from loyalty_card lc
     left join loyalty_plan lp on lc.loyalty_plan_id = lp.loyalty_plan_id
-    left join
-        loyalty_plan_category lpc
-        on lp.loyalty_plan_category_id = lpc.loyalty_plan_category_id
 )
 
 select *

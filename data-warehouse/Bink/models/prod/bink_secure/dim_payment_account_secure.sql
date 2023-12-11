@@ -1,16 +1,16 @@
 /*
 Created by:         Sam Pibworth
 Created date:       2022-04-21
-Last modified by:
-Last modified date:
-
+Last modified by:   Anand Bhakta
+Last modified date: 2023-12-11
 Description:
 	Processes json values and finishes payment_account table
 
 Parameters:
     ref_object      - transformed_payment_accounts
 */
-{{ config(alias="dim_payment_account") }}
+{{ config(alias="dim_payment_account",
+            enabled=false) }}
 
 with
 payment_accounts as (select * from {{ ref("transformed_payment_accounts") }}),

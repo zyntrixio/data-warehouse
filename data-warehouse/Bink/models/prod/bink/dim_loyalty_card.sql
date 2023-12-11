@@ -1,8 +1,8 @@
 /*
 Created by:         Sam Pibworth
 Created date:       2022-06-14
-Last modified by:
-Last modified date:
+Last modified by:   Anand Bhakta
+Last modified date: 2023-12-11
 
 Description:
 	Dim loyalty card with reduced columns
@@ -10,6 +10,11 @@ Description:
 Parameters:
     ref_object      - dim_loyalty_card_secure
 */
+
+{{ config(
+  enabled=false
+) }}
+
 with
 loyalty_card as (select * from {{ ref("dim_loyalty_card_secure") }}),
 
@@ -36,8 +41,7 @@ loyalty_card_select as (
         loyalty_plan_tier,
         loyalty_plan_name_card,
         loyalty_plan_name,
-        loyalty_plan_category_id,
-        loyalty_plan_category
+        loyalty_plan_category_id
     from loyalty_card
 )
 

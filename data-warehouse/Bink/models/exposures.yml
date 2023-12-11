@@ -15,9 +15,7 @@ exposures:
     depends_on:
       - ref('dim_channel')
       - ref('dim_date')
-      - ref('dim_loyalty_card')
       - ref('dim_merchant')
-      - ref('dim_payment_account')
       - ref('dim_user')
       - ref('fact_loyalty_card')
       - ref('fact_loyalty_card_status_change')
@@ -25,7 +23,6 @@ exposures:
       - ref('fact_payment_account')
       - ref('fact_transaction')
       - ref('fact_user')
-      - ref('join_loyalty_card_payment_account')
     owner:
       name: Sam
       email: sam.pibworth@lumilinks.com
@@ -41,9 +38,7 @@ exposures:
     depends_on:
       - ref('dim_channel')
       - ref('dim_date')
-      - ref('dim_loyalty_card_secure')
       - ref('dim_merchant')
-      - ref('dim_payment_account_secure')
       - ref('dim_user_secure')
       - ref('fact_loyalty_card_secure')
       - ref('fact_loyalty_card_status_change_secure')
@@ -51,7 +46,6 @@ exposures:
       - ref('fact_payment_account_secure')
       - ref('fact_transaction')
       - ref('fact_user_secure')
-      - ref('join_loyalty_card_payment_account')
     owner:
       name: Sam
       email: sam.pibworth@lumilinks.com

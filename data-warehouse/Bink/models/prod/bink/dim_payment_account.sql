@@ -1,15 +1,19 @@
 /*
 Created by:         Sam Pibworth
 Created date:       2022-06-14
-Last modified by:
-Last modified date:
-
+Last modified by:   Anand Bhakta
+Last modified date: 2023-12-11
 Description:
 	Dim payment account with reduced columns
 
 Parameters:
     ref_object      - dim_payment_account_secure
 */
+
+{{ config(
+  enabled=false
+) }}
+
 with
 payment_account as (select * from {{ ref("dim_payment_account_secure") }}),
 
