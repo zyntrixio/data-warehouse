@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: ext_dashboard_view
+    description: bi layer for ext dashboard
