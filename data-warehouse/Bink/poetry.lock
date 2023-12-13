@@ -831,13 +831,13 @@ langdetect = ["langdetect"]
 
 [[package]]
 name = "dbt-core"
-version = "1.7.0"
+version = "1.7.3"
 description = "With dbt, data analysts and engineers can build analytics the way engineers build applications."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "dbt-core-1.7.0.tar.gz", hash = "sha256:5b1cd6e216a0aede4916214e54776b299339393a1afd11494c2117d18fa6e1e8"},
-    {file = "dbt_core-1.7.0-py3-none-any.whl", hash = "sha256:9ed5e8fd893721c1d295c936fe3e223a64f147b0d731ba1195e851fc262a6e63"},
+    {file = "dbt-core-1.7.3.tar.gz", hash = "sha256:a8f06203cd003ebcdda2af953f60c2b44fc0c69bd6cba79338225daedb1f41e1"},
+    {file = "dbt_core-1.7.3-py3-none-any.whl", hash = "sha256:ec9a9602f034da15d38534e0b50d1ee72a10d2a9b502939c0edad1460f861851"},
 ]
 
 [package.dependencies]
