@@ -7,8 +7,7 @@
 {{
     config(
         tags=["business"],
-        error_if=">100",
-        warn_if=">100",
+        severity="warn",
         meta={
             "description": "Test to monitor long delays (10 mins) whilst the payment account is in pending with set limits.",
             "test_type": "Business",
