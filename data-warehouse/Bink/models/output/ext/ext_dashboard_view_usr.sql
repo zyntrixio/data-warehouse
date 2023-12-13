@@ -13,7 +13,7 @@ PARAMETERS:
 WITH lc AS (
     SELECT
         *,
-        'LOYALTY CARD' AS category
+        'USER' AS category
     FROM {{ ref('user__transactions__daily_user_level') }}
     WHERE channel IN ('LLOYDS', 'MIXR')
 ),
