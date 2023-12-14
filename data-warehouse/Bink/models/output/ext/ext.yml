@@ -1,0 +1,8 @@
+version: 2
+
+models:
+  - name: ext_dashboard_view_lc_txns
+    description: bi layer for ext dashboard for loyalty card and transactions
+
+  - name: ext_dashboard_view_usr
+    description: bi layer for ext dashboard for loyalty card and transactions

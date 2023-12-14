@@ -76,6 +76,9 @@ models:
       commercial:
         +schema: "COMMERCIAL"
         materialized: table
+      ext:
+        +schema: "EXT"
+        materialized: table
       jira:
         +schema: "JIRA"
         materialized: table
