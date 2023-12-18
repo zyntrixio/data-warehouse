@@ -23,18 +23,39 @@ Returns:
 
 with metrics as (select * from {{ ref(node) }})
 
-,growth as (
+,agg as (
     select
         {%- for col in adapter.get_columns_in_relation(ref(node)) -%}
         {%- if col.column in categorical %}
         {{ col.column}},
-        {%- else %}
-        div0({{ col.column}}, lag({{ col.column}}) over (partition by {% for col in partition %} {{col}} {%- if not loop.last %} , {% endif -%} {% endfor %} order by {{order}})) - 1 as {{ col.column}}__GROWTH
+        {%- elif col.column not in exclusion%}
+        sum({{ col.column}}) as {{ col.column}}
         {%- if not loop.last %} , {% endif -%}
         {%- endif %}
         {%- endfor %}
     from
         metrics
+    group by
+        {%- for col in categorical -%}
+        {%- if col in categorical %}
+        {{ col}}
+        {%- if not loop.last %} , {% endif -%}
+        {%- endif %}
+        {%- endfor %}
+)
+
+,growth as (
+    select
+        {%- for col in adapter.get_columns_in_relation(ref(node)) -%}
+        {%- if col.column in categorical %}
+        {{ col.column}},
+        {%- elif col.column not in exclusion%}
+        div0({{ col.column}}, lag({{ col.column}}) over (partition by {% for col in partition %} {{col}} {%- if not loop.last %} , {% endif -%} {% endfor %} order by {{order}})) - 1 as {{ col.column}}__GROWTH
+        {%- if not loop.last %} , {% endif -%}
+        {%- endif %}
+        {%- endfor %}
+    from
+        agg
 )
 
 select * from growth
