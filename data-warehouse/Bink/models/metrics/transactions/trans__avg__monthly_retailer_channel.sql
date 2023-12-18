@@ -1,8 +1,8 @@
 /*
 CREATED BY:         CHRISTOPHER MITCHELL
 CREATED DATE:       2023-11-01
-LAST MODIFIED BY:   
-LAST MODIFIED DATE: 
+Last modified by:   Anand Bhakta
+Last modified date: 2023-12-18
 
 DESCRIPTION:
     TRANSACTION AVERAGE METRICS SUCH AS AVERAGE REVENUE PER USERS, PER MONTH BY RETAILER. 
@@ -21,7 +21,6 @@ joins as (
     select
         t.date,
         t.channel,
-        t.brand,
         t.loyalty_plan_company,
         t.loyalty_plan_name,
         t.t049__spend__monthly_retailer_channel__sum,
@@ -39,7 +38,6 @@ joins as (
         on
             u.loyalty_plan_company = t.loyalty_plan_company
             and u.channel = t.channel
-            and u.brand = t.brand
             and u.date = t.date
 ),
 
@@ -47,7 +45,6 @@ aggs as (
     select
         date,
         channel,
-        brand,
         loyalty_plan_company,
         loyalty_plan_name,
         div0(
