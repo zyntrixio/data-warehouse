@@ -1,8 +1,8 @@
 /*
 Created by:         Anand Bhakta
 Created date:       2023-11-09
-Last modified by:
-Last modified date:
+Last modified by:   Anand Bhakta
+Last modified date: 2023-12-18
 
 Description:
     Convert the lc__pll__monthly_retailer table to growth metrics.
