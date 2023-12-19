@@ -1,18 +1,19 @@
 /*
 Created by:         Anand Bhakta
-Created date:       2023-11-09
+Created date:       2023-09-25
 Last modified by:   Anand Bhakta
 Last modified date: 2023-12-18
 
 Description:
-    Convert the lc__pll__monthly_retailer table to growth metrics.
+    Convert the trans__trans__monthly_retailer table to growth metrics.
 Parameters:
-    source_object       - lc__pll__monthly_retailer
+    source_object       - trans__trans__monthly_retailer
 */
 
-{{convert_to_growth("lc__pll__monthly_retailer_channel",
+{{convert_to_growth("trans__trans__monthly_channel_brand_retailer",
                     ["DATE", "LOYALTY_PLAN_NAME", "LOYALTY_PLAN_COMPANY","CHANNEL"],
                     ["BRAND"],
                     ["LOYALTY_PLAN_NAME", "LOYALTY_PLAN_COMPANY","CHANNEL"],
-                    "DATE" )
+                    "DATE",
+                    "_BRAND" )
 }}

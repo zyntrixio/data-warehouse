@@ -7,9 +7,6 @@ models:
   - name: user__transactions__daily_user_level
     description: Active user metric on daily level with count of transactions
 
-  - name: user__transactions__monthly_channel_brand_retailer
-    description: lbg rev share
-
   - name: user__loyalty_card__daily_channel_brand
     description: Used for U003 users with linked loyalty card both join and link
 
@@ -19,9 +16,9 @@ models:
   - name: user__transactions__monthly_retailer__growth
     description: TO DO
 
-  - name: user__transactions__monthly_retailer_channel
+  - name: user__transactions__monthly_channel_brand_retailer
     description: TO DO
 
-  - name: user__transactions__monthly_retailer_channel__growth
+  - name: user__transactions__monthly_channel_retailer__growth
     description: TO DO
     

@@ -1,24 +1,24 @@
 /*
 CREATED BY:         CHRISTOPHER MITCHELL
 CREATED DATE:       2023-11-08
-LAST MODIFIED BY:
-LAST MODIFIED DATE:
+Last modified by: Anand Bhakta
+Last modified date: 2023-12-19
 
 DESCRIPTION:
     DATASOURCE TO PRODUCE TABLEAU DASHBOARD FOR STONEGATE GROUP - BINK VIEW
 PARAMETERS:
-    SOURCE_OBJECT       - LC__LINKS_JOINS__MONTHLY_RETAILER_CHANNEL
-                        - TRANS__TRANS__MONTHLY_RETAILER_CHANNEL
-                        - TRANS__AVG__MONTHLY_RETAILER_CHANNEL
-                        - USER__TRANSACTIONS__MONTHLY_RETAILER_CHANNEL
-                        - LC__PLL__MONTHLY_RETAILER_CHANNEL
+    SOURCE_OBJECT       - LC__LINKS_JOINS__monthly_channel_brand_retailer
+                        - TRANS__TRANS__monthly_channel_brand_retailer
+                        - TRANS__AVG__monthly_channel_retailer
+                        - USER__TRANSACTIONS__monthly_channel_brand_retailer
+                        - LC__PLL__monthly_channel_brand_retailer
 */
 
 WITH lc_metric AS (
     SELECT
         *,
         'JOINS' AS category
-    FROM {{ ref('lc__links_joins__monthly_retailer_channel') }}
+    FROM {{ ref('lc__links_joins__monthly_channel_brand_retailer') }}
     WHERE
         loyalty_plan_company = 'Stonegate Group'
         AND channel = 'LLOYDS'
@@ -28,7 +28,7 @@ txn_metrics AS (
     SELECT
         *,
         'SPEND' AS category
-    FROM {{ ref('trans__trans__monthly_retailer_channel') }}
+    FROM {{ ref('trans__trans__monthly_channel_brand_retailer') }}
     WHERE
         loyalty_plan_company = 'Stonegate Group'
         AND channel = 'LLOYDS'
@@ -38,7 +38,7 @@ txn_avg AS (
     SELECT
         *,
         'SPEND' AS category
-    FROM {{ ref('trans__avg__monthly_retailer_channel') }}
+    FROM {{ ref('trans__avg__monthly_channel_retailer') }}
     WHERE
         loyalty_plan_company = 'Stonegate Group'
         AND channel = 'LLOYDS'
@@ -48,7 +48,7 @@ user_metrics AS (
     SELECT
         *,
         'USERS' AS category
-    FROM {{ ref('user__transactions__monthly_retailer_channel') }}
+    FROM {{ ref('user__transactions__monthly_channel_brand_retailer') }}
     WHERE
         loyalty_plan_company = 'Stonegate Group'
         AND channel = 'LLOYDS'
@@ -58,7 +58,7 @@ pll_metrics AS (
     SELECT
         *,
         'JOINS' AS category
-    FROM {{ ref('lc__pll__monthly_retailer_channel') }}
+    FROM {{ ref('lc__pll__monthly_channel_brand_retailer') }}
     WHERE
         loyalty_plan_company = 'Stonegate Group'
         AND channel = 'LLOYDS'
@@ -76,14 +76,14 @@ combine_all AS (
         lc324__successful_loyalty_card_links__monthly_channel_brand_retailer__dcount_user,
         lc371__successful_loyalty_card_joins__monthly_channel_brand_retailer__csum,
         lc385__successful_loyalty_card_join_mrkt_opt_in_percentage__monthly_channel_brand_retailer__percentage,
-        NULL AS t049__spend__monthly_retailer_channel__sum,
-        NULL AS t051__txns__monthly_retailer_channel__dcount,
-        NULL AS t054__aov__monthly_retailer_channel__avg,
-        NULL AS t055__arpu__monthly_retailer_channel__avg,
-        NULL AS t056__atf__monthly_retailer_channel__avg,
-        NULL AS u200_active_users__retailer_monthly_channel__dcount_uid,
-        NULL AS u201_active_users_retailer_monthly_channel__cdcount_uid,
-        NULL AS lc386__loyalty_card_active_pll__monthly_retailer_channel__pit
+        NULL AS t049__spend__monthly_channel_brand_retailer__sum,
+        NULL AS t051__txns__monthly_channel_brand_retailer__dcount,
+        NULL AS t054__aov__monthly_channel_brand_retailer__avg,
+        NULL AS t055__arpu__monthly_channel_brand_retailer__avg,
+        NULL AS t056__atf__monthly_channel_brand_retailer__avg,
+        NULL AS u200_active_users__monthly_channel_brand_retailer__dcount_uid,
+        NULL AS u201_active_users_monthly_channel_brand_retailer__cdcount_uid,
+        NULL AS lc386__loyalty_card_active_pll__monthly_channel_brand_retailer__pit
     FROM lc_metric
     UNION ALL
     SELECT
@@ -101,21 +101,21 @@ combine_all AS (
             AS lc371__successful_loyalty_card_joins__monthly_channel_brand_retailer__csum,
         NULL
             AS lc385__successful_loyalty_card_join_mrkt_opt_in_percentage__monthly_channel_brand_retailer__percentage,
-        t049__spend__monthly_retailer_channel__sum,
-        t051__txns__monthly_retailer_channel__dcount,
-        NULL AS t054__aov__monthly_retailer_channel__avg,
-        NULL AS t055__arpu__monthly_retailer_channel__avg,
-        NULL AS t056__atf__monthly_retailer_channel__avg,
-        NULL AS u200_active_users__retailer_monthly_channel__dcount_uid,
-        NULL AS u201_active_users_retailer_monthly_channel__cdcount_uid,
-        NULL AS lc386__loyalty_card_active_pll__monthly_retailer_channel__pit
+        t049__spend__monthly_channel_brand_retailer__sum,
+        t051__txns__monthly_channel_brand_retailer__dcount,
+        NULL AS t054__aov__monthly_channel_brand_retailer__avg,
+        NULL AS t055__arpu__monthly_channel_brand_retailer__avg,
+        NULL AS t056__atf__monthly_channel_brand_retailer__avg,
+        NULL AS u200_active_users__monthly_channel_brand_retailer__dcount_uid,
+        NULL AS u201_active_users_monthly_channel_brand_retailer__cdcount_uid,
+        NULL AS lc386__loyalty_card_active_pll__monthly_channel_brand_retailer__pit
     FROM txn_metrics
     UNION ALL
     SELECT
         date,
         category,
         channel,
-        brand,
+        NULL AS brand,
         loyalty_plan_name,
         loyalty_plan_company,
         NULL
@@ -126,14 +126,14 @@ combine_all AS (
             AS lc371__successful_loyalty_card_joins__monthly_channel_brand_retailer__csum,
         NULL
             AS lc385__successful_loyalty_card_join_mrkt_opt_in_percentage__monthly_channel_brand_retailer__percentage,
-        NULL AS t049__spend__monthly_retailer_channel__sum,
-        NULL AS t051__txns__monthly_retailer_channel__dcount,
-        t054__aov__monthly_retailer_channel__avg,
-        t055__arpu__monthly_retailer_channel__avg,
-        t056__atf__monthly_retailer_channel__avg,
-        NULL AS u200_active_users__retailer_monthly_channel__dcount_uid,
-        NULL AS u201_active_users_retailer_monthly_channel__cdcount_uid,
-        NULL AS lc386__loyalty_card_active_pll__monthly_retailer_channel__pit
+        NULL AS t049__spend__monthly_channel_brand_retailer__sum,
+        NULL AS t051__txns__monthly_channel_brand_retailer__dcount,
+        t054__aov__monthly_channel_brand_retailer__avg,
+        t055__arpu__monthly_channel_brand_retailer__avg,
+        t056__atf__monthly_channel_brand_retailer__avg,
+        NULL AS u200_active_users__monthly_channel_brand_retailer__dcount_uid,
+        NULL AS u201_active_users_monthly_channel_brand_retailer__cdcount_uid,
+        NULL AS lc386__loyalty_card_active_pll__monthly_channel_brand_retailer__pit
     FROM txn_avg
     UNION ALL
     SELECT
@@ -151,14 +151,14 @@ combine_all AS (
             AS lc371__successful_loyalty_card_joins__monthly_channel_brand_retailer__csum,
         NULL
             AS lc385__successful_loyalty_card_join_mrkt_opt_in_percentage__monthly_channel_brand_retailer__percentage,
-        NULL AS t049__spend__monthly_retailer_channel__sum,
-        NULL AS t051__txns__monthly_retailer_channel__dcount,
-        NULL AS t054__aov__monthly_retailer_channel__avg,
-        NULL AS t055__arpu__monthly_retailer_channel__avg,
-        NULL AS t056__atf__monthly_retailer_channel__avg,
-        u200_active_users__retailer_monthly_channel__dcount_uid,
-        u201_active_users_retailer_monthly_channel__cdcount_uid,
-        NULL AS lc386__loyalty_card_active_pll__monthly_retailer_channel__pit
+        NULL AS t049__spend__monthly_channel_brand_retailer__sum,
+        NULL AS t051__txns__monthly_channel_brand_retailer__dcount,
+        NULL AS t054__aov__monthly_channel_brand_retailer__avg,
+        NULL AS t055__arpu__monthly_channel_brand_retailer__avg,
+        NULL AS t056__atf__monthly_channel_brand_retailer__avg,
+        u200_active_users__monthly_channel_brand_retailer__dcount_uid,
+        u201_active_users_monthly_channel_brand_retailer__cdcount_uid,
+        NULL AS lc386__loyalty_card_active_pll__monthly_channel_brand_retailer__pit
     FROM user_metrics
     UNION ALL
     SELECT
@@ -176,14 +176,14 @@ combine_all AS (
             AS lc371__successful_loyalty_card_joins__monthly_channel_brand_retailer__csum,
         NULL
             AS lc385__successful_loyalty_card_join_mrkt_opt_in_percentage__monthly_channel_brand_retailer__percentage,
-        NULL AS t049__spend__monthly_retailer_channel__sum,
-        NULL AS t051__txns__monthly_retailer_channel__dcount,
-        NULL AS t054__aov__monthly_retailer_channel__avg,
-        NULL AS t055__arpu__monthly_retailer_channel__avg,
-        NULL AS t056__atf__monthly_retailer_channel__avg,
-        NULL AS u200_active_users__retailer_monthly_channel__dcount_uid,
-        NULL AS u201_active_users_retailer_monthly_channel__cdcount_uid,
-        lc386__loyalty_card_active_pll__monthly_retailer_channel__pit
+        NULL AS t049__spend__monthly_channel_brand_retailer__sum,
+        NULL AS t051__txns__monthly_channel_brand_retailer__dcount,
+        NULL AS t054__aov__monthly_channel_brand_retailer__avg,
+        NULL AS t055__arpu__monthly_channel_brand_retailer__avg,
+        NULL AS t056__atf__monthly_channel_brand_retailer__avg,
+        NULL AS u200_active_users__monthly_channel_brand_retailer__dcount_uid,
+        NULL AS u201_active_users_monthly_channel_brand_retailer__cdcount_uid,
+        lc386__loyalty_card_active_pll__monthly_channel_brand_retailer__pit
     FROM pll_metrics
 )
 

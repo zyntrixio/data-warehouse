@@ -1,8 +1,8 @@
 /*
 CREATED BY:         CHRISTOPHER MITCHELL
 CREATED DATE:       2023-11-01
-LAST MODIFIED BY:
-LAST MODIFIED DATE:
+Last modified by: Anand Bhakta
+Last modified date: 2023-12-19
 
 DESCRIPTION:
     THIS QUERY IS USED TO CREATE THE MONTHLY PLL METRICS TABLE BY RETAILER.
@@ -52,7 +52,7 @@ rename as (
         loyalty_plan_name,
         loyalty_plan_company,
         pll_active_link_count
-            as lc386__loyalty_card_active_pll__monthly_retailer_channel__pit
+            as lc386__loyalty_card_active_pll__monthly_channel_brand_retailer__pit
     from count_up_snap
 )
 
