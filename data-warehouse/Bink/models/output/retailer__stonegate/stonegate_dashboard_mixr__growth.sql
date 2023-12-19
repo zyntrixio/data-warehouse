@@ -7,11 +7,11 @@ LAST MODIFIED DATE:
 DESCRIPTION:
     DATASOURCE TO PRODUCE TABLEAU DASHBOARD FOR STONEGATE GROUP - MIXR VIEW
 PARAMETERS:
-    SOURCE_OBJECT       - LC__LINKS_JOINS__monthly_channel_brand_retailer__GROWTH
-                        - TRANS__TRANS__monthly_channel_brand_retailer__GROWTH
-                        - TRANS__AVG__monthly_channel_brand_retailer__GROWTH
-                        - USER__TRANSACTIONS__monthly_channel_brand_retailer__GROWTH
-                        - LC__PLL__monthly_channel_brand_retailer__GROWTH
+    SOURCE_OBJECT       - LC__LINKS_JOINS__monthly_channel_retailer__GROWTH
+                        - TRANS__TRANS__monthly_channel_retailer__GROWTH
+                        - TRANS__AVG__monthly_channel_retailer__GROWTH
+                        - USER__TRANSACTIONS__monthly_channel_retailer__GROWTH
+                        - LC__PLL__monthly_channel_retailer__GROWTH
 */
 
 WITH lc_metric AS (
@@ -71,15 +71,15 @@ combine_all AS (
         channel,
         loyalty_plan_name,
         loyalty_plan_company,
-        LC324__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER__GROWTH,
-        NULL AS t049__spend__monthly_channel_brand_retailer__sum__growth,
-        NULL AS t051__txns__monthly_channel_brand_retailer__dcount__growth,
-        NULL AS t054__aov__monthly_channel_brand_retailer__avg__growth,
-        NULL AS t055__arpu__monthly_channel_brand_retailer__avg__growth,
-        NULL AS t056__atf__monthly_channel_brand_retailer__avg__growth,
-        NULL AS u200_active_users__monthly_channel_brand_retailer__dcount_uid__growth,
-        NULL AS u201_active_users_monthly_channel_brand_retailer__cdcount_uid__growth,
-        NULL AS lc386__loyalty_card_active_pll__monthly_channel_brand_retailer__pit__growth
+        LC324__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_RETAILER__DCOUNT_USER__GROWTH,
+        NULL AS t049__spend__monthly_channel_retailer__sum__growth,
+        NULL AS t051__txns__monthly_channel_retailer__dcount__growth,
+        NULL AS t054__aov__monthly_channel_retailer__avg__growth,
+        NULL AS t055__arpu__monthly_channel_retailer__avg__growth,
+        NULL AS t056__atf__monthly_channel_retailer__avg__growth,
+        NULL AS u200_active_users__monthly_channel_retailer__dcount_uid__growth,
+        NULL AS u201_active_users_monthly_channel_retailer__cdcount_uid__growth,
+        NULL AS lc386__loyalty_card_active_pll__monthly_channel_retailer__pit__growth
     FROM lc_metric
     UNION ALL
     SELECT
@@ -89,15 +89,15 @@ combine_all AS (
         loyalty_plan_name,
         loyalty_plan_company,
         NULL
-            AS LC324__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER__GROWTH,
-        t049__spend__monthly_channel_brand_retailer__sum__growth,
-        t051__txns__monthly_channel_brand_retailer__dcount__growth,
-        NULL AS t054__aov__monthly_channel_brand_retailer__avg__growth,
-        NULL AS t055__arpu__monthly_channel_brand_retailer__avg__growth,
-        NULL AS t056__atf__monthly_channel_brand_retailer__avg__growth,
-        NULL AS u200_active_users__monthly_channel_brand_retailer__dcount_uid__growth,
-        NULL AS u201_active_users_monthly_channel_brand_retailer__cdcount_uid__growth,
-        NULL AS lc386__loyalty_card_active_pll__monthly_channel_brand_retailer__pit__growth
+            AS LC324__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_RETAILER__DCOUNT_USER__GROWTH,
+        t049__spend__monthly_channel_retailer__sum__growth,
+        t051__txns__monthly_channel_retailer__dcount__growth,
+        NULL AS t054__aov__monthly_channel_retailer__avg__growth,
+        NULL AS t055__arpu__monthly_channel_retailer__avg__growth,
+        NULL AS t056__atf__monthly_channel_retailer__avg__growth,
+        NULL AS u200_active_users__monthly_channel_retailer__dcount_uid__growth,
+        NULL AS u201_active_users_monthly_channel_retailer__cdcount_uid__growth,
+        NULL AS lc386__loyalty_card_active_pll__monthly_channel_retailer__pit__growth
     FROM txn_metrics
     UNION ALL
     SELECT
@@ -107,15 +107,15 @@ combine_all AS (
         loyalty_plan_name,
         loyalty_plan_company,
         NULL
-            AS LC324__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER__GROWTH,
-        NULL AS t049__spend__monthly_channel_brand_retailer__sum__growth,
-        NULL AS t051__txns__monthly_channel_brand_retailer__dcount__growth,
-        t054__aov__monthly_channel_brand_retailer__avg__growth,
-        t055__arpu__monthly_channel_brand_retailer__avg__growth,
-        t056__atf__monthly_channel_brand_retailer__avg__growth,
-        NULL AS u200_active_users__monthly_channel_brand_retailer__dcount_uid__growth,
-        NULL AS u201_active_users_monthly_channel_brand_retailer__cdcount_uid__growth,
-        NULL AS lc386__loyalty_card_active_pll__monthly_channel_brand_retailer__pit__growth
+            AS LC324__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_RETAILER__DCOUNT_USER__GROWTH,
+        NULL AS t049__spend__monthly_channel_retailer__sum__growth,
+        NULL AS t051__txns__monthly_channel_retailer__dcount__growth,
+        t054__aov__monthly_channel_retailer__avg__growth,
+        t055__arpu__monthly_channel_retailer__avg__growth,
+        t056__atf__monthly_channel_retailer__avg__growth,
+        NULL AS u200_active_users__monthly_channel_retailer__dcount_uid__growth,
+        NULL AS u201_active_users_monthly_channel_retailer__cdcount_uid__growth,
+        NULL AS lc386__loyalty_card_active_pll__monthly_channel_retailer__pit__growth
     FROM txn_avg
     UNION ALL
     SELECT
@@ -125,15 +125,15 @@ combine_all AS (
         loyalty_plan_name,
         loyalty_plan_company,
         NULL
-            AS LC324__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER__GROWTH,
-        NULL AS t049__spend__monthly_channel_brand_retailer__sum__growth,
-        NULL AS t051__txns__monthly_channel_brand_retailer__dcount__growth,
-        NULL AS t054__aov__monthly_channel_brand_retailer__avg__growth,
-        NULL AS t055__arpu__monthly_channel_brand_retailer__avg__growth,
-        NULL AS t056__atf__monthly_channel_brand_retailer__avg__growth,
-        u200_active_users__monthly_channel_brand_retailer__dcount_uid__growth,
-        u201_active_users_monthly_channel_brand_retailer__cdcount_uid__growth,
-        NULL AS lc386__loyalty_card_active_pll__monthly_channel_brand_retailer__pit__growth
+            AS LC324__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_RETAILER__DCOUNT_USER__GROWTH,
+        NULL AS t049__spend__monthly_channel_retailer__sum__growth,
+        NULL AS t051__txns__monthly_channel_retailer__dcount__growth,
+        NULL AS t054__aov__monthly_channel_retailer__avg__growth,
+        NULL AS t055__arpu__monthly_channel_retailer__avg__growth,
+        NULL AS t056__atf__monthly_channel_retailer__avg__growth,
+        u200_active_users__monthly_channel_retailer__dcount_uid__growth,
+        u201_active_users_monthly_channel_retailer__cdcount_uid__growth,
+        NULL AS lc386__loyalty_card_active_pll__monthly_channel_retailer__pit__growth
     FROM user_metrics
     UNION ALL
     SELECT
@@ -143,15 +143,15 @@ combine_all AS (
         loyalty_plan_name,
         loyalty_plan_company,
         NULL
-            AS LC324__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_BRAND_RETAILER__DCOUNT_USER__GROWTH,
-        NULL AS t049__spend__monthly_channel_brand_retailer__sum__growth,
-        NULL AS t051__txns__monthly_channel_brand_retailer__dcount__growth,
-        NULL AS t054__aov__monthly_channel_brand_retailer__avg__growth,
-        NULL AS t055__arpu__monthly_channel_brand_retailer__avg__growth,
-        NULL AS t056__atf__monthly_channel_brand_retailer__avg__growth,
-        NULL AS u200_active_users__monthly_channel_brand_retailer__dcount_uid__growth,
-        NULL AS u201_active_users_monthly_channel_brand_retailer__cdcount_uid__growth,
-        lc386__loyalty_card_active_pll__monthly_channel_brand_retailer__pit__growth
+            AS LC324__SUCCESSFUL_LOYALTY_CARD_LINKS__MONTHLY_CHANNEL_RETAILER__DCOUNT_USER__GROWTH,
+        NULL AS t049__spend__monthly_channel_retailer__sum__growth,
+        NULL AS t051__txns__monthly_channel_retailer__dcount__growth,
+        NULL AS t054__aov__monthly_channel_retailer__avg__growth,
+        NULL AS t055__arpu__monthly_channel_retailer__avg__growth,
+        NULL AS t056__atf__monthly_channel_retailer__avg__growth,
+        NULL AS u200_active_users__monthly_channel_retailer__dcount_uid__growth,
+        NULL AS u201_active_users_monthly_channel_retailer__cdcount_uid__growth,
+        lc386__loyalty_card_active_pll__monthly_channel_retailer__pit__growth
     FROM pll_metrics
 )
 

@@ -14,5 +14,6 @@ Parameters:
                     ["DATE", "LOYALTY_PLAN_NAME", "LOYALTY_PLAN_COMPANY","CHANNEL"],
                     ["BRAND"],
                     ["LOYALTY_PLAN_NAME", "LOYALTY_PLAN_COMPANY","CHANNEL"],
-                    "DATE" )
+                    "DATE",
+                    "_BRAND")
 }}
