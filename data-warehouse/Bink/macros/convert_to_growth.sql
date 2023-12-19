@@ -1,8 +1,8 @@
 {# 
 Created by:         Anand Bhakta
 Created date:       2023-09-20
-Last modified by:   
-Last modified date: 
+Last modified by: Anand Bhakta
+Last modified date: 2023-12-19
 
 Description:
     This macro takes in a table or source table reference and then returns the columns as comparisons based on date 

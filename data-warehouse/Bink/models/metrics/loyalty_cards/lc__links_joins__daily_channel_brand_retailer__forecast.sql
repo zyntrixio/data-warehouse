@@ -1,8 +1,8 @@
 /*
 Created by:         Anand Bhakta
 Created date:       2023-11-14
-Last modified by:
-Last modified date:
+Last modified by: Anand Bhakta
+Last modified date: 2023-12-19
 
 Description:
         This query is used to create the forecasts for join metrics by retailer.

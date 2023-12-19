@@ -1,8 +1,8 @@
 /*
 Created by:         CHRISTOPHER MITCHELL
 Created date:       2023-11-15
-Last modified by:   Anand Bhakta
-Last modified date: 2023-12-18
+Last modified by: Anand Bhakta
+Last modified date: 2023-12-19
 
 Description:
         Convert the lc__links_joins__monthly_channel_brand_retailer table to growth metrics.

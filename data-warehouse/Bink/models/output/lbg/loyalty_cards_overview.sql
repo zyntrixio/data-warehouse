@@ -1,9 +1,8 @@
 /*
 Created by:         Anand Bhakta
 Created date:       2023-06-07
-Last modified by:
-Last modified date:
-
+Last modified by: Anand Bhakta
+Last modified date: 2023-12-19
 Description:
     Datasource to produce lloyds mi dashboard - loyalty_cards_overview
 Parameters:

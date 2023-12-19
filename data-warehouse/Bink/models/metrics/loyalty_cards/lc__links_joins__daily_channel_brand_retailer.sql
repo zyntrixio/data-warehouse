@@ -1,8 +1,8 @@
 /*
 Created by:         Anand Bhakta
 Created date:       2023-02-05
-Last modified by:
-Last modified date:
+Last modified by: Anand Bhakta
+Last modified date: 2023-12-19
 
 Description:
     This query is used to create the daily loyalty card links and joins metrics table by retailer and channel.

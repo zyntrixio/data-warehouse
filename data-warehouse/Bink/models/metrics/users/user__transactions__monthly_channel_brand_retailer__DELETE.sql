@@ -1,9 +1,8 @@
 /*
 Created by:         Christopher Mitchell
 Created date:       2023-07-03
-Last modified by:   Christopher Mitchell
-Last modified date: 2023-08-24
-
+Last modified by: Anand Bhakta
+Last modified date: 2023-12-19
 Description:
     User transaction metrics monthly by channel, brand and retailera
 Parameters:
