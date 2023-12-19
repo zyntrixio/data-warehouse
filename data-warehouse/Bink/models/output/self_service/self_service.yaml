@@ -4,8 +4,8 @@ models:
   - name: metrics_union_retailer
     description: "Data source for all metrics unioned wwith granularity of retailer"
 
-  - name: metrics_union_retailer_channel
+  - name: metrics_union_retailer_channel_brand
     description: "Data source for all metrics unioned wwith granularity of retailer and channel"
 
-  - name: metrics_union_channel
+  - name: metrics_union_channel_brand
     description: "Data source for all metrics unioned wwith granularity of channel"

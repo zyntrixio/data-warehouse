@@ -10,7 +10,7 @@ Parameters:
     source_object       - trans__trans__monthly_retailer
 */
 
-{{convert_to_growth("trans__trans__monthly_retailer_channel",
+{{convert_to_growth("trans__trans__monthly_channel_brand_retailer",
                     ["DATE", "LOYALTY_PLAN_NAME", "LOYALTY_PLAN_COMPANY","CHANNEL"],
                     ["BRAND"],
                     ["LOYALTY_PLAN_NAME", "LOYALTY_PLAN_COMPANY","CHANNEL"],

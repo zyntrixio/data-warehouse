@@ -7,7 +7,7 @@ Last modified date:  2023-08-23
 Description:
     Datasource to produce lloyds mi dashboard - LBG Revenue Share
 Parameters:
-    source_object       - lc__links_joins__monthly_retailer_channel
+    source_object       - lc__links_joins__monthly_channel_brand_retailer
                         - user__transactions__monthly_channel_brand_retailer
 */
 with
@@ -20,7 +20,7 @@ joins as (
         loyalty_plan_company,
         lc328__successful_loyalty_card_joins__monthly_channel_brand_retailer__dcount_user,
         'JOINS' as tab
-    from {{ ref("lc__links_joins__monthly_retailer_channel") }}
+    from {{ ref("lc__links_joins__monthly_channel_brand_retailer") }}
     where
         channel = 'LLOYDS'
         and loyalty_plan_company not in ('Loyalteas', 'Bink Sweet Shop')

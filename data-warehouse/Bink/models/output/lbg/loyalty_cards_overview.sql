@@ -7,7 +7,7 @@ Last modified date:
 Description:
     Datasource to produce lloyds mi dashboard - loyalty_cards_overview
 Parameters:
-    source_object       - lc__links_joins__daily_retailer_channel
+    source_object       - lc__links_joins__daily_channel_brand_retailer
                         - user__loyalty_card__daily_channel_brand
 */
 with
@@ -15,7 +15,7 @@ lc_metrics as (
     select
         *,
         'LC' as tab
-    from {{ ref("lc__links_joins__daily_retailer_channel") }}
+    from {{ ref("lc__links_joins__daily_channel_brand_retailer") }}
     where
         channel = 'LLOYDS'
         and loyalty_plan_company not in ('Loyalteas', 'Bink Sweet Shop')

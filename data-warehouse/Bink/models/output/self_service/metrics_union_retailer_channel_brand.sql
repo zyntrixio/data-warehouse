@@ -13,15 +13,15 @@ Parameters:
                         - user__transactions__monthly_retailer
 
  depends_on:    {{ ref('lc__pll__monthly_retailer') }}
-                {{ ref('lc__pll__monthly_retailer_channel')}}
-                {{ ref('lc__links_joins__daily_retailer_channel') }}
+                {{ ref('lc__pll__monthly_channel_brand_retailer')}}
+                {{ ref('lc__links_joins__daily_channel_brand_retailer') }}
                 {{ ref('lc__links_joins__monthly_retailer') }}
                 {{ ref('lc__links_joins__daily_retailer') }}
-                {{ ref('lc__links_joins__monthly_retailer_channel') }}
+                {{ ref('lc__links_joins__monthly_channel_brand_retailer') }}
                 {{ ref('trans__trans__monthly_retailer') }}
                 {{ ref('trans__avg__monthly_retailer') }}
                 {{ ref('trans__trans__daily_retailer') }}
-                {{ ref('trans__trans__daily_retailer_channel') }}
+                {{ ref('trans__trans__daily_channel_brand_retailer') }}
                 {{ ref('voucher__counts__monthly_retailer') }}
                 {{ ref('voucher__counts__daily_channel_brand_retailer') }}
                 {{ ref('voucher__times__voucher_level_channel_brand') }}
@@ -29,9 +29,9 @@ Parameters:
                 {{ ref('user__registrations__daily_channel_brand') }}
                 {{ ref('user__transactions__monthly_retailer') }}
                 {{ ref('user__loyalty_card__daily_channel_brand') }}
-                {{ ref('trans__avg__monthly_retailer_channel')}}
-                {{ ref('trans__trans__monthly_retailer_channel')}}
-                {{ ref('user__transactions__monthly_retailer_channel')}}
+                {{ ref('trans__avg__monthly_channel_retailer')}}
+                {{ ref('trans__trans__monthly_channel_brand_retailer')}}
+                {{ ref('user__transactions__monthly_channel_brand_retailer')}}
 */
 
 
@@ -43,6 +43,7 @@ Parameters:
         "level" not in model.name and
         'retailer' in model.name and
         'channel' in model.name and
+        'brand' in model.name and
         'forecast' not in model.name
     %}
                 {{

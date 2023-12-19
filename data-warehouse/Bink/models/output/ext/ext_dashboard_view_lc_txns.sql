@@ -7,15 +7,15 @@ LAST MODIFIED DATE:
 DESCRIPTION:
     OUTPUT LAYER FOR EXT DASHBOARD
 PARAMETERS:
-    SOURCE_OBJECT       - lc__links_joins__daily_retailer_channel
-                        - trans__trans__daily_retailer_channel
+    SOURCE_OBJECT       - lc__links_joins__daily_channel_brand_retailer
+                        - trans__trans__daily_channel_brand_retailer
 */
 
 WITH lc AS (
     SELECT
         *,
         'LOYALTY CARD' AS category
-    FROM {{ ref('lc__links_joins__daily_retailer_channel') }}
+    FROM {{ ref('lc__links_joins__daily_channel_brand_retailer') }}
     WHERE channel IN ('LLOYDS', 'MIXR')
 ),
 
@@ -23,7 +23,7 @@ txns AS (
     SELECT
         *,
         'TRANSACTIONS' AS category
-    FROM {{ ref('trans__trans__daily_retailer_channel') }}
+    FROM {{ ref('trans__trans__daily_channel_brand_retailer') }}
     WHERE channel IN ('LLOYDS', 'MIXR')
 ),
 

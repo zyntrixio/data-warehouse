@@ -8,7 +8,7 @@ Description:
     Datasource to produce lloyds mi dashboard - loyalty_cards_overview
 Parameters:
     source_object       - lc__errors__daily_status_rollup_user_level
-                        - lc__links_joins__daily_retailer_channel
+                        - lc__links_joins__daily_channel_brand_retailer
 */
 with
 lc_errors as (
@@ -26,7 +26,7 @@ lc_core as (
     select
         *,
         'LC_LINKS_JOINS' as tab
-    from {{ ref("lc__links_joins__daily_retailer_channel") }}
+    from {{ ref("lc__links_joins__daily_channel_brand_retailer") }}
     where
         channel = 'LLOYDS'
         and loyalty_plan_company not in ('Loyalteas', 'Bink Sweet Shop')

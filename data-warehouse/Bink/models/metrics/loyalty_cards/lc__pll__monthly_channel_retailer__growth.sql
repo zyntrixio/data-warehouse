@@ -10,7 +10,7 @@ Parameters:
     source_object       - lc__pll__monthly_retailer
 */
 
-{{convert_to_growth("lc__pll__monthly_retailer_channel",
+{{convert_to_growth("lc__pll__monthly_channel_brand_retailer",
                     ["DATE", "LOYALTY_PLAN_NAME", "LOYALTY_PLAN_COMPANY","CHANNEL"],
                     ["BRAND"],
                     ["LOYALTY_PLAN_NAME", "LOYALTY_PLAN_COMPANY","CHANNEL"],

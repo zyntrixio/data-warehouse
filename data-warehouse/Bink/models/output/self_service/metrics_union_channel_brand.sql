@@ -13,14 +13,14 @@ Parameters:
                         - user__transactions__monthly_retailer
 
  depends_on:    {{ ref('lc__pll__monthly_retailer') }}
-                {{ ref('lc__links_joins__daily_retailer_channel') }}
+                {{ ref('lc__links_joins__daily_channel_brand_retailer') }}
                 {{ ref('lc__links_joins__monthly_retailer') }}
                 {{ ref('lc__links_joins__daily_retailer') }}
-                {{ ref('lc__links_joins__monthly_retailer_channel') }}
+                {{ ref('lc__links_joins__monthly_channel_brand_retailer') }}
                 {{ ref('trans__trans__monthly_retailer') }}
                 {{ ref('trans__avg__monthly_retailer') }}
                 {{ ref('trans__trans__daily_retailer') }}
-                {{ ref('trans__trans__daily_retailer_channel') }}
+                {{ ref('trans__trans__daily_channel_brand_retailer') }}
                 {{ ref('voucher__counts__monthly_retailer') }}
                 {{ ref('voucher__counts__daily_channel_brand_retailer') }}
                 {{ ref('voucher__times__voucher_level_channel_brand') }}

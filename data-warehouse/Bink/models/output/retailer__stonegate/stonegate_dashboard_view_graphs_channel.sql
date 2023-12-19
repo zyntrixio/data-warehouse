@@ -17,7 +17,7 @@ lc_metric as (
     select
         *,
         'JOINS' as category
-    from {{ ref("lc__links_joins__daily_retailer_channel") }}
+    from {{ ref("lc__links_joins__daily_channel_brand_retailer") }}
     where loyalty_plan_company = 'Stonegate Group'
 ),
 
@@ -25,7 +25,7 @@ txn_metrics as (
     select
         *,
         'SPEND' as category
-    from {{ ref("trans__trans__daily_retailer_channel") }}
+    from {{ ref("trans__trans__daily_channel_brand_retailer") }}
     where loyalty_plan_company = 'Stonegate Group'
 ),
 
@@ -33,7 +33,7 @@ lc_metric_forecast as (
     select
         *,
         'JOINS' as category
-    from {{ ref("lc__links_joins__daily_retailer_channel__forecast") }}
+    from {{ ref("lc__links_joins__daily_channel_brand_retailer__forecast") }}
     where loyalty_plan_company = 'Stonegate Group'
 ),
 
@@ -41,7 +41,7 @@ txn_metrics_forecast as (
     select
         *,
         'SPEND' as category
-    from {{ ref("trans__trans__daily_retailer_channel__forecast") }}
+    from {{ ref("trans__trans__daily_channel_brand_retailer__forecast") }}
     where loyalty_plan_company = 'Stonegate Group'
 ),
 
