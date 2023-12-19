@@ -32,7 +32,7 @@ active as (
         channel,
         brand,
         loyalty_plan_company,
-        u109__active_users__monthly_channel_brand_retailer__dcount_uid,
+        U203_ACTIVE_USERS_INC_REFUNDS__monthly_channel_brand_retailer__DCOUNT_UID,
         'ACTIVE' as tab
     from {{ ref("user__transactions__monthly_channel_brand_retailer") }}
     where
@@ -49,7 +49,7 @@ combine as (
         loyalty_plan_company,
         lc328__successful_loyalty_card_joins__monthly_channel_brand_retailer__dcount_user
         ,
-        null as u109__active_users__monthly_channel_brand_retailer__dcount_uid
+        null as U203_ACTIVE_USERS_INC_REFUNDS__monthly_channel_brand_retailer__DCOUNT_UID
     from joins
     union all
     select
@@ -61,7 +61,7 @@ combine as (
         null
             as lc328__successful_loyalty_card_joins__monthly_channel_brand_retailer__dcount_user
         ,
-        u109__active_users__monthly_channel_brand_retailer__dcount_uid
+        U203_ACTIVE_USERS_INC_REFUNDS__monthly_channel_brand_retailer__DCOUNT_UID
     from active
 )
 
