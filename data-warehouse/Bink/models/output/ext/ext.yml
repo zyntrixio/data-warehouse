@@ -6,3 +6,6 @@ models:
 
   - name: ext_dashboard_view_usr
     description: bi layer for ext dashboard for loyalty card and transactions
+
+  - name: ext_dashboard_view_forecast
+    description: bi layer for ext dashboard for forecast
