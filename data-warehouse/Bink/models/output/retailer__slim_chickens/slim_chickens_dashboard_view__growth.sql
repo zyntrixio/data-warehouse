@@ -1,8 +1,8 @@
 /*
 Created by:         Anand Bhakta
 Created date:       2023-10-19
-Last modified by:
-Last modified date:
+Last modified by:   Christopher Mitchell
+Last modified date: 2024-01-03
 
 Description:
     Datasource to produce tableau dashboard for Slim Chickens
@@ -53,6 +53,14 @@ pll_metrics as (
     where loyalty_plan_company = 'Slim Chickens'
 ),
 
+voucher_metrics as (
+    select
+        *,
+        'VOUCHERS' as category
+    from {{ ref('voucher__counts__monthly_retailer_growth') }}
+    where loyalty_plan_company = 'Slim Chickens'
+),
+
 combine_all as (
     select
         date,
@@ -72,9 +80,7 @@ combine_all as (
         null as t015__arpu__monthly_retailer__avg__growth,
         null as t016__atf__monthly_retailer__avg__growth,
         null as v012__issued_vouchers__monthly_retailer__dcount__growth,
-        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher__growth,
-        null as v013__stamps_issued__monthly_retailer__dcount__growth,
-        null as v014__stamps_issued__monthly_retailer__cdcount__growth
+        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher__growth
     from lc_metric
     union all
     select
@@ -98,9 +104,7 @@ combine_all as (
         null as t015__arpu__monthly_retailer__avg__growth,
         null as t016__atf__monthly_retailer__avg__growth,
         null as v012__issued_vouchers__monthly_retailer__dcount__growth,
-        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher__growth,
-        null as v013__stamps_issued__monthly_retailer__dcount__growth,
-        null as v014__stamps_issued__monthly_retailer__cdcount__growth
+        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher__growth
     from txn_metrics
     union all
     select
@@ -124,9 +128,7 @@ combine_all as (
         t015__arpu__monthly_retailer__avg__growth,
         t016__atf__monthly_retailer__avg__growth,
         null as v012__issued_vouchers__monthly_retailer__dcount__growth,
-        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher__growth,
-        null as v013__stamps_issued__monthly_retailer__dcount__growth,
-        null as v014__stamps_issued__monthly_retailer__cdcount__growth
+        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher__growth
     from txn_avg
     union all
     select
@@ -150,9 +152,7 @@ combine_all as (
         null as t015__arpu__monthly_retailer__avg__growth,
         null as t016__atf__monthly_retailer__avg__growth,
         null as v012__issued_vouchers__monthly_retailer__dcount__growth,
-        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher__growth,
-        null as v013__stamps_issued__monthly_retailer__dcount__growth,
-        null as v014__stamps_issued__monthly_retailer__cdcount__growth
+        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher__growth
     from user_metrics
     union all
     select
@@ -176,10 +176,32 @@ combine_all as (
         null as t015__arpu__monthly_retailer__avg__growth,
         null as t016__atf__monthly_retailer__avg__growth,
         null as v012__issued_vouchers__monthly_retailer__dcount__growth,
-        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher__growth,
-        null as v013__stamps_issued__monthly_retailer__dcount__growth,
-        null as v014__stamps_issued__monthly_retailer__cdcount__growth
+        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher__growth
     from pll_metrics
+    union all
+    select
+        date,
+        category,
+        loyalty_plan_name,
+        loyalty_plan_company,
+        null
+            as lc347__successful_loyalty_card_joins__monthly_retailer__count__growth__growth,
+        null
+            as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user__growth,
+        null
+            as lc334__successful_loyalty_card_join_mrkt_opt_in_per_successful_loyalty_card_join__monthly_retailer__percentage__growth,
+        null as lc201__loyalty_card_active_pll__monthly_retailer__pit__growth,
+        null as u107_active_users__retailer_monthly__dcount_uid__growth,
+        null as u108_active_users_retailer_monthly__cdcount_uid__growth,
+        null as t011__txns__monthly_retailer__dcount__growth,
+        null as t012__refund__monthly_retailer__dcount__growth,
+        null as t009__spend__monthly_retailer__sum__growth,
+        null as t014__aov__monthly_retailer__avg__growth,
+        null as t015__arpu__monthly_retailer__avg__growth,
+        null as t016__atf__monthly_retailer__avg__growth,
+        v012__issued_vouchers__monthly_retailer__dcount__growth,
+        v009__issued_vouchers__monthly_retailer__cdsum_voucher__growth
+    from voucher_metrics
 )
 
 select *
