@@ -52,8 +52,8 @@ final AS (
         category,
         channel,
         brand,
-        loyalty_plan_company,
         loyalty_plan_name,
+        loyalty_plan_company,
         NULL
             AS lc013__successful_loyalty_card_joins__daily_channel_brand_retailer__count,
         NULL
