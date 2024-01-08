@@ -1,8 +1,8 @@
 /*
 Created by:         Anand Bhakta
 Created date:       2023-10-19
-Last modified by:
-Last modified date:
+Last modified by:   Christopher Mitchell
+Last modified date: 2024-01-08
 
 Description:
     Datasource to produce tableau dashboard for Slim Chickens graphs
@@ -36,7 +36,9 @@ combine_all as (
         loyalty_plan_name,
         loyalty_plan_company,
         lc067__successful_loyalty_card_joins__daily_retailer__csum,
-        null as t027__spend__daily_retailer__csum
+        lc047__successful_loyalty_card_joins__daily_retailer__count,
+        null as t027__spend__daily_retailer__csum,
+        null as t033__spend__daily_retailer__sum
     from lc_metric
     union all
     select
@@ -45,7 +47,9 @@ combine_all as (
         loyalty_plan_name,
         loyalty_plan_company,
         null as lc067__successful_loyalty_card_joins__daily_retailer__csum,
-        t027__spend__daily_retailer__csum
+        null as lc047__successful_loyalty_card_joins__daily_retailer__count,
+        t027__spend__daily_retailer__csum,
+        t033__spend__daily_retailer__sum
     from txn_metrics
 )
 
