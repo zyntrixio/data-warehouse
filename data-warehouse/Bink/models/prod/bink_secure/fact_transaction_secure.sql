@@ -130,7 +130,7 @@ add_mc_users as (
         t.loyalty_card_id,
         t.merchant_id,
         t.payment_account_id,
-        p.ARRAY_AGG(p.user_id) alt_user_id,
+        ARRAY_AGG(p.user_id) alt_user_id,
         t.settlement_key,
         t.auth_code,
         t.approval_code,
