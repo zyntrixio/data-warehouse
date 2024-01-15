@@ -14,56 +14,56 @@ Parameters:
                         - voucher__counts__monthly_retailer
 */
 
-WITH lc_metric AS (
-    SELECT
+with lc_metric as (
+    select
         *,
-        'JOINS' AS category
-    FROM {{ ref('lc__links_joins__monthly_retailer') }}
-    WHERE loyalty_plan_company = 'Viator'
+        'JOINS' as category
+    from {{ ref('lc__links_joins__monthly_retailer') }}
+    where loyalty_plan_company = 'Viator'
 ),
 
-txn_metrics AS (
-    SELECT
+txn_metrics as (
+    select
         *,
-        'SPEND' AS category
-    FROM {{ ref('trans__trans__monthly_retailer') }}
-    WHERE loyalty_plan_company = 'Viator'
+        'SPEND' as category
+    from {{ ref('trans__trans__monthly_retailer') }}
+    where loyalty_plan_company = 'Viator'
 ),
 
-txn_avg AS (
-    SELECT
+txn_avg as (
+    select
         *,
-        'SPEND' AS category
-    FROM {{ ref('trans__avg__monthly_retailer') }}
-    WHERE loyalty_plan_company = 'Viator'
+        'SPEND' as category
+    from {{ ref('trans__avg__monthly_retailer') }}
+    where loyalty_plan_company = 'Viator'
 ),
 
-user_metrics AS (
-    SELECT
+user_metrics as (
+    select
         *,
-        'USERS' AS category
-    FROM {{ ref('user__transactions__monthly_retailer') }}
-    WHERE loyalty_plan_company = 'Viator'
+        'USERS' as category
+    from {{ ref('user__transactions__monthly_retailer') }}
+    where loyalty_plan_company = 'Viator'
 ),
 
-pll_metrics AS (
-    SELECT
+pll_metrics as (
+    select
         *,
-        'JOINS' AS category
-    FROM {{ ref('lc__pll__monthly_retailer') }}
-    WHERE loyalty_plan_company = 'Viator'
+        'JOINS' as category
+    from {{ ref('lc__pll__monthly_retailer') }}
+    where loyalty_plan_company = 'Viator'
 ),
 
-voucher_metrics AS (
-    SELECT
+voucher_metrics as (
+    select
         *,
-        'VOUCHERS' AS category
-    FROM {{ ref('voucher__counts__monthly_retailer') }}
-    WHERE loyalty_plan_company = 'Viator'
+        'VOUCHERS' as category
+    from {{ ref('voucher__counts__monthly_retailer') }}
+    where loyalty_plan_company = 'Viator'
 ),
 
-combine_all AS (
-    SELECT
+combine_all as (
+    select
         date,
         category,
         loyalty_plan_name,
@@ -71,141 +71,141 @@ combine_all AS (
         lc379__successful_loyalty_card_joins__monthly_retailer__csum,
         lc347__successful_loyalty_card_joins__monthly_retailer__count,
         lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count,
-        NULL AS t014__aov__monthly_retailer__avg,
-        NULL AS t016__atf__monthly_retailer__avg,
-        NULL AS t015__arpu__monthly_retailer__avg,
-        NULL AS t012__refund__monthly_retailer__dcount,
-        NULL AS t011__txns__monthly_retailer__dcount,
-        NULL AS u107_active_users__retailer_monthly__dcount_uid,
-        NULL AS u108_active_users_retailer_monthly__cdcount_uid,
-        NULL AS lc201__loyalty_card_active_pll__monthly_retailer__pit,
-        NULL AS t009__spend__monthly_retailer__sum,
-        NULL AS v012__issued_vouchers__monthly_retailer__dcount,
-        NULL AS v009__issued_vouchers__monthly_retailer__cdsum_voucher,
-        NULL AS v013__redeemed_vouchers__monthly_retailer__dcount,
-        NULL AS v010__redeemed_vouchers__monthly_retailer__cdsum_voucher
-    FROM lc_metric
-    UNION ALL
-    SELECT
+        null as t014__aov__monthly_retailer__avg,
+        null as t016__atf__monthly_retailer__avg,
+        null as t015__arpu__monthly_retailer__avg,
+        null as t012__refund__monthly_retailer__dcount,
+        null as t011__txns__monthly_retailer__dcount,
+        null as u107_active_users__retailer_monthly__dcount_uid,
+        null as u108_active_users_retailer_monthly__cdcount_uid,
+        null as lc201__loyalty_card_active_pll__monthly_retailer__pit,
+        null as t009__spend__monthly_retailer__sum,
+        null as v012__issued_vouchers__monthly_retailer__dcount,
+        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher,
+        null as v013__redeemed_vouchers__monthly_retailer__dcount,
+        null as v010__redeemed_vouchers__monthly_retailer__cdsum_voucher
+    from lc_metric
+    union all
+    select
         date,
         category,
         loyalty_plan_name,
         loyalty_plan_company,
-        NULL AS lc379__successful_loyalty_card_joins__monthly_retailer__csum,
-        NULL AS lc347__successful_loyalty_card_joins__monthly_retailer__count,
-        NULL
-            AS lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count,
-        NULL AS t014__aov__monthly_retailer__avg,
-        NULL AS t016__atf__monthly_retailer__avg,
-        NULL AS t015__arpu__monthly_retailer__avg,
+        null as lc379__successful_loyalty_card_joins__monthly_retailer__csum,
+        null as lc347__successful_loyalty_card_joins__monthly_retailer__count,
+        null
+            as lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count,
+        null as t014__aov__monthly_retailer__avg,
+        null as t016__atf__monthly_retailer__avg,
+        null as t015__arpu__monthly_retailer__avg,
         t012__refund__monthly_retailer__dcount,
         t011__txns__monthly_retailer__dcount,
-        NULL AS u107_active_users__retailer_monthly__dcount_uid,
-        NULL AS u108_active_users_retailer_monthly__cdcount_uid,
-        NULL AS lc201__loyalty_card_active_pll__monthly_retailer__pit,
+        null as u107_active_users__retailer_monthly__dcount_uid,
+        null as u108_active_users_retailer_monthly__cdcount_uid,
+        null as lc201__loyalty_card_active_pll__monthly_retailer__pit,
         t009__spend__monthly_retailer__sum,
-        NULL AS v012__issued_vouchers__monthly_retailer__dcount,
-        NULL AS v009__issued_vouchers__monthly_retailer__cdsum_voucher,
-        NULL AS v013__redeemed_vouchers__monthly_retailer__dcount,
-        NULL AS v010__redeemed_vouchers__monthly_retailer__cdsum_voucher
-    FROM txn_metrics
-    UNION ALL
-    SELECT
+        null as v012__issued_vouchers__monthly_retailer__dcount,
+        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher,
+        null as v013__redeemed_vouchers__monthly_retailer__dcount,
+        null as v010__redeemed_vouchers__monthly_retailer__cdsum_voucher
+    from txn_metrics
+    union all
+    select
         date,
         category,
         loyalty_plan_name,
         loyalty_plan_company,
-        NULL AS lc379__successful_loyalty_card_joins__monthly_retailer__csum,
-        NULL AS lc347__successful_loyalty_card_joins__monthly_retailer__count,
-        NULL
-            AS lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count,
+        null as lc379__successful_loyalty_card_joins__monthly_retailer__csum,
+        null as lc347__successful_loyalty_card_joins__monthly_retailer__count,
+        null
+            as lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count,
         t014__aov__monthly_retailer__avg,
         t016__atf__monthly_retailer__avg,
         t015__arpu__monthly_retailer__avg,
-        NULL AS t012__refund__monthly_retailer__dcount,
-        NULL AS t011__txns__monthly_retailer__dcount,
-        NULL AS u107_active_users__retailer_monthly__dcount_uid,
-        NULL AS u108_active_users_retailer_monthly__cdcount_uid,
-        NULL AS lc201__loyalty_card_active_pll__monthly_retailer__pit,
-        NULL AS t009__spend__monthly_retailer__sum,
-        NULL AS v012__issued_vouchers__monthly_retailer__dcount,
-        NULL AS v009__issued_vouchers__monthly_retailer__cdsum_voucher,
-        NULL AS v013__redeemed_vouchers__monthly_retailer__dcount,
-        NULL AS v010__redeemed_vouchers__monthly_retailer__cdsum_voucher
-    FROM txn_avg
-    UNION ALL
-    SELECT
+        null as t012__refund__monthly_retailer__dcount,
+        null as t011__txns__monthly_retailer__dcount,
+        null as u107_active_users__retailer_monthly__dcount_uid,
+        null as u108_active_users_retailer_monthly__cdcount_uid,
+        null as lc201__loyalty_card_active_pll__monthly_retailer__pit,
+        null as t009__spend__monthly_retailer__sum,
+        null as v012__issued_vouchers__monthly_retailer__dcount,
+        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher,
+        null as v013__redeemed_vouchers__monthly_retailer__dcount,
+        null as v010__redeemed_vouchers__monthly_retailer__cdsum_voucher
+    from txn_avg
+    union all
+    select
         date,
         category,
         loyalty_plan_name,
         loyalty_plan_company,
-        NULL AS lc379__successful_loyalty_card_joins__monthly_retailer__csum,
-        NULL AS lc347__successful_loyalty_card_joins__monthly_retailer__count,
-        NULL
-            AS lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count,
-        NULL AS t014__aov__monthly_retailer__avg,
-        NULL AS t016__atf__monthly_retailer__avg,
-        NULL AS t015__arpu__monthly_retailer__avg,
-        NULL AS t012__refund__monthly_retailer__dcount,
-        NULL AS t011__txns__monthly_retailer__dcount,
+        null as lc379__successful_loyalty_card_joins__monthly_retailer__csum,
+        null as lc347__successful_loyalty_card_joins__monthly_retailer__count,
+        null
+            as lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count,
+        null as t014__aov__monthly_retailer__avg,
+        null as t016__atf__monthly_retailer__avg,
+        null as t015__arpu__monthly_retailer__avg,
+        null as t012__refund__monthly_retailer__dcount,
+        null as t011__txns__monthly_retailer__dcount,
         u107_active_users__retailer_monthly__dcount_uid,
         u108_active_users_retailer_monthly__cdcount_uid,
-        NULL AS lc201__loyalty_card_active_pll__monthly_retailer__pit,
-        NULL AS t009__spend__monthly_retailer__sum,
-        NULL AS v012__issued_vouchers__monthly_retailer__dcount,
-        NULL AS v009__issued_vouchers__monthly_retailer__cdsum_voucher,
-        NULL AS v013__redeemed_vouchers__monthly_retailer__dcount,
-        NULL AS v010__redeemed_vouchers__monthly_retailer__cdsum_voucher
-    FROM user_metrics
-    UNION ALL
-    SELECT
+        null as lc201__loyalty_card_active_pll__monthly_retailer__pit,
+        null as t009__spend__monthly_retailer__sum,
+        null as v012__issued_vouchers__monthly_retailer__dcount,
+        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher,
+        null as v013__redeemed_vouchers__monthly_retailer__dcount,
+        null as v010__redeemed_vouchers__monthly_retailer__cdsum_voucher
+    from user_metrics
+    union all
+    select
         date,
         category,
         loyalty_plan_name,
         loyalty_plan_company,
-        NULL AS lc379__successful_loyalty_card_joins__monthly_retailer__csum,
-        NULL AS lc347__successful_loyalty_card_joins__monthly_retailer__count,
-        NULL
-            AS lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count,
-        NULL AS t014__aov__monthly_retailer__avg,
-        NULL AS t016__atf__monthly_retailer__avg,
-        NULL AS t015__arpu__monthly_retailer__avg,
-        NULL AS t012__refund__monthly_retailer__dcount,
-        NULL AS t011__txns__monthly_retailer__dcount,
-        NULL AS u107_active_users__retailer_monthly__dcount_uid,
-        NULL AS u108_active_users_retailer_monthly__cdcount_uid,
+        null as lc379__successful_loyalty_card_joins__monthly_retailer__csum,
+        null as lc347__successful_loyalty_card_joins__monthly_retailer__count,
+        null
+            as lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count,
+        null as t014__aov__monthly_retailer__avg,
+        null as t016__atf__monthly_retailer__avg,
+        null as t015__arpu__monthly_retailer__avg,
+        null as t012__refund__monthly_retailer__dcount,
+        null as t011__txns__monthly_retailer__dcount,
+        null as u107_active_users__retailer_monthly__dcount_uid,
+        null as u108_active_users_retailer_monthly__cdcount_uid,
         lc201__loyalty_card_active_pll__monthly_retailer__pit,
-        NULL AS t009__spend__monthly_retailer__sum,
-        NULL AS v012__issued_vouchers__monthly_retailer__dcount,
-        NULL AS v009__issued_vouchers__monthly_retailer__cdsum_voucher,
-        NULL AS v013__redeemed_vouchers__monthly_retailer__dcount,
-        NULL AS v010__redeemed_vouchers__monthly_retailer__cdsum_voucher
-    FROM pll_metrics
-    UNION ALL
-    SELECT
+        null as t009__spend__monthly_retailer__sum,
+        null as v012__issued_vouchers__monthly_retailer__dcount,
+        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher,
+        null as v013__redeemed_vouchers__monthly_retailer__dcount,
+        null as v010__redeemed_vouchers__monthly_retailer__cdsum_voucher
+    from pll_metrics
+    union all
+    select
         date,
         category,
         loyalty_plan_name,
         loyalty_plan_company,
-        NULL AS lc379__successful_loyalty_card_joins__monthly_retailer__csum,
-        NULL AS lc347__successful_loyalty_card_joins__monthly_retailer__count,
-        NULL
-            AS lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count,
-        NULL AS t014__aov__monthly_retailer__avg,
-        NULL AS t016__atf__monthly_retailer__avg,
-        NULL AS t015__arpu__monthly_retailer__avg,
-        NULL AS t012__refund__monthly_retailer__dcount,
-        NULL AS t011__txns__monthly_retailer__dcount,
-        NULL AS u107_active_users__retailer_monthly__dcount_uid,
-        NULL AS u108_active_users_retailer_monthly__cdcount_uid,
-        NULL AS lc201__loyalty_card_active_pll__monthly_retailer__pit,
-        NULL AS t009__spend__monthly_retailer__sum,
+        null as lc379__successful_loyalty_card_joins__monthly_retailer__csum,
+        null as lc347__successful_loyalty_card_joins__monthly_retailer__count,
+        null
+            as lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count,
+        null as t014__aov__monthly_retailer__avg,
+        null as t016__atf__monthly_retailer__avg,
+        null as t015__arpu__monthly_retailer__avg,
+        null as t012__refund__monthly_retailer__dcount,
+        null as t011__txns__monthly_retailer__dcount,
+        null as u107_active_users__retailer_monthly__dcount_uid,
+        null as u108_active_users_retailer_monthly__cdcount_uid,
+        null as lc201__loyalty_card_active_pll__monthly_retailer__pit,
+        null as t009__spend__monthly_retailer__sum,
         v012__issued_vouchers__monthly_retailer__dcount,
         v009__issued_vouchers__monthly_retailer__cdsum_voucher,
         v013__redeemed_vouchers__monthly_retailer__dcount,
         v010__redeemed_vouchers__monthly_retailer__cdsum_voucher
-    FROM voucher_metrics
+    from voucher_metrics
 )
 
-SELECT *
-FROM combine_all
+select *
+from combine_all
