@@ -75,8 +75,8 @@ WITH lc_metric AS (
     UNION ALL
     SELECT date,
            category,
-           loyalty_plan_company,
            loyalty_plan_name,
+           loyalty_plan_company,
            NULL AS lc379__successful_loyalty_card_joins__monthly_retailer__csum__growth,
            NULL AS lc347__successful_loyalty_card_joins__monthly_retailer__count__growth,
            NULL AS lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count__growth,
