@@ -10,6 +10,15 @@ models:
         - accepted_values:
             values: ['Viator']
 
+  - name: viator_dashboard_view__growth
+    description: "Data source for testing Viator Overview Growth Metrics"
+    columns:
+     - name: 'LOYALTY_PLAN_COMPANY'
+       tests:
+        - not_null  
+        - accepted_values:
+            values: ['Viator']
+
 
   - name: viator_12_month
     description: Data source for Viator 12 month rolling
