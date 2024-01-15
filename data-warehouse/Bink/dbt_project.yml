@@ -94,6 +94,9 @@ models:
       retailer__stonegate:
         +schema: "RETAILER__STONEGATE"
         materialized: table
+      retailer__squaremeal:
+        +schema: "RETAILER__SQUAREMEAL"
+        materialized: table
       retailer__viator:
         +schema: "RETAILER__VIATOR"
         materialized: table
