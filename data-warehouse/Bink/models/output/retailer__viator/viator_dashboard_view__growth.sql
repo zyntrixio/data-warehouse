@@ -47,7 +47,7 @@ WITH lc_metric AS (
      voucher_metrics AS (
     SELECT *,
            'VOUCHERS' AS category
-    FROM {{ ref('voucher__counts__monthly_retailer_growth') }}
+    FROM {{ ref('voucher__counts__monthly_retailer__growth') }}
     WHERE loyalty_plan_company = 'Viator'),
 
      combine_all AS (
