@@ -11,6 +11,7 @@ Parameters:
                         - trans__trans__monthly_retailer
                         - trans__avg__monthly_retailer
                         - user__transactions__monthly_retailer
+                        - voucher__counts__monthly_retailer
 */
 
 WITH lc_metric AS (
