@@ -2,7 +2,7 @@
 Created by:         Christopher Mitchell
 Created date:       2023-07-05
 Last modified by:   Christopher Mitchell
-Last modified date: 2024-01-03
+Last modified date: 2024-01-15
 
 Description:
     Datasource to produce tableau dashboard for itsu
@@ -11,6 +11,7 @@ Parameters:
                         - trans__trans__monthly_retailer
                         - trans__avg__monthly_retailer
                         - user__transactions__monthly_retailer
+                        - voucher__counts__monthly_retailer__growth
 */
 with
 lc_metric as (
@@ -57,7 +58,7 @@ voucher_metrics as (
     select
         *,
         'VOUCHERS' as category
-    from {{ ref('voucher__counts__monthly_retailer_growth') }}
+    from {{ ref('voucher__counts__monthly_retailer__growth') }}
     where loyalty_plan_company = 'itsu'
 ),
 
