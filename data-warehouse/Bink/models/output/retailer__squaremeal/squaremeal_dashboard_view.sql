@@ -67,14 +67,10 @@ combine_all as (
         null as u107_active_users__retailer_monthly__dcount_uid,
         null as u108_active_users_retailer_monthly__cdcount_uid,
         null as t011__txns__monthly_retailer__dcount,
-        null as t012__refund__monthly_retailer__dcount,
         null as t009__spend__monthly_retailer__sum,
         null as t014__aov__monthly_retailer__avg,
-        null as t015__arpu__monthly_retailer__avg,
         null as t016__atf__monthly_retailer__avg,
-        null as t026__txns_and_dupes__monthly_retailer__dcount,
-        null as t019__duplicate_txn_per_txn__monthly_retailer__percentage,
-        null as t017__duplicate_txn__monthly_retailer__dcount
+        null as t015__arpu__monthly_retailer__avg
     from lc_metric
     union all
     select
@@ -90,14 +86,10 @@ combine_all as (
         null as u107_active_users__retailer_monthly__dcount_uid,
         null as u108_active_users_retailer_monthly__cdcount_uid,
         t011__txns__monthly_retailer__dcount,
-        t012__refund__monthly_retailer__dcount,
         t009__spend__monthly_retailer__sum,
         null as t014__aov__monthly_retailer__avg,
-        null as t015__arpu__monthly_retailer__avg,
         null as t016__atf__monthly_retailer__avg,
-        t026__txns_and_dupes__monthly_retailer__dcount,
-        t019__duplicate_txn_per_txn__monthly_retailer__percentage,
-        t017__duplicate_txn__monthly_retailer__dcount
+        null as t015__arpu__monthly_retailer__avg
     from txn_metrics
     union all
     select
@@ -113,14 +105,10 @@ combine_all as (
         null as u107_active_users__retailer_monthly__dcount_uid,
         null as u108_active_users_retailer_monthly__cdcount_uid,
         null as t011__txns__monthly_retailer__dcount,
-        null as t012__refund__monthly_retailer__dcount,
         null as t009__spend__monthly_retailer__sum,
         t014__aov__monthly_retailer__avg,
-        t015__arpu__monthly_retailer__avg,
         t016__atf__monthly_retailer__avg,
-        null as t026__txns_and_dupes__monthly_retailer__dcount,
-        null as t019__duplicate_txn_per_txn__monthly_retailer__percentage,
-        null as t017__duplicate_txn__monthly_retailer__dcount
+        t015__arpu__monthly_retailer__avg
     from txn_avg
     union all
     select
@@ -136,14 +124,10 @@ combine_all as (
         u107_active_users__retailer_monthly__dcount_uid,
         u108_active_users_retailer_monthly__cdcount_uid,
         null as t011__txns__monthly_retailer__dcount,
-        null as t012__refund__monthly_retailer__dcount,
         null as t009__spend__monthly_retailer__sum,
         null as t014__aov__monthly_retailer__avg,
-        null as t015__arpu__monthly_retailer__avg,
         null as t016__atf__monthly_retailer__avg,
-        null as t026__txns_and_dupes__monthly_retailer__dcount,
-        null as t019__duplicate_txn_per_txn__monthly_retailer__percentage,
-        null as t017__duplicate_txn__monthly_retailer__dcount
+        null as t015__arpu__monthly_retailer__avg
     from user_metrics
     union all
     select
@@ -159,14 +143,10 @@ combine_all as (
         null as u107_active_users__retailer_monthly__dcount_uid,
         null as u108_active_users_retailer_monthly__cdcount_uid,
         null as t011__txns__monthly_retailer__dcount,
-        null as t012__refund__monthly_retailer__dcount,
         null as t009__spend__monthly_retailer__sum,
         null as t014__aov__monthly_retailer__avg,
-        null as t015__arpu__monthly_retailer__avg,
         null as t016__atf__monthly_retailer__avg,
-        null as t026__txns_and_dupes__monthly_retailer__dcount,
-        null as t019__duplicate_txn_per_txn__monthly_retailer__percentage,
-        null as t017__duplicate_txn__monthly_retailer__dcount
+        null as t015__arpu__monthly_retailer__avg
     from pll_metrics
 )
 
