@@ -19,7 +19,7 @@ models:
         - accepted_values:
             values: ['Viator']
 
-  - name: viator_dashboard_view__graphs
+  - name: viator_dashboard_view_graphs
     description: Data source for testing Viator Overview Graphs Metrics
     columns:
      - name: 'LOYALTY_PLAN_COMPANY'
