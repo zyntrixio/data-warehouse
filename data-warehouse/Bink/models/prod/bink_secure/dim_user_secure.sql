@@ -19,7 +19,7 @@ users_select as (
     select
         u.user_id,
         -- uid,
-        external_id,
+        md5(external_id) as external_id,
         channel_id,
         date_joined,
         -- delete_token,
