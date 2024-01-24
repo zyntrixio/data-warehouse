@@ -6,7 +6,9 @@ from prefect_dbt.cli.configs import SnowflakeTargetConfigs
 from prefect_dbt.cli.credentials import DbtCliProfile
 from prefect_snowflake.credentials import SnowflakeCredentials
 from prefect_snowflake.database import SnowflakeConnector
+from prefect_azure.blob_storage import AzureBlobStorageCredentials, blob_storage_upload
 from datetime import datetime
+import pandas as pd
 
 
 date = datetime.today().strftime("%Y%m%d")
@@ -29,29 +31,77 @@ create_table_sql = f"""CREATE OR REPLACE TABLE output.viator_weekly_files.{file_
                                                 AND EVENT_DATE_TIME >= DATE_TRUNC('week', CURRENT_DATE) - INTERVAL '7 DAY'
                                                 AND EVENT_DATE_TIME < DATE_TRUNC('week', CURRENT_DATE)
                                     );"""
+
+create_table_sql_dev = f"""CREATE OR REPLACE TABLE output.viator_weekly_files.{file_name} (AMOUNT NUMBER(38,2), TRANSACTION_DATE DATETIME, AUTH VARCHAR(50), MID VARCHAR(38), LAST_FOUR VARCHAR(4))
+                                    AS (
+                                    SELECT
+                                                t.SPEND_AMOUNT AS AMOUNT
+                                                ,t.TRANSACTION_DATE AS TRANSACTION_DATE
+                                                ,t.AUTH_CODE AS AUTH
+                                                ,t.MERCHANT_ID AS MID
+                                                ,p.PAN_END AS LAST_FOUR
+                                            FROM
+                                                "PROD"."BINK"."FACT_TRANSACTION" t
+                                            LEFT JOIN
+                                                "PROD"."BINK"."DIM_PAYMENT_ACCOUNT" p
+                                                    ON t.PAYMENT_ACCOUNT_ID = p.PAYMENT_ACCOUNT_ID
+                                            WHERE
+                                                PROVIDER_SLUG = 'bpl-viator'
+                                    );"""
                                     
 copy_into_sql = f"""COPY INTO 'azure://uksouthprod89hg.blob.core.windows.net/viator/{file_name}.csv'
                             FROM output.viator_weekly_files.{file_name}
                             file_format=(format_name=OUTPUT.VIATOR_WEEKLY_FILES.CSV_LOADER compression = NONE) OVERWRITE = TRUE SINGLE = TRUE HEADER = TRUE
                             storage_integration = viator_azure;"""
 
+fetch_data = f"SELECT * FROM output.viator_weekly_files.{file_name}"
+
 @task
 def setup_table(block_name: str) -> None:
     with SnowflakeConnector.load(block_name) as connector:
         connector.execute(
-            create_table_sql
+            create_table_sql_dev
         )
+
+# @task
+# def copy_to_azure(block_name: str) -> None:
+#     with SnowflakeConnector.load(block_name) as connector:
+#         connector.execute(
+#             copy_into_sql
+#         )
+        
+@task
+def collect_data(block_name: str) -> pd.DataFrame:
+    with SnowflakeConnector.load(block_name) as connector:
+        results = connector.fetch_all(
+            fetch_data
+        )
+    df = pd.DataFrame(results)
+    print(df)
+    return df
 
 @task
-def copy_to_azure(block_name: str) -> None:
-    with SnowflakeConnector.load(block_name) as connector:
-        connector.execute(
-            copy_into_sql
-        )
+def upload_to_blob(data: pd.DataFrame, file_name: str) -> None:
+    connection_string = "your_connection_string"  # Replace with your actual connection string
+    blob_storage_credentials = AzureBlobStorageCredentials(connection_string=connection_string)
+    blob_name = f"{file_name}.csv"
+    data_csv = data.to_csv(index=False)
+
+    blob = blob_storage_upload(
+        data=data_csv.encode(),
+        container="your_container_name",  # Replace with your actual container name
+        blob=blob_name,
+        blob_storage_credentials=blob_storage_credentials,
+        overwrite=False,
+    )
+    return blob
+
+
 
 @flow
-def viator_weekly_file_delivery(block_name: str) -> None:
+def viator_weekly_file_delivery(block_name: str = "snowflake-transform-user",) -> None:
     setup_table(block_name)
-    copy_to_azure(block_name)
+    data = collect_data(block_name)
+    upload_to_blob(data, file_name)
 
 viator_weekly_file_delivery()
