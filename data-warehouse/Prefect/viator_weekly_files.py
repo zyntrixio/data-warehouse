@@ -6,7 +6,9 @@ from prefect_dbt.cli.configs import SnowflakeTargetConfigs
 from prefect_dbt.cli.credentials import DbtCliProfile
 from prefect_snowflake.credentials import SnowflakeCredentials
 from prefect_snowflake.database import SnowflakeConnector
-from prefect_azure.blob_storage import AzureBlobStorageCredentials, blob_storage_upload
+from prefect_azure.credentials import AzureBlobStorageCredentials
+from prefect_azure.blob_storage import blob_storage_upload
+
 from datetime import datetime
 import pandas as pd
 
@@ -63,33 +65,29 @@ def setup_table(block_name: str) -> None:
             create_table_sql_dev
         )
 
-# @task
-# def copy_to_azure(block_name: str) -> None:
-#     with SnowflakeConnector.load(block_name) as connector:
-#         connector.execute(
-#             copy_into_sql
-#         )
-        
 @task
 def collect_data(block_name: str) -> pd.DataFrame:
     with SnowflakeConnector.load(block_name) as connector:
-        results = connector.fetch_all(
-            fetch_data
-        )
-    df = pd.DataFrame(results)
-    print(df)
+        with connector.get_connection() as connection:
+            with connection.cursor() as con:
+                con.execute(fetch_data)
+                results = con.fetchall()
+                df = pd.DataFrame(results, columns=[col[0] for col in con.description])
+                # print(df)
     return df
 
-@task
+@flow
 def upload_to_blob(data: pd.DataFrame, file_name: str) -> None:
-    connection_string = "your_connection_string"  # Replace with your actual connection string
+    connection_string = String.load("dp-staging-blob").value
     blob_storage_credentials = AzureBlobStorageCredentials(connection_string=connection_string)
     blob_name = f"{file_name}.csv"
     data_csv = data.to_csv(index=False)
+    print(data)
+    print(data.info())
 
     blob = blob_storage_upload(
         data=data_csv.encode(),
-        container="your_container_name",  # Replace with your actual container name
+        container="dp-staging-blob",
         blob=blob_name,
         blob_storage_credentials=blob_storage_credentials,
         overwrite=False,
