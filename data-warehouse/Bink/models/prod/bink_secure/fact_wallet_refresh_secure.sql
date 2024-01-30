@@ -40,7 +40,7 @@ user_events_unpack AS (
         brand,
         json:internal_user_ref::VARCHAR AS user_id,
         json:origin::VARCHAR AS origin,
-        json:external_user_ref::VARCHAR AS external_user_ref,
+        md5(json:external_user_ref::varchar) as external_user_ref,
         json:email::VARCHAR AS email
     FROM user_events
 ),

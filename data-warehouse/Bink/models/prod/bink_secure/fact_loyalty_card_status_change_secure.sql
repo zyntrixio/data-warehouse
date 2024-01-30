@@ -53,7 +53,7 @@ status_change_events_unpack as (
         channel,
         brand,
         json:origin::varchar as origin,
-        json:external_user_ref::varchar as external_user_ref,
+        md5(json:external_user_ref::varchar) as external_user_ref,
         json:internal_user_ref::varchar as user_id,
         json:email::varchar as email,
         json:scheme_account_id::varchar as loyalty_card_id,
