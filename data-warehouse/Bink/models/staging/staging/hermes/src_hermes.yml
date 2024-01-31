@@ -57,63 +57,6 @@ sources:
           #   tests:
           #     - unique
           #     - not_null
-      - name: PAYMENT_ACCOUNT
-        identifier: PAYMENT_CARD_PAYMENTCARDACCOUNT
-        description: Table contains payment account data
-        freshness:
-          warn_after: { count: 2, period: hour }
-        meta:
-          elementary:
-            timestamp_column: '_AIRBYTE_EMITTED_AT'
-        tests:
-            - elementary.table_anomalies:
-                config:
-                  severity: warn
-            - elementary.schema_changes
-        columns:
-          - name: 'ID'
-            description: Primary key of user table
-            tests:
-              - unique
-              - not_null
-      - name: PAYMENT_STATUS
-        identifier: PAYMENT_CARD_PROVIDERSTATUSMAPPING
-        description: Table contains payment status'
-        freshness:
-          warn_after: { count: 2, period: hour }
-        meta:
-          elementary:
-            timestamp_column: '_AIRBYTE_EMITTED_AT'
-        tests:
-            - elementary.table_anomalies:
-                config:
-                  severity: warn
-            - elementary.schema_changes
-        columns:
-          - name: 'ID'
-            description: Primary key of user table
-            tests:
-              - unique
-              - not_null
-      - name: PAYMENT_CARD
-        identifier: PAYMENT_CARD_PAYMENTCARD
-        description: Table contains payment card details - e.g. barclays, amex
-        freshness:
-          warn_after: { count: 2, period: hour }
-        meta:
-          elementary:
-            timestamp_column: '_AIRBYTE_EMITTED_AT'
-        tests:
-            - elementary.table_anomalies:
-                config:
-                  severity: warn
-            - elementary.schema_changes
-        columns:
-          - name: 'ID'
-            description: Primary key of user table
-            tests:
-              - unique
-              - not_null
               
       - name: SCHEME_SCHEME
         identifier: SCHEME_SCHEME
@@ -135,25 +78,6 @@ sources:
               - unique
               - not_null
 
-      - name: SCHEME_CATEGORY
-        identifier: SCHEME_CATEGORY
-        description: Look up table for loyalty plan categorys
-        freshness:
-          warn_after: { count: 2, period: hour }
-        meta:
-          elementary:
-            timestamp_column: '_AIRBYTE_EMITTED_AT'
-        tests:
-            - elementary.table_anomalies:
-                config:
-                  severity: warn
-            - elementary.schema_changes
-        columns:
-          - name: 'ID'
-            description: Primary key of scheme category table
-            tests:
-              - unique
-              - not_null
       - name: CLIENT_APPLICATION
         identifier: USER_CLIENTAPPLICATION
         description: Table of clients, linking clients to organisations
