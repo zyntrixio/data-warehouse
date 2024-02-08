@@ -46,14 +46,6 @@ user_metrics as (
     where loyalty_plan_company = 'Viator'
 ),
 
-pll_metrics as (
-    select
-        *,
-        'JOINS' as category
-    from {{ ref('lc__pll__monthly_retailer') }}
-    where loyalty_plan_company = 'Viator'
-),
-
 voucher_metrics as (
     select
         *,
@@ -71,6 +63,7 @@ combine_all as (
         lc379__successful_loyalty_card_joins__monthly_retailer__csum,
         lc347__successful_loyalty_card_joins__monthly_retailer__count,
         lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count,
+        lc335__successful_loyalty_cards__monthly_retailer__pit, --not pll live users like other metrics
         null as t014__aov__monthly_retailer__avg,
         null as t016__atf__monthly_retailer__avg,
         null as t015__arpu__monthly_retailer__avg,
@@ -78,7 +71,6 @@ combine_all as (
         null as t011__txns__monthly_retailer__dcount,
         null as u107_active_users__retailer_monthly__dcount_uid,
         null as u108_active_users_retailer_monthly__cdcount_uid,
-        null as lc201__loyalty_card_active_pll__monthly_retailer__pit,
         null as t009__spend__monthly_retailer__sum,
         null as v012__issued_vouchers__monthly_retailer__dcount,
         null as v009__issued_vouchers__monthly_retailer__cdsum_voucher,
@@ -95,6 +87,7 @@ combine_all as (
         null as lc347__successful_loyalty_card_joins__monthly_retailer__count,
         null
             as lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count,
+        null as lc335__successful_loyalty_cards__monthly_retailer__pit,
         null as t014__aov__monthly_retailer__avg,
         null as t016__atf__monthly_retailer__avg,
         null as t015__arpu__monthly_retailer__avg,
@@ -102,7 +95,6 @@ combine_all as (
         t011__txns__monthly_retailer__dcount,
         null as u107_active_users__retailer_monthly__dcount_uid,
         null as u108_active_users_retailer_monthly__cdcount_uid,
-        null as lc201__loyalty_card_active_pll__monthly_retailer__pit,
         t009__spend__monthly_retailer__sum,
         null as v012__issued_vouchers__monthly_retailer__dcount,
         null as v009__issued_vouchers__monthly_retailer__cdsum_voucher,
@@ -119,6 +111,7 @@ combine_all as (
         null as lc347__successful_loyalty_card_joins__monthly_retailer__count,
         null
             as lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count,
+        null as lc335__successful_loyalty_cards__monthly_retailer__pit,
         t014__aov__monthly_retailer__avg,
         t016__atf__monthly_retailer__avg,
         t015__arpu__monthly_retailer__avg,
@@ -126,7 +119,6 @@ combine_all as (
         null as t011__txns__monthly_retailer__dcount,
         null as u107_active_users__retailer_monthly__dcount_uid,
         null as u108_active_users_retailer_monthly__cdcount_uid,
-        null as lc201__loyalty_card_active_pll__monthly_retailer__pit,
         null as t009__spend__monthly_retailer__sum,
         null as v012__issued_vouchers__monthly_retailer__dcount,
         null as v009__issued_vouchers__monthly_retailer__cdsum_voucher,
@@ -143,6 +135,7 @@ combine_all as (
         null as lc347__successful_loyalty_card_joins__monthly_retailer__count,
         null
             as lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count,
+        null as lc335__successful_loyalty_cards__monthly_retailer__pit,
         null as t014__aov__monthly_retailer__avg,
         null as t016__atf__monthly_retailer__avg,
         null as t015__arpu__monthly_retailer__avg,
@@ -150,7 +143,6 @@ combine_all as (
         null as t011__txns__monthly_retailer__dcount,
         u107_active_users__retailer_monthly__dcount_uid,
         u108_active_users_retailer_monthly__cdcount_uid,
-        null as lc201__loyalty_card_active_pll__monthly_retailer__pit,
         null as t009__spend__monthly_retailer__sum,
         null as v012__issued_vouchers__monthly_retailer__dcount,
         null as v009__issued_vouchers__monthly_retailer__cdsum_voucher,
@@ -167,6 +159,7 @@ combine_all as (
         null as lc347__successful_loyalty_card_joins__monthly_retailer__count,
         null
             as lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count,
+        null as lc335__successful_loyalty_cards__monthly_retailer__pit,
         null as t014__aov__monthly_retailer__avg,
         null as t016__atf__monthly_retailer__avg,
         null as t015__arpu__monthly_retailer__avg,
@@ -174,31 +167,6 @@ combine_all as (
         null as t011__txns__monthly_retailer__dcount,
         null as u107_active_users__retailer_monthly__dcount_uid,
         null as u108_active_users_retailer_monthly__cdcount_uid,
-        lc201__loyalty_card_active_pll__monthly_retailer__pit,
-        null as t009__spend__monthly_retailer__sum,
-        null as v012__issued_vouchers__monthly_retailer__dcount,
-        null as v009__issued_vouchers__monthly_retailer__cdsum_voucher,
-        null as v013__redeemed_vouchers__monthly_retailer__dcount,
-        null as v010__redeemed_vouchers__monthly_retailer__cdsum_voucher
-    from pll_metrics
-    union all
-    select
-        date,
-        category,
-        loyalty_plan_name,
-        loyalty_plan_company,
-        null as lc379__successful_loyalty_card_joins__monthly_retailer__csum,
-        null as lc347__successful_loyalty_card_joins__monthly_retailer__count,
-        null
-            as lc333__successful_loyalty_card_join_mrkt_opt_in__monthly_retailer__count,
-        null as t014__aov__monthly_retailer__avg,
-        null as t016__atf__monthly_retailer__avg,
-        null as t015__arpu__monthly_retailer__avg,
-        null as t012__refund__monthly_retailer__dcount,
-        null as t011__txns__monthly_retailer__dcount,
-        null as u107_active_users__retailer_monthly__dcount_uid,
-        null as u108_active_users_retailer_monthly__cdcount_uid,
-        null as lc201__loyalty_card_active_pll__monthly_retailer__pit,
         null as t009__spend__monthly_retailer__sum,
         v012__issued_vouchers__monthly_retailer__dcount,
         v009__issued_vouchers__monthly_retailer__cdsum_voucher,

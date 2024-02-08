@@ -46,14 +46,6 @@ user_metrics as (
     where loyalty_plan_company = 'SquareMeal'
 ),
 
-pll_metrics as (
-    select
-        *,
-        'JOINS' as category
-    from {{ ref("lc__pll__monthly_retailer") }}
-    where loyalty_plan_company = 'SquareMeal'
-),
-
 combine_all as (
     select
         date,
@@ -63,7 +55,7 @@ combine_all as (
         lc347__successful_loyalty_card_joins__monthly_retailer__count,
         lc351__successful_loyalty_card_links__monthly_retailer__dcount_user,
         lc334__successful_loyalty_card_join_mrkt_opt_in_per_successful_loyalty_card_join__monthly_retailer__percentage,
-        null as lc201__loyalty_card_active_pll__monthly_retailer__pit,
+        lc335__successful_loyalty_cards__monthly_retailer__pit, --not pll live users like other metrics
         null as u107_active_users__retailer_monthly__dcount_uid,
         null as u108_active_users_retailer_monthly__cdcount_uid,
         null as t011__txns__monthly_retailer__dcount,
@@ -82,7 +74,7 @@ combine_all as (
         null as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user,
         null
             as lc334__successful_loyalty_card_join_mrkt_opt_in_per_successful_loyalty_card_join__monthly_retailer__percentage,
-        null as lc201__loyalty_card_active_pll__monthly_retailer__pit,
+        null as lc335__successful_loyalty_cards__monthly_retailer__pit, 
         null as u107_active_users__retailer_monthly__dcount_uid,
         null as u108_active_users_retailer_monthly__cdcount_uid,
         t011__txns__monthly_retailer__dcount,
@@ -101,7 +93,7 @@ combine_all as (
         null as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user,
         null
             as lc334__successful_loyalty_card_join_mrkt_opt_in_per_successful_loyalty_card_join__monthly_retailer__percentage,
-        null as lc201__loyalty_card_active_pll__monthly_retailer__pit,
+        null as lc335__successful_loyalty_cards__monthly_retailer__pit,
         null as u107_active_users__retailer_monthly__dcount_uid,
         null as u108_active_users_retailer_monthly__cdcount_uid,
         null as t011__txns__monthly_retailer__dcount,
@@ -120,7 +112,7 @@ combine_all as (
         null as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user,
         null
             as lc334__successful_loyalty_card_join_mrkt_opt_in_per_successful_loyalty_card_join__monthly_retailer__percentage,
-        null as lc201__loyalty_card_active_pll__monthly_retailer__pit,
+        null as lc335__successful_loyalty_cards__monthly_retailer__pit,
         u107_active_users__retailer_monthly__dcount_uid,
         u108_active_users_retailer_monthly__cdcount_uid,
         null as t011__txns__monthly_retailer__dcount,
@@ -129,25 +121,6 @@ combine_all as (
         null as t016__atf__monthly_retailer__avg,
         null as t015__arpu__monthly_retailer__avg
     from user_metrics
-    union all
-    select
-        date,
-        category,
-        loyalty_plan_name,
-        loyalty_plan_company,
-        null as lc347__successful_loyalty_card_joins__monthly_retailer__count,
-        null as lc351__successful_loyalty_card_links__monthly_retailer__dcount_user,
-        null
-            as lc334__successful_loyalty_card_join_mrkt_opt_in_per_successful_loyalty_card_join__monthly_retailer__percentage,
-        lc201__loyalty_card_active_pll__monthly_retailer__pit,
-        null as u107_active_users__retailer_monthly__dcount_uid,
-        null as u108_active_users_retailer_monthly__cdcount_uid,
-        null as t011__txns__monthly_retailer__dcount,
-        null as t009__spend__monthly_retailer__sum,
-        null as t014__aov__monthly_retailer__avg,
-        null as t016__atf__monthly_retailer__avg,
-        null as t015__arpu__monthly_retailer__avg
-    from pll_metrics
 )
 
 select *
