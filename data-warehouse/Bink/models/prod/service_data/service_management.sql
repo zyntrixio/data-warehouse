@@ -1,8 +1,8 @@
 /*
 Created by:         Anand Bhakta
 Created date:       2023-02-02
-Last modified by:   Christopher Mitchell
-Last modified date: 202402-05
+Last modified by:
+Last modified date:
 
 Description:
     Stages the freshservice table
@@ -10,19 +10,8 @@ Description:
 Parameters:
     source_object      - SERVICE_DATA.FRESHSERVICE
 */
-
-{{ config(materialized="incremental", unique_key="ID") }}
-
 with
-all_data as (
-    select *
-    from {{ ref("stg_service_data__FRESHSERVICE") }}
-    {% if is_incremental() %}
-        where
-            _airbyte_emitted_at
-            >= (select max(inserted_date_time) from {{ this }})
-    {% endif %}
-),
+all_data as (select * from {{ ref("stg_service_data__FRESHSERVICE") }}),
 
 add_most_recent as (
     select
