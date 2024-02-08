@@ -1,5 +1,16 @@
+{{
+    config(
+        materialized="incremental",
+        unique_key="ID"
+    )
+}}
+
 with
-source as (select * from {{ ref("service_management") }}),
+source as (select * from {{ ref("service_management") }}
+            {% if is_incremental() %}
+            where
+            inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+            {% endif %}),
 
 renamed as (
     select

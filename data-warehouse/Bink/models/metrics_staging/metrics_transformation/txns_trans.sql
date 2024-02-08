@@ -21,6 +21,10 @@ filter_data as (
         ((loyalty_plan_company = '{{retailor}}' and date >= '{{dates[0]}}' and date <= '{{dates[1]}}') or loyalty_plan_company != '{{retailor}}')
     {%- if not loop.last %} and {% endif -%}
     {% endfor %}
+    {% if is_incremental() %}
+            and
+            inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+    {% endif %}
 ),
 
 transforming_refs as (
@@ -42,7 +46,8 @@ transforming_refs as (
         -- loyalty_id,
         -- merchant_id, 
         -- payment_account_id,
-        loyalty_card_id
+        loyalty_card_id,
+        inserted_date_time
     from filter_data
 ),
 
@@ -61,7 +66,8 @@ txn_flag as (
             when spend_amount < 0
                 then 'REFUND'
             else 'OTHER'
-        end as status
+        end as status,
+        sysdate() as updated_date_time
     from transforming_refs
 )
 

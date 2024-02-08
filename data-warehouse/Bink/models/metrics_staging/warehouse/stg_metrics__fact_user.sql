@@ -1,6 +1,17 @@
+{{
+    config(
+        materialized="incremental",
+        unique_key="EVENT_ID"
+    )
+}}
+
 with
 source as (
     select * from {{ ref("fact_user_secure") }} where event_type is not null
+            {% if is_incremental() %}
+            and
+            inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+            {% endif %}
 ),
 
 renamed as (

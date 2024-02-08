@@ -1,5 +1,16 @@
+{{
+    config(
+        materialized="incremental",
+        unique_key="EVENT_ID"
+    )
+}}
+
 with
-source as (select * from {{ ref("fact_transaction_secure") }}),
+source as (select * from {{ ref("fact_transaction_secure") }}
+            {% if is_incremental() %}
+            where
+            inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+            {% endif %}),
 
 renamed as (
     select
@@ -22,8 +33,8 @@ renamed as (
         loyalty_card_id,
         merchant_id,
         -- settlement_key,
-        -- inserted_date_time,
-        -- updated_date_time,
+        inserted_date_time,
+        updated_date_time,
         payment_account_id
     from source
 )
