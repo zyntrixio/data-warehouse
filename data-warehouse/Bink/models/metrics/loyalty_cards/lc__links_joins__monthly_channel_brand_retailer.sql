@@ -513,23 +513,23 @@ add_combine_rename as (
             as lc331__deleted_loyalty_card_joins__monthly_channel_brand_retailer__dcount_user
 
         ,
-        join_successes_cumulative
+        link_successes_cumulative
             as lc367__successful_loyalty_card_links__monthly_channel_brand_retailer__csum
         ,
-        join_requests_cumulative
+        link_requests_cumulative
             as lc368__requests_loyalty_card_links__monthly_channel_brand_retailer__csum,
-        join_fails_cumulative
+        link_fails_cumulative
             as lc369__failed_loyalty_card_links__monthly_channel_brand_retailer__csum,
-        join_deletes_cumulative
+        link_deletes_cumulative
             as lc370__deleted_loyalty_card_links__monthly_channel_brand_retailer__csum,
-        link_successes_cumulative
+        join_successes_cumulative
             as lc371__successful_loyalty_card_joins__monthly_channel_brand_retailer__csum
         ,
-        link_requests_cumulative
+        join_requests_cumulative
             as lc372__requests_loyalty_card_joins__monthly_channel_brand_retailer__csum,
-        link_fails_cumulative
+        join_fails_cumulative
             as lc373__failed_loyalty_card_joins__monthly_channel_brand_retailer__csum,
-        link_deletes_cumulative
+        join_deletes_cumulative
             as lc374__deleted_loyalty_card_joins__monthly_channel_brand_retailer__csum,
         join_successes_mrkt_opt_in_cumulative
             as lc383__successful_loyalty_card_join_mrkt_opt_in__monthly_channel_brand_retailer__csum
