@@ -10,13 +10,41 @@ Parameters:
     source_object       - src__fact_lc_status_change
                         - src__lookup_status_mapping
 */
+{{
+    config(
+        materialized="incremental",
+        unique_key="EVENT_ID"
+    )
+}}
 with
-lc_sc as (select * from {{ ref("stg_metrics__fact_lc_status_change") }}),
+lc_sc as (select * from {{ ref("stg_metrics__fact_lc_status_change") }}
+
+    {% if is_incremental() %}
+            where
+            inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+    {% endif %}
+
+),
 
 lc_lookup as (select * from {{ ref("src__lookup_status_mapping") }}),
 
+union_old_lc_records as (
+    select *
+    from lc_sc
+    {% if is_incremental() %}
+        union
+        select *
+        from {{ ref("stg_metrics__fact_lc_status_change") }}
+        where
+            loyalty_card_id in (
+                select loyalty_card_id from lc_sc
+            )
+    {% endif %}
+),
+
 event_ordering as (  -- Get Future And previous events per LC & User
     select
+        event_id,
         event_date_time as status_start_time,
         to_status_id as status_id,
         to_status as status_description,
@@ -45,8 +73,9 @@ event_ordering as (  -- Get Future And previous events per LC & User
                 loyalty_plan_name,
                 coalesce(nullif(external_user_ref, ''), user_id)
             order by event_date_time
-        ) as prev_status_id
-    from lc_sc
+        ) as prev_status_id,
+        inserted_date_time
+    from union_old_lc_records
     where
     {% for retailor, dates in var("retailor_live_dates").items() %}
         ((loyalty_plan_company = '{{retailor}}' and event_date_time >= '{{dates[0]}}' and event_date_time <= '{{dates[1]}}') or loyalty_plan_company != '{{retailor}}')
@@ -116,6 +145,7 @@ add_metrics as (  -- Add useful reporting metrics & Calculate time differences b
 
 filter_non_error_events as (  -- Filter out all non Error events
     select
+        event_id,
         status_id,
         status_description,
         status_group,
@@ -147,7 +177,9 @@ filter_non_error_events as (  -- Filter out all non Error events
         timediff_hours,
         timediff_mins,
         timediff_seconds,
-        timediff_milliseconds
+        timediff_milliseconds,
+        inserted_date_time,
+        sysdate() as updated_date_time
     from add_metrics lc
     -- WHERE STATUS_TYPE = 'Error'
 )
