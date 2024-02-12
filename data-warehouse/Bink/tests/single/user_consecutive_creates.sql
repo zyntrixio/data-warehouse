@@ -8,7 +8,7 @@ Created Date:   2022/07/12
     config(
         tags=["business"],
         meta={
-            "description": "est to ensure no create user events are followed by another create user event in last 24 hours.",
+            "description": "test to ensure no create user events are followed by another create user event in last 24 hours.",
             "test_type": "Business",
         },
     )
