@@ -14,7 +14,7 @@ source as (select * from {{ ref("fact_transaction_secure") }}
 
 renamed as (
     select
-        -- event_id
+        event_id,
         event_date_time as date,
         user_id,
         external_user_ref,

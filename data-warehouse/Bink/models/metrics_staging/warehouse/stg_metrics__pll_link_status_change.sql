@@ -30,7 +30,7 @@ renamed as (
         -- origin,
         -- is_most_recent,
         inserted_date_time,
-        updated_date_time
+        updated_date_time,
         user_id,
         external_user_ref
     from source

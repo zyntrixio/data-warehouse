@@ -48,14 +48,14 @@ where
 
 union_old_lc_records as (
     select *
-    from lc_events
+    from pll_events
     {% if is_incremental() %}
         union
         select *
         from {{ ref("stg_metrics__pll_link_status_change") }}
         where
             (loyalty_card_id, payment_account_id) in (
-                select loyalty_card_id, payment_account_id from lc_events
+                select loyalty_card_id, payment_account_id from pll_events
             )
     {% endif %}
 ),
@@ -91,7 +91,7 @@ from_to_dates as (
         to_status = 'ACTIVE' as active_link,
         inserted_date_time,
         sysdate() as updated_date_time
-    from pll_events
+    from union_old_lc_records
 )
 
 select *

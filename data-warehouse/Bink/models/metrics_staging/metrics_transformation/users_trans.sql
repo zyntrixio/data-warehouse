@@ -45,7 +45,6 @@ usr_stage as (
         event_id,
         user_id,
         coalesce(nullif(external_user_ref, ''), user_id) as user_ref,
-        event_id,
         event_type,
         channel,
         brand,
@@ -56,9 +55,9 @@ usr_stage as (
 
 to_from_date as (
     select
+        event_id,
         user_id,
         user_ref,
-        event_id,
         event_type,
         channel,
         brand,
