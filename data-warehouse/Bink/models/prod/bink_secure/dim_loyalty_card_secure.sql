@@ -12,46 +12,93 @@ Parameters:
     ref_object      - stg_hermes__SCHEME_SCHEME
     ref_object      - stg_hermes__SCHEME_CATEGORY
 */
-{{ config(alias="dim_loyalty_card",
-            enabled =false) }}
 
-with
-loyalty_card as (select * from {{ ref("stg_hermes__SCHEME_SCHEMEACCOUNT") }}),
+{{
+    config(
+        alias="dim_loyalty_card",
+        materialized="incremental",
+        unique_key="unique_key",
+    )
+}}
 
-loyalty_plan as (select * from {{ ref("stg_hermes__SCHEME_SCHEME") }}),
-
-join_to_base as (
-    select
-        -- BALANCES -- is this a json field
-        lc.loyalty_card_id,
-        -- ,lcaa.EVENT_TYPE AS ADD_AUTH_STATUS
-        -- ,lcaa.EVENT_DATE_TIME AS ADD_AUTH_DATE_TIME
-        -- ,lcj.EVENT_TYPE AS JOIN_STATUS
-        -- ,COALESCE(lcj.EVENT_DATE_TIME, lc.JOIN_DATE) AS JOIN_DATE_TIME
-        -- ,lcr.EVENT_TYPE AS REGISTER_STATUS
-        -- ,lcr.EVENT_DATE_TIME AS REGISTER_DATE_TIME,
-        card_number,
-        updated,
-        barcode,
-        link_date,
-        -- ,VOUCHERS  -- is this a json field,
-        created,
-        orders,
-        -- TRANSACTIONS,
-        originating_journey,  -- is there a linking table for this ?
-        -- ,PLL_LINKS  -- is this a json field
-        -- ,FORMATTED_IMAGES -- is this a json field,
-        is_deleted,
-        lc.loyalty_plan_id,
-        lp.loyalty_plan_company,
-        lp.loyalty_plan_slug,
-        lp.loyalty_plan_tier,
-        lp.loyalty_plan_name_card,
-        lp.loyalty_plan_name,
-        lp.loyalty_plan_category_id
-    from loyalty_card lc
-    left join loyalty_plan lp on lc.loyalty_plan_id = lp.loyalty_plan_id
+with lc_events as (select * from {{ ref("fact_loyalty_card_secure") }}
+        {% if is_incremental() %}
+            where loyalty_card_id in (
+                select distinct loyalty_card_id from {{ ref("fact_loyalty_card_secure") }}
+                where inserted_date_time 
+            >= (select max(inserted_date_time) from {{ this }}))
+        {% endif %}
 )
 
-select *
-from join_to_base
+,ranked_events AS (
+  SELECT
+    loyalty_card_id,
+    user_id,
+    external_user_ref,
+    loyalty_plan_name,
+    loyalty_plan_company,
+    channel,
+    brand,
+    event_type,
+    auth_type,
+    event_date_time,
+    ROW_NUMBER() OVER (PARTITION BY loyalty_card_id, user_id ORDER BY event_date_time) AS event_rank_oldest,
+    ROW_NUMBER() OVER (PARTITION BY loyalty_card_id, user_id ORDER BY event_date_time DESC) AS event_rank_newest,
+    MIN(CASE WHEN event_type = 'SUCCESS' THEN event_date_time END) 
+      OVER (PARTITION BY loyalty_card_id, user_id) AS first_successful_event_time,
+    COUNT(DISTINCT user_id) OVER (PARTITION BY loyalty_card_id) AS user_count,
+    inserted_date_time
+  FROM
+    lc_events
+)
+,add_multi_channel AS (
+  SELECT
+    loyalty_card_id,
+    user_id,
+    external_user_ref,
+    loyalty_plan_name,
+    loyalty_plan_company,
+    channel,
+    brand,
+    event_type,
+    auth_type,
+    event_date_time,
+    event_rank_oldest,
+    event_rank_newest,
+    first_successful_event_time,
+    count(distinct case when event_rank_newest = 1 and event_type = 'SUCCESS' then user_id end) 
+        over (partition by loyalty_card_id) AS live_user_count,
+    inserted_date_time
+  FROM
+    ranked_events
+        
+)
+
+,grouped_events as (SELECT
+    loyalty_card_id||'-'||user_id as unique_key,
+    loyalty_card_id,
+    user_id,
+    MAX(external_user_ref) AS external_user_ref,
+    MAX(loyalty_plan_name) AS loyalty_plan_name,
+    MAX(loyalty_plan_company) AS loyalty_plan_company,
+    MAX(channel) AS channel,
+    MAX(brand) AS brand,
+    MAX(CASE WHEN event_rank_oldest = 1 THEN event_date_time END) AS first_event_time,
+    MAX(CASE WHEN event_rank_oldest = 1 THEN auth_type END) AS first_auth_type,
+    max(first_successful_event_time) AS first_successful_event_time,
+    MAX(CASE WHEN event_date_time = first_successful_event_time THEN auth_type END) AS first_successful_auth_type,
+    MAX(CASE WHEN event_rank_newest = 1 THEN event_date_time END) AS most_recent_event_time,
+    MAX(CASE WHEN event_rank_newest = 1 THEN event_type END) AS most_recent_event_type,
+    max(CASE WHEN live_user_count > 1 THEN TRUE ELSE FALSE END) AS multi_user_card,
+    MAX(CASE WHEN event_rank_newest = 1 THEN event_type END) = 'SUCCESS' AS is_active,
+    max(inserted_date_time) as  inserted_date_time,
+    sysdate() as updated_date_time
+FROM
+  add_multi_channel
+  group by   
+    unique_key,
+    loyalty_card_id,
+    user_id
+    )
+
+  select * from grouped_events
