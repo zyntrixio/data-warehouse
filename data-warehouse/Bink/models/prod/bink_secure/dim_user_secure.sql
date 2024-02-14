@@ -16,9 +16,11 @@ Parameters:
         alias="dim_user",
         materialized="incremental",
         unique_key="user_id",
-        merge_update_columns = ['deleted_time', 'last_active', 'is_active', 'updated_date_time']
+        merge_update_columns = ['deleted_time', 'last_active', 'is_active', 'updated_date_time'] 
     )
 }}
+
+--merge update columns above work because the only possible events that come in late are deletes each user can only have 2 events (create / delete)
 
 with
 user_events as (
@@ -27,7 +29,7 @@ user_events as (
         {% if is_incremental() %}
             where inserted_date_time
             >= (select max(inserted_date_time) from {{ this }})
-        {% endif %}
+        {% endif %} --bring in new rows only - no need for union due to there only being delete updates see above
 )
 
 
