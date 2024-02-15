@@ -1,3 +1,12 @@
+/*
+ Check if all events generated in raw make there way to a fact table in prod.
+
+ Created By:     Sam Pibworth
+ Created Date:   2022-06-10
+ Updated By:     Chris Mitchell
+ Updated Date:   2024-01-24
+
+ */
 {{
     config(
         tags=["business"],
