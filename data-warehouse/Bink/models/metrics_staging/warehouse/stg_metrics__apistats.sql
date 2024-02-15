@@ -1,5 +1,16 @@
+{{
+    config(
+        materialized="incremental",
+        unique_key="API_ID"
+    )
+}}
+
 with
-source as (select * from {{ ref("fact_api_response_time") }}),
+source as (select * from {{ ref("fact_api_response_time") }}
+            {% if is_incremental() %}
+            where
+            inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+            {% endif %}),
 
 renamed as (
     select
@@ -9,7 +20,8 @@ renamed as (
         path,
         channel,
         response_time,
-        status_code
+        status_code,
+        inserted_date_time
     from source
 )
 

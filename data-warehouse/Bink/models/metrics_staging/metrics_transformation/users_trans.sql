@@ -10,33 +10,62 @@ Description:
 Parameters:
     ref_object      - src__fact_user
 */
+{{
+    config(
+        materialized="incremental",
+        unique_key="EVENT_ID"
+    )
+}}
+
 with
-usr_events as (select * from {{ ref("stg_metrics__fact_user") }}),
+usr_events as (select * from {{ ref("stg_metrics__fact_user") }}
+
+    {% if is_incremental() %}
+            where
+            inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+    {% endif %}
+),
+
+union_old_lc_records as (
+    select *
+    from usr_events
+    {% if is_incremental() %}
+        union
+        select *
+        from {{ ref("stg_metrics__fact_user") }}
+        where
+            user_id in (
+                select user_id from usr_events
+            )
+    {% endif %}
+),
 
 usr_stage as (
     select
+        event_id,
         user_id,
         coalesce(nullif(external_user_ref, ''), user_id) as user_ref,
-        event_id,
         event_type,
         channel,
         brand,
-        event_date_time
+        event_date_time,
+        inserted_date_time
     from usr_events
 ),
 
 to_from_date as (
     select
+        event_id,
         user_id,
         user_ref,
-        event_id,
         event_type,
         channel,
         brand,
         event_date_time as from_date,
         lead(event_date_time) over (
             partition by user_ref order by event_date_time asc
-        ) as to_date
+        ) as to_date,
+        inserted_date_time
     from usr_stage
 ),
 
@@ -49,7 +78,9 @@ usr_final as (
         channel,
         brand,
         from_date,
-        coalesce(to_date, current_timestamp) as to_date
+        coalesce(to_date, current_timestamp) as to_date,
+        inserted_date_time,
+        sysdate() as updated_date_time
     from to_from_date
 )
 

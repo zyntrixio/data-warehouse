@@ -12,6 +12,13 @@ Parameters:
     source_object       - src__fact_lc
                         - src__dim_date
 */
+{{
+    config(
+        materialized="incremental",
+        unique_key="EVENT_ID"
+    )
+}}
+
 with
 lc_events as (select * from {{ ref("stg_metrics__fact_lc") }}
 where
@@ -34,11 +41,30 @@ where
     {%- if not loop.last %} and {% endif -%}
     {% endfor %}
 
+    {% if is_incremental() %}
+            and
+            inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+    {% endif %}
 
-), 
+),
+
+union_old_lc_records as (
+    select *
+    from lc_events
+    {% if is_incremental() %}
+        union
+        select *
+        from {{ ref("stg_metrics__fact_lc") }}
+        where
+            loyalty_card_id in (
+                select loyalty_card_id from lc_events
+            )
+    {% endif %}
+),
 
 transforming_deletes as (
     select
+        event_id,
         event_date_time,
         user_id,
         channel,
@@ -62,13 +88,15 @@ transforming_deletes as (
             partition by user_ref, loyalty_card_id order by event_date_time asc
         ) as prev_event,
         consent_slug,
-        consent_response
-    from lc_events
+        consent_response,
+        inserted_date_time
+    from union_old_lc_records
     qualify not (event_type = 'REMOVED' and prev_event != 'SUCCESS')
 ),
 
 to_from_dates as (
     select
+        event_id,
         user_id,
         channel,
         brand,
@@ -96,7 +124,10 @@ to_from_dates as (
             end
         ) as to_date,
         consent_slug,
-        consent_response
+        consent_response,
+        inserted_date_time,
+        sysdate() as updated_date_time
+
     from transforming_deletes
 )
 
