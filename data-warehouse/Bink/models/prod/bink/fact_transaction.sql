@@ -43,6 +43,7 @@ select_transactions as (
         loyalty_card_id,
         merchant_id,
         payment_account_id,
+        alt_user_id,
         settlement_key,
         auth_code,
         approval_code,

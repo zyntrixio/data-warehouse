@@ -2,7 +2,7 @@
 Created by:         Sam Pibworth
 Created date:       2022-04-19
 Last modified by:   Anand Bhakta
-Last modified date: 2023-12-11
+Last modified date: 2023-01-11
 
 Description:
     Transaction table from the the hermes events.
@@ -33,6 +33,8 @@ loyalty_plan as (select * from {{ ref("stg_hermes__SCHEME_SCHEME") }}),
 dim_user as (select * from {{ ref("stg_hermes__USER") }}),
 
 dim_channel as (select * from {{ ref("stg_hermes__CLIENT_APPLICATION") }}),
+
+pll_mc as (select * from {{ ref("transformed_pll")}}),
 
 transaction_events_unpack as (
     select
@@ -105,7 +107,40 @@ select_transactions as (
     left join loyalty_plan lp on lp.loyalty_plan_slug = t.provider_slug
     left join dim_user u on u.user_id = t.user_id
     left join dim_channel c on u.channel_id = c.channel_id
+),
+
+add_mc_users as (
+    select 
+        t.event_id,
+        t.event_date_time,
+        t.user_id,
+        t.external_user_ref,
+        t.channel,
+        t.brand,
+        t.transaction_id,
+        t.provider_slug,
+        t.feed_type,
+        t.duplicate_transaction,
+        t.loyalty_plan_name,
+        t.loyalty_plan_company,
+        t.transaction_date,
+        t.spend_amount,
+        t.spend_currency,
+        t.loyalty_id,
+        t.loyalty_card_id,
+        t.merchant_id,
+        t.payment_account_id,
+        ARRAY_AGG(p.user_id) alt_user_id,
+        t.settlement_key,
+        t.auth_code,
+        t.approval_code,
+        t.inserted_date_time,
+        t.updated_date_time
+    from select_transactions t
+    left join pll_mc p on p.loyalty_card_id = t.loyalty_card_id and p.payment_account_id = t.payment_account_id
+    and t.transaction_date < p.to_date and t.transaction_date >= from_date and p.user_id != t.user_id
+    GROUP BY ALL
 )
 
 select *
-from select_transactions
+from add_mc_users
