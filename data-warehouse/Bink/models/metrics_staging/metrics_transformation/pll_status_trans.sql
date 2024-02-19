@@ -84,7 +84,7 @@ from_to_dates as (
                 {% for retailor, dates in var("retailor_live_dates").items() %}
                      when '{{retailor}}' then '{{dates[1]}}'
                 {% endfor %}
-            else current_timestamp
+            else '9999-12-31'
             end
         ) as to_date,
         to_status as status,

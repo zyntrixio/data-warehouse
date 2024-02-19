@@ -78,7 +78,7 @@ usr_final as (
         channel,
         brand,
         from_date,
-        coalesce(to_date, current_timestamp) as to_date,
+        coalesce(to_date, '9999-12-31') as to_date,
         inserted_date_time,
         sysdate() as updated_date_time
     from to_from_date

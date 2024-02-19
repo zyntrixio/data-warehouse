@@ -63,7 +63,7 @@ pll_events as (
             partition by loyalty_card_id, payment_account_id, user_id
             order by event_date_time asc
         ),
-        current_timestamp) as to_date,
+        '9999-12-31') as to_date,
         active_link,
         sysdate() as inserted_date_time
     from union_old_pll_records
