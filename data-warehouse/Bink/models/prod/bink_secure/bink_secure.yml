@@ -27,11 +27,16 @@ models:
       description: "This is a dimension table containing loyalty card information "
       schema: 'BINK_SECURE'
       columns:
-        - name: 'LOYALTY_CARD_ID'
+        - name: 'UNIQUE_KEY'
           description: Primary Key of the table
           quote: true
           tests:
             - unique
+            - not_null
+        - name: 'LOYALTY_CARD_ID'
+          description: unique id of loyalty card
+          quote: true
+          tests:
             - not_null
 
     - name: fact_payment_account_secure
