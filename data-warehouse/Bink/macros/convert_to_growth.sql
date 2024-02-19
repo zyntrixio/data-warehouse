@@ -21,15 +21,24 @@ Returns:
 
 {% macro convert_to_growth(node, categorical, exclusion, partition, order, substring) %}
 
+
+{% set all_columns = adapter.get_columns_in_relation(ref(node)) %}
+{% set included_columns = [] %}
+{% for col in all_columns %}
+    {% if col.column not in exclusion %}
+        {% set _ = included_columns.append(col.column) %}
+    {% endif %}
+{% endfor %}
+
 with metrics as (select * from {{ ref(node) }})
 
 ,agg as (
     select
-        {%- for col in adapter.get_columns_in_relation(ref(node)) -%}
-        {%- if col.column in categorical %}
-        {{ col.column}},
-        {%- elif col.column not in exclusion%}
-        sum({{ col.column}}) as {{ col.column}}
+        {%- for col in included_columns -%}
+        {%- if col in categorical %}
+        {{ col }},
+        {%- elif col not in exclusion%}
+        sum({{ col }}) as {{ col }}
         {%- if not loop.last %} , {% endif -%}
         {%- endif %}
         {%- endfor %}
@@ -46,11 +55,11 @@ with metrics as (select * from {{ ref(node) }})
 
 ,growth as (
     select
-        {%- for col in adapter.get_columns_in_relation(ref(node)) -%}
-        {%- if col.column in categorical %}
-        {{ col.column}},
-        {%- elif col.column not in exclusion%}
-        div0({{ col.column}}, lag({{ col.column}}) over (partition by {% for col in partition %} {{col}} {%- if not loop.last %} , {% endif -%} {% endfor %} order by {{order}})) - 1 as {{ col.column | replace(substring, "") }}__GROWTH
+        {%- for col in included_columns -%}
+        {%- if col in categorical %}
+        {{ col}},
+        {%- elif col not in exclusion%}
+        div0({{ col}}, lag({{ col}}) over (partition by {% for col in partition %} {{col}} {%- if not loop.last %} , {% endif -%} {% endfor %} order by {{order}})) - 1 as {{ col | replace(substring, "") }}__GROWTH
         {%- if not loop.last %} , {% endif -%}
         {%- endif %}
         {%- endfor %}
