@@ -170,7 +170,7 @@ filter_non_error_events as (  -- Filter out all non Error events
                 {% for retailor, dates in var("retailor_live_dates").items() %}
                      when '{{retailor}}' then '{{dates[1]}}'
                 {% endfor %}
-            else current_timestamp
+            else '9999-12-31'
             end
         ) as status_end_time,
         timediff_days,
