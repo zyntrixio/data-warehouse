@@ -11,8 +11,20 @@ NOTES:
                         - STG_METRICS__DIM_DATE
 */
 
+{{
+    config(
+        materialized="incremental",
+        unique_key="UNIQUE_KEY"
+    )
+}}
+
 with
-txn_events as (select * from {{ ref("txns_trans") }}),
+txn_events as (select * from {{ ref("txns_trans") }}    
+    {% if is_incremental() %}
+            where
+            inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+    {% endif %}
+),
 
 dim_date as (
     select distinct
@@ -70,6 +82,27 @@ txn_period as (
     group by d.start_of_month, s.channel, s.brand, s.loyalty_plan_company, s.loyalty_plan_name
 ),
 
+txn_union as (
+    select * from txn_period
+    {% if is_incremental() %}
+    union
+    select
+        date,
+        loyalty_plan_company,
+        loyalty_plan_name,
+        channel,
+        brand,
+        T049__SPEND__monthly_channel_brand_retailer__SUM,
+        T050__REFUND__monthly_channel_brand_retailer__SUM,
+        T060__NET_SPEND__monthly_channel_brand_retailer__SUM,
+        T053__BNPL_TXNS__monthly_channel_brand_retailer__DCOUNT,
+        T051__TXNS__monthly_channel_brand_retailer__DCOUNT,
+        T052__REFUND__monthly_channel_brand_retailer__DCOUNT,
+        T057__DUPLICATE_TXN__monthly_channel_brand_retailer__DCOUNT
+    from {{ this }}
+    {% endif %}
+),
+
 txn_cumulative as (
     select
         date,
@@ -98,7 +131,7 @@ txn_cumulative as (
         sum(count_dupe_period) over (
             partition by channel, brand, loyalty_plan_company order by date
         ) as cumulative_dupe_txns
-    from txn_period
+    from txn_union
 ),
 
 combine_all as (
@@ -144,7 +177,7 @@ combine_all as (
             as T061__NET_SPEND__monthly_channel_brand_retailer__CSUM
     from txn_cumulative s
     full outer join
-        txn_period p
+        txn_union p
         on
             s.date = p.date
             and s.loyalty_plan_company = p.loyalty_plan_company
@@ -175,8 +208,9 @@ finalise as
         T061__NET_SPEND__monthly_channel_brand_retailer__CSUM,
         T051__TXNS__monthly_channel_brand_retailer__DCOUNT+T052__REFUND__monthly_channel_brand_retailer__DCOUNT as t065__txns_and_refunds__monthly_channel_brand_retailer__dcount,
         T057__DUPLICATE_TXN__monthly_channel_brand_retailer__DCOUNT+T051__TXNS__monthly_channel_brand_retailer__DCOUNT as T066__TXNS_AND_DUPES__monthly_channel_brand_retailer__DCOUNT,
-        DIV0(T057__DUPLICATE_TXN__monthly_channel_brand_retailer__DCOUNT,T066__TXNS_AND_DUPES__monthly_channel_brand_retailer__DCOUNT) as T059__DUPLICATE_TXN_PER_TXN__monthly_channel_brand_retailer__PERCENTAGE
-
+        DIV0(T057__DUPLICATE_TXN__monthly_channel_brand_retailer__DCOUNT,T066__TXNS_AND_DUPES__monthly_channel_brand_retailer__DCOUNT) as T059__DUPLICATE_TXN_PER_TXN__monthly_channel_brand_retailer__PERCENTAGE,
+        sysdate() as inserted_date_time,
+        date||'-'||loyalty_plan_company||'-'||loyalty_plan_name||'-'||channel||'-'||brand as unique_key
     from combine_all
 )
 

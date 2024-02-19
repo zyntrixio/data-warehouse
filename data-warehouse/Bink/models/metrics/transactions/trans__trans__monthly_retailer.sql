@@ -10,8 +10,21 @@ Notes:
     source_object       - txns_trans
                         - stg_metrics__dim_date
 */
+
+{{
+    config(
+        materialized="incremental",
+        unique_key="UNIQUE_KEY"
+    )
+}}
+
 with
-txn_events as (select * from {{ ref("txns_trans") }}),
+txn_events as (select * from {{ ref("txns_trans") }}    
+    {% if is_incremental() %}
+            where
+            inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+    {% endif %}
+),
 
 dim_date as (
     select distinct
@@ -65,6 +78,25 @@ txn_period as (
     group by d.start_of_month, s.loyalty_plan_company, s.loyalty_plan_name
 ),
 
+txn_union as (
+    select * from txn_period
+    {% if is_incremental() %}
+    union
+    select
+        date,
+        loyalty_plan_company,
+        loyalty_plan_name,
+        t009__spend__monthly_retailer__sum,
+        t010__refund__monthly_retailer__sum,
+        t020__net_spend__monthly_retailer__sum,
+        t013__bnpl_txns__monthly_retailer__dcount,
+        t011__txns__monthly_retailer__dcount,
+        t012__refund__monthly_retailer__dcount,
+        t017__duplicate_txn__monthly_retailer__dcount
+    from {{ this }}
+    {% endif %}
+),
+
 txn_cumulative as (
     select
         date,
@@ -91,7 +123,7 @@ txn_cumulative as (
         sum(count_dupe_period) over (
             partition by loyalty_plan_company order by date
         ) as cumulative_dupe_txns
-    from txn_period
+    from txn_union
 ),
 
 combine_all as (
@@ -135,7 +167,7 @@ combine_all as (
             as t021__net_spend__monthly_retailer__csum
     from txn_cumulative s
     full outer join
-        txn_period p
+        txn_union p
         on
             s.date = p.date
             and s.loyalty_plan_company = p.loyalty_plan_company
@@ -162,8 +194,9 @@ finalise as
         t021__net_spend__monthly_retailer__csum,
         t011__txns__monthly_retailer__dcount+t012__refund__monthly_retailer__dcount as t025__txns_and_refunds__monthly_retailer__dcount,
         t017__duplicate_txn__monthly_retailer__dcount+t011__txns__monthly_retailer__dcount as t026__txns_and_dupes__monthly_retailer__dcount,
-        DIV0(t017__duplicate_txn__monthly_retailer__dcount,t026__txns_and_dupes__monthly_retailer__dcount) as t019__duplicate_txn_per_txn__monthly_retailer__percentage
-
+        DIV0(t017__duplicate_txn__monthly_retailer__dcount,t026__txns_and_dupes__monthly_retailer__dcount) as t019__duplicate_txn_per_txn__monthly_retailer__percentage,
+        sysdate() as inserted_date_time,
+        date||'-'||loyalty_plan_company||'-'||loyalty_plan_name as unique_key
     from combine_all
 )
 

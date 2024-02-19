@@ -9,8 +9,21 @@ Description:
 Notes:
     source_object       - txns_trans
 */
+
+{{
+    config(
+        materialized="incremental",
+        unique_key="UNIQUE_KEY"
+    )
+}}
+
 with
-txn_events as (select * from {{ ref("txns_trans") }}),
+txn_events as (select * from {{ ref("txns_trans") }}
+    {% if is_incremental() %}
+            where
+            inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+    {% endif %}
+),
 
 dim_date as (
     select distinct
@@ -67,6 +80,27 @@ txn_period as (
     group by d.date, s.loyalty_plan_company, s.loyalty_plan_name, s.channel, s.brand
 ),
 
+txn_union as (
+    select * from txn_period
+    {% if is_incremental() %}
+    union
+    select
+        date,
+        loyalty_plan_company,
+        loyalty_plan_name,
+        channel,
+        brand,
+        T073__SPEND__DAILY_CHANNEL_BRAND_RETAILER__SUM,
+        T074__REFUND__DAILY_CHANNEL_BRAND_RETAILER__SUM,
+        T079__NET_SPEND__DAILY_CHANNEL_BRAND_RETAILER__SUM,
+        T078__BNPL_TXNS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT,
+        T075__TXNS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT,
+        T076__REFUND__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT,
+        T077__DUPLICATE_TXN__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT
+    from {{ this }}
+    {% endif %}
+),
+
 txn_cumulative as (
     select
         date,
@@ -95,7 +129,7 @@ txn_cumulative as (
         sum(count_dupe_period) over (
             partition by loyalty_plan_company, brand order by date
         ) as cumulative_dupe_txns
-    from txn_period
+    from txn_union
 ),
 
 combine_all as (
@@ -141,7 +175,7 @@ combine_all as (
             as t040__net_spend__daily_retailer__csum
     from txn_cumulative s
     full outer join
-        txn_period p
+        txn_union p
         on
             s.date = p.date
             and s.loyalty_plan_company = p.loyalty_plan_company
@@ -171,7 +205,9 @@ finalise as
         t040__net_spend__daily_retailer__csum AS T080__NET_SPEND__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
         t035__txns__daily_retailer__dcount+t036__refund__daily_retailer__dcount AS T081__TXNS_AND_REFUNDS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT,
         t037__duplicate_txn__daily_retailer__dcount+t035__txns__daily_retailer__dcount AS T082__TXNS_AND_DUPES__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT,
-        DIV0(t037__duplicate_txn__daily_retailer__dcount,T082__TXNS_AND_DUPES__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT) AS T083__DUPLICATE_TXN_PER_TXN__DAILY_CHANNEL_BRAND_RETAILER__PERCENTAGEe
+        DIV0(t037__duplicate_txn__daily_retailer__dcount,T082__TXNS_AND_DUPES__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT) AS T083__DUPLICATE_TXN_PER_TXN__DAILY_CHANNEL_BRAND_RETAILER__PERCENTAGE,
+        sysdate() as inserted_date_time,
+        date||'-'||loyalty_plan_company||'-'||loyalty_plan_name||'-'||channel||'-'||brand as unique_key
 
     from combine_all
 )

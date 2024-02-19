@@ -9,8 +9,21 @@ Description:
 Notes:
     source_object       - stg_metrics__fact_transaction
 */
+
+{{
+    config(
+        materialized="incremental",
+        unique_key="UNIQUE_KEY"
+    )
+}}
+
 with
-txn_events as (select * from {{ ref("stg_metrics__fact_transaction") }}),
+txn_events as (select * from {{ ref("stg_metrics__fact_transaction") }}
+    {% if is_incremental() %}
+            where
+            inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+    {% endif %}
+),
 
 metrics as (
     select
@@ -32,7 +45,20 @@ metrics as (
         brand,
         loyalty_plan_company,
         date(date)
+),
+
+finalise as (
+    select
+        date,
+        channel,
+        brand,
+        loyalty_plan_company,
+        t001__spend__user_level_daily__sum,
+        t002__active_users__user_level_daily__uid,t003__transactions__user_level_daily__dcount_txn,
+        sysdate() as inserted_date_time,
+        date||'-'||t002__active_users__user_level_daily__uid as unique_key
+    from metrics
 )
 
 select *
-from metrics
+from finalise
