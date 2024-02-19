@@ -10,6 +10,14 @@ Description:
 Parameters:
     ref_object      - stg_metrics__fact_transaction
 */
+
+{{
+    config(
+        materialized="incremental",
+        unique_key="EVENT_ID"
+    )
+}}
+
 with
 trans_events as (select * from {{ ref("stg_metrics__fact_transaction") }}),
 
@@ -29,6 +37,7 @@ filter_data as (
 
 transforming_refs as (
     select
+        event_id,
         date,
         user_id,
         -- external_user_ref,
