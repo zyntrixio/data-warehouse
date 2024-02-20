@@ -88,10 +88,10 @@ txn_union as (
     union
     select
         date,
-        loyalty_plan_company,
-        loyalty_plan_name,
         channel,
         brand,
+        loyalty_plan_company,
+        loyalty_plan_name,
         T049__SPEND__monthly_channel_brand_retailer__SUM,
         T050__REFUND__monthly_channel_brand_retailer__SUM,
         T060__NET_SPEND__monthly_channel_brand_retailer__SUM,
