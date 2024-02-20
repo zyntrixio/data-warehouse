@@ -53,6 +53,9 @@ Parameters:
                     "loyalty_plan_company",
                     "loyalty_plan_name"
                 ],
+                remove=[
+                    "inserted_date_time",
+                    "unique_key"],
                 field_name="metric",
                 value_name="value",
             )

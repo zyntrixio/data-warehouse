@@ -57,6 +57,9 @@ Parameters:
                     "channel",
                     "brand"
                 ],
+                remove=[
+                    "inserted_date_time",
+                    "unique_key"],
                 field_name="metric",
                 value_name="value",
             )
