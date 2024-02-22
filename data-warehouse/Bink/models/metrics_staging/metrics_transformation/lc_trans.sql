@@ -42,24 +42,17 @@ where
     {% endfor %}
 
     {% if is_incremental() %}
-            and
-            inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+            and loyalty_card_id in 
+            (
+                select 
+                    loyalty_card_id 
+                from 
+                    {{ ref("stg_metrics__fact_lc") }}
+                where 
+                    inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+                    )
     {% endif %}
 
-),
-
-union_old_lc_records as (
-    select *
-    from lc_events
-    {% if is_incremental() %}
-        union
-        select *
-        from {{ ref("stg_metrics__fact_lc") }}
-        where
-            loyalty_card_id in (
-                select loyalty_card_id from lc_events
-            )
-    {% endif %}
 ),
 
 transforming_deletes as (
@@ -90,7 +83,7 @@ transforming_deletes as (
         consent_slug,
         consent_response,
         inserted_date_time
-    from union_old_lc_records
+    from lc_events
     qualify not (event_type = 'REMOVED' and prev_event != 'SUCCESS')
 ),
 

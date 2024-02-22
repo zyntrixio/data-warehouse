@@ -21,22 +21,15 @@ with
 usr_events as (select * from {{ ref("stg_metrics__fact_user") }}
 
     {% if is_incremental() %}
-            where
-            inserted_date_time >= (select max(inserted_date_time) from {{ this }})
-    {% endif %}
-),
-
-union_old_lc_records as (
-    select *
-    from usr_events
-    {% if is_incremental() %}
-        union
-        select *
-        from {{ ref("stg_metrics__fact_user") }}
-        where
-            user_id in (
-                select user_id from usr_events
-            )
+            where user_id in 
+            (
+                select 
+                    user_id 
+                from 
+                    {{ ref("stg_metrics__fact_user") }}
+                where 
+                    inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+                    )
     {% endif %}
 ),
 
