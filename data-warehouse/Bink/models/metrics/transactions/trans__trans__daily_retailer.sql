@@ -12,8 +12,7 @@ Notes:
 
 {{
     config(
-        materialized="incremental",
-        unique_key="UNIQUE_KEY"
+        materialized="incremental"
     )
 }}
 
@@ -95,11 +94,34 @@ txn_union as (
     {% endif %}
 ),
 
+txn_combine as (
+    select
+        date,
+        loyalty_plan_company,
+        loyalty_plan_name,
+        sum(spend_amount_period_positive) as spend_amount_period_positive,
+        sum(refund_amount_period) as refund_amount_period,
+        sum(net_spend_amount_period) as net_spend_amount_period,
+        sum(count_bnpl_period) as count_bnpl_period,
+        sum(count_transaction_period) as count_transaction_period,
+        sum(count_refund_period) as count_refund_period,
+        sum(count_dupe_period) as count_dupe_period
+    from txn_union
+    group by date, loyalty_plan_company, loyalty_plan_name
+),
+
 txn_cumulative as (
     select
         date,
         loyalty_plan_company,
         loyalty_plan_name,
+        spend_amount_period_positive,
+        refund_amount_period,
+        net_spend_amount_period,
+        count_bnpl_period,
+        count_transaction_period,
+        count_refund_period,
+        count_dupe_period,
         sum(spend_amount_period_positive) over (
             partition by loyalty_plan_company order by date
         ) as cumulative_spend,
@@ -121,54 +143,7 @@ txn_cumulative as (
         sum(count_dupe_period) over (
             partition by loyalty_plan_company order by date
         ) as cumulative_dupe_txns
-    from txn_union
-),
-
-combine_all as (
-    select
-        coalesce(s.date, p.date) as date,
-        coalesce(
-            s.loyalty_plan_company, p.loyalty_plan_company
-        ) as loyalty_plan_company,
-        coalesce(s.loyalty_plan_name, p.loyalty_plan_name) as loyalty_plan_name,
-        coalesce(s.cumulative_spend, 0) as t027__spend__daily_retailer__csum,
-        coalesce(s.cumulative_refund, 0)
-            as t028__refund__daily_retailer__csum,
-        coalesce(s.cumulative_txns, 0) as t029__txns__daily_retailer__csum,
-        coalesce(
-            s.cumulative_refund_txns, 0
-        ) as t030__refund__daily_retailer__csum,
-        coalesce(
-            s.cumulative_dupe_txns, 0
-        ) as t031__duplicate_txn__daily_retailer__csum,
-        coalesce(
-            s.cumulative_bnpl_txns, 0
-        ) as t032__bnpl_txns__daily_retailer__csum,
-        coalesce(
-            p.spend_amount_period_positive, 0
-        ) as t033__spend__daily_retailer__sum,
-        coalesce(p.refund_amount_period, 0)
-            as t034__refund__daily_retailer__sum,
-        coalesce(
-            p.count_transaction_period, 0
-        ) as t035__txns__daily_retailer__dcount,
-        coalesce(p.count_refund_period, 0)
-            as t036__refund__daily_retailer__dcount,
-        coalesce(
-            p.count_bnpl_period, 0
-        ) as t038__bnpl_txns__daily_retailer__dcount,
-        coalesce(p.count_dupe_period, 0)
-            as t037__duplicate_txn__daily_retailer__dcount,
-        coalesce(p.net_spend_amount_period, 0)
-            as t039__net_spend__daily_retailer__sum,
-        coalesce(p.net_spend_amount_period, 0)
-            as t040__net_spend__daily_retailer__csum
-    from txn_cumulative s
-    full outer join
-        txn_union p
-        on
-            s.date = p.date
-            and s.loyalty_plan_company = p.loyalty_plan_company
+    from txn_combine
 ),
 
 finalise as 
@@ -176,26 +151,25 @@ finalise as
         date,
         loyalty_plan_company,
         loyalty_plan_name,
-        t027__spend__daily_retailer__csum,
-        t028__refund__daily_retailer__csum,
-        t029__txns__daily_retailer__csum,
-        t030__refund__daily_retailer__csum,
-        t031__duplicate_txn__daily_retailer__csum,
-        t032__bnpl_txns__daily_retailer__csum,
-        t033__spend__daily_retailer__sum,
-        t034__refund__daily_retailer__sum,
-        t035__txns__daily_retailer__dcount,
-        t036__refund__daily_retailer__dcount,
-        t037__duplicate_txn__daily_retailer__dcount,
-        t038__bnpl_txns__daily_retailer__dcount,
-        t039__net_spend__daily_retailer__sum,
-        t040__net_spend__daily_retailer__csum,
+        cumulative_spend as t027__spend__daily_retailer__csum,
+        cumulative_refund as t028__refund__daily_retailer__csum,
+        cumulative_txns as t029__txns__daily_retailer__csum,
+        cumulative_refund_txns as t030__refund__daily_retailer__csum,
+        cumulative_dupe_txns as t031__duplicate_txn__daily_retailer__csum,
+        cumulative_bnpl_txns as t032__bnpl_txns__daily_retailer__csum,
+        spend_amount_period_positive as t033__spend__daily_retailer__sum,
+        refund_amount_period as t034__refund__daily_retailer__sum,
+        count_transaction_period as t035__txns__daily_retailer__dcount,
+        count_refund_period as t036__refund__daily_retailer__dcount,
+        count_bnpl_period as t038__bnpl_txns__daily_retailer__dcount,
+        count_dupe_period as t037__duplicate_txn__daily_retailer__dcount,
+        net_spend_amount_period as t039__net_spend__daily_retailer__sum,
+        cumulative_net_spend as t040__net_spend__daily_retailer__csum,
         t035__txns__daily_retailer__dcount+t036__refund__daily_retailer__dcount as t041__txns_and_refunds__daily_retailer__dcount,
         t037__duplicate_txn__daily_retailer__dcount+t035__txns__daily_retailer__dcount as t042__txns_and_dupes__daily_retailer__dcount,
         DIV0(t037__duplicate_txn__daily_retailer__dcount,t042__txns_and_dupes__daily_retailer__dcount) as t043__duplicate_txn_per_txn__daily_retailer__percentage,
-        sysdate() as inserted_date_time,
-        date||'-'||loyalty_plan_company||'-'||loyalty_plan_name as unique_key
-    from combine_all
+        sysdate() as inserted_date_time
+    from txn_cumulative
 )
 
 

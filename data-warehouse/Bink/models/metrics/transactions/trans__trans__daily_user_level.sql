@@ -20,8 +20,15 @@ Notes:
 with
 txn_events as (select * from {{ ref("stg_metrics__fact_transaction") }}
     {% if is_incremental() %}
-            where
-            inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+            where (user_id, date(date)) in 
+            (
+                select 
+                    user_id, date(date)
+                from 
+                    {{ ref("stg_metrics__fact_transaction") }}
+                where 
+                    inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+                    )
     {% endif %}
 ),
 
@@ -32,11 +39,8 @@ metrics as (
         brand,
         loyalty_plan_company,
         sum(spend_amount) as t001__spend__user_level_daily__sum,
-        coalesce(
-            nullif(external_user_ref, ''), user_id
-        ) as t002__active_users__user_level_daily__uid,
-        count(
-            distinct transaction_id
+        coalesce(nullif(external_user_ref, ''), user_id) as t002__active_users__user_level_daily__uid,
+        count(distinct transaction_id
         ) as t003__transactions__user_level_daily__dcount_txn
     from txn_events
     group by
