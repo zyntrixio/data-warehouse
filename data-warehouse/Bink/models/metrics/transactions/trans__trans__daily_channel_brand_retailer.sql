@@ -29,7 +29,7 @@ dim_date as (
     select distinct
         date
     from {{ ref("stg_metrics__dim_date") }}
-    where date >= (select min(date) from txn_events) and date <= current_date()
+    where date >= (select date(min(date)) from txn_events) and date <= current_date()
 ),
 
 stage as (

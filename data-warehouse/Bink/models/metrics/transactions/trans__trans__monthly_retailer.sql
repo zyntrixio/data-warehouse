@@ -22,7 +22,7 @@ with
 txn_events as (select * from {{ ref("txns_trans") }}    
     {% if is_incremental() %}
             where
-            inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+            inserted_date_time >= (select date(max(inserted_date_time)) from {{ this }})
     {% endif %}
 ),
 

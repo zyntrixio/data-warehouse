@@ -29,7 +29,7 @@ dim_date as (
     select distinct
         date
     from {{ ref("stg_metrics__dim_date") }}
-    where date >= (select min(date) from txn_events) and date <= current_date()
+    where date >= (select date(min(date)) from txn_events) and date <= current_date()
 ),
 
 stage as (
@@ -152,20 +152,20 @@ finalise as
         date,
         loyalty_plan_company,
         loyalty_plan_name,
-        cumulative_spend as t027__spend__daily_retailer__csum,
-        cumulative_refund as t028__refund__daily_retailer__csum,
-        cumulative_txns as t029__txns__daily_retailer__csum,
-        cumulative_refund_txns as t030__refund__daily_retailer__csum,
-        cumulative_dupe_txns as t031__duplicate_txn__daily_retailer__csum,
-        cumulative_bnpl_txns as t032__bnpl_txns__daily_retailer__csum,
-        spend_amount_period_positive as t033__spend__daily_retailer__sum,
-        refund_amount_period as t034__refund__daily_retailer__sum,
-        count_transaction_period as t035__txns__daily_retailer__dcount,
-        count_refund_period as t036__refund__daily_retailer__dcount,
-        count_bnpl_period as t038__bnpl_txns__daily_retailer__dcount,
-        count_dupe_period as t037__duplicate_txn__daily_retailer__dcount,
-        net_spend_amount_period as t039__net_spend__daily_retailer__sum,
-        cumulative_net_spend as t040__net_spend__daily_retailer__csum,
+        coalesce(cumulative_spend, 0) as t027__spend__daily_retailer__csum,
+        coalesce(cumulative_refund, 0) as t028__refund__daily_retailer__csum,
+        coalesce(cumulative_txns, 0) as t029__txns__daily_retailer__csum,
+        coalesce(cumulative_refund_txns, 0) as t030__refund__daily_retailer__csum,
+        coalesce(cumulative_dupe_txns, 0) as t031__duplicate_txn__daily_retailer__csum,
+        coalesce(cumulative_bnpl_txns, 0) as t032__bnpl_txns__daily_retailer__csum,
+        coalesce(spend_amount_period_positive, 0) as t033__spend__daily_retailer__sum,
+        coalesce(refund_amount_period, 0) as t034__refund__daily_retailer__sum,
+        coalesce(count_transaction_period, 0) as t035__txns__daily_retailer__dcount,
+        coalesce(count_refund_period, 0) as t036__refund__daily_retailer__dcount,
+        coalesce(count_bnpl_period, 0) as t038__bnpl_txns__daily_retailer__dcount,
+        coalesce(count_dupe_period, 0) as t037__duplicate_txn__daily_retailer__dcount,
+        coalesce(net_spend_amount_period, 0) as t039__net_spend__daily_retailer__sum,
+        coalesce(cumulative_net_spend, 0) as t040__net_spend__daily_retailer__csum,
         t035__txns__daily_retailer__dcount+t036__refund__daily_retailer__dcount as t041__txns_and_refunds__daily_retailer__dcount,
         t037__duplicate_txn__daily_retailer__dcount+t035__txns__daily_retailer__dcount as t042__txns_and_dupes__daily_retailer__dcount,
         DIV0(t037__duplicate_txn__daily_retailer__dcount,t042__txns_and_dupes__daily_retailer__dcount) as t043__duplicate_txn_per_txn__daily_retailer__percentage,

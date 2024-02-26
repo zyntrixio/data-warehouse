@@ -31,7 +31,7 @@ dim_date as (
         start_of_month,
         end_of_month
     from {{ ref("stg_metrics__dim_date") }}
-    where date >= (select min(date) from txn_events) and date <= current_date()
+    where date >= (select date(min(date)) from txn_events) and date <= current_date()
 ),
 
 stage as (
@@ -166,20 +166,20 @@ finalise as
         brand,
         loyalty_plan_company,
         loyalty_plan_name,
-        cumulative_spend as T044__SPEND__monthly_channel_brand_retailer__CSUM,
-        cumulative_refund as T045__REFUND__monthly_channel_brand_retailer__CSUM,
-        cumulative_txns as T046__TXNS__MONTHLY_RETAILER_CAHNNEL__CSUM,
-        cumulative_refund_txns as T047__REFUND__monthly_channel_brand_retailer__CSUM,
-        cumulative_dupe_txns as T058__DUPLICATE_TXN__monthly_channel_brand_retailer__CSUM,
-        cumulative_bnpl_txns as T048__BNPL_TXNS__monthly_channel_brand_retailer__CSUM,
-        spend_amount_period_positive as T049__SPEND__monthly_channel_brand_retailer__SUM,
-        refund_amount_period as T050__REFUND__monthly_channel_brand_retailer__SUM,
-        count_transaction_period as T051__TXNS__monthly_channel_brand_retailer__DCOUNT,
-        count_refund_period as T052__REFUND__monthly_channel_brand_retailer__DCOUNT,
-        count_bnpl_period as T053__BNPL_TXNS__monthly_channel_brand_retailer__DCOUNT,
-        count_dupe_period as T057__DUPLICATE_TXN__monthly_channel_brand_retailer__DCOUNT,
-        net_spend_amount_period as T060__NET_SPEND__monthly_channel_brand_retailer__SUM,
-        net_spend_amount_period as T061__NET_SPEND__monthly_channel_brand_retailer__CSUM,
+        coalesce(cumulative_spend, 0) as T044__SPEND__monthly_channel_brand_retailer__CSUM,
+        coalesce(cumulative_refund, 0) as T045__REFUND__monthly_channel_brand_retailer__CSUM,
+        coalesce(cumulative_txns, 0) as T046__TXNS__MONTHLY_RETAILER_CAHNNEL__CSUM,
+        coalesce(cumulative_refund_txns, 0) as T047__REFUND__monthly_channel_brand_retailer__CSUM,
+        coalesce(cumulative_dupe_txns, 0) as T058__DUPLICATE_TXN__monthly_channel_brand_retailer__CSUM,
+        coalesce(cumulative_bnpl_txns, 0) as T048__BNPL_TXNS__monthly_channel_brand_retailer__CSUM,
+        coalesce(spend_amount_period_positive, 0) as T049__SPEND__monthly_channel_brand_retailer__SUM,
+        coalesce(refund_amount_period, 0) as T050__REFUND__monthly_channel_brand_retailer__SUM,
+        coalesce(count_transaction_period, 0) as T051__TXNS__monthly_channel_brand_retailer__DCOUNT,
+        coalesce(count_refund_period, 0) as T052__REFUND__monthly_channel_brand_retailer__DCOUNT,
+        coalesce(count_bnpl_period, 0) as T053__BNPL_TXNS__monthly_channel_brand_retailer__DCOUNT,
+        coalesce(count_dupe_period, 0) as T057__DUPLICATE_TXN__monthly_channel_brand_retailer__DCOUNT,
+        coalesce(net_spend_amount_period, 0) as T060__NET_SPEND__monthly_channel_brand_retailer__SUM,
+        coalesce(net_spend_amount_period, 0) as T061__NET_SPEND__monthly_channel_brand_retailer__CSUM,
         T051__TXNS__monthly_channel_brand_retailer__DCOUNT+T052__REFUND__monthly_channel_brand_retailer__DCOUNT as t065__txns_and_refunds__monthly_channel_brand_retailer__dcount,
         T057__DUPLICATE_TXN__monthly_channel_brand_retailer__DCOUNT+T051__TXNS__monthly_channel_brand_retailer__DCOUNT as T066__TXNS_AND_DUPES__monthly_channel_brand_retailer__DCOUNT,
         DIV0(T057__DUPLICATE_TXN__monthly_channel_brand_retailer__DCOUNT,T066__TXNS_AND_DUPES__monthly_channel_brand_retailer__DCOUNT) as T059__DUPLICATE_TXN_PER_TXN__monthly_channel_brand_retailer__PERCENTAGE,
