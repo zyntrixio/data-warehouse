@@ -1,11 +1,13 @@
 /*
 Created by:         Anand Bhakta
 Created date:       2023-05-09
-Last modified by:
-Last modified date:
+Last modified by:   Anand Bhakta
+Last modified date: 2024-02-26
 
 Description:
-    Set up of error to and from data for loyalty card error statuses excluding pending and active
+    Set up of error to and from data for loyalty card error statuses excluding pending and active	
+    INCREMENTAL STRATEGY: LOADS ALL NEWLY INSERTED RECORDS AND ALL PREVIOUS RECORDS FOR OBJECT WHICH ARE UPDATED,
+     TRANSFORMS, THEN MERGING BASED ON THE UNIQUE_KEY
 Parameters:
     source_object       - src__fact_lc_status_change
                         - src__lookup_status_mapping

@@ -1,11 +1,13 @@
 /*
 Created by:         Anand Bhakta
 Created date:       2023-05-05
-Last modified by:   Christopher Mitchell
-Last modified date: 2023-11-23
+Last modified by:   Anand Bhakta
+Last modified date: 2024-02-26
 
 Description:
-    Rewrite of the LL table lc_joins_links_snapshot and lc_joins_links containing both snapshot and daily absolute data of all link and join journeys split by merchant.
+    Rewrite of the LL table lc_joins_links_snapshot and lc_joins_links containing both snapshot and daily absolute data of all link and join journeys split by merchant.    
+    INCREMENTAL STRATEGY: LOADS ALL NEWLY INSERTED RECORDS AND ALL PREVIOUS RECORDS FOR OBJECT WHICH ARE UPDATED,
+     TRANSFORMS, THEN MERGING BASED ON THE UNIQUE_KEY
 Notes:
     This code can be made more efficient if the start is pushed to the trans__lbg_user code and that can be the source for the majority of the dashboards including user_loyalty_plan_snapshot and user_with_loyalty_cards
 Parameters:

@@ -1,11 +1,13 @@
 /*
 Created by:         Christopher Mitchell
 Created date:       2023-06-23
-Last modified by:   Christopher Mitchell
-Last modified date: 2023-08-23
+Last modified by:   Anand Bhakta
+Last modified date: 2024-02-26
 
 Description:
     Daily user level transaction metrics such as active user and transactions per user. 
+	INCREMENTAL STRATEGY: LOADS ALL NEWLY INSERTED RECORDS, TRANSFORMS, THEN LOADS
+	ALL PREVIOUS RECORDS FOR USERS WHICH ARE UPDATED AND MERGING BASED ON THE UNIQUE_KEY
 Notes:
     source_object       - stg_metrics__fact_transaction
 */

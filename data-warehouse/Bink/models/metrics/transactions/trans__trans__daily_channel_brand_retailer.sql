@@ -1,11 +1,14 @@
 /*
 Created by:         Christopher Mitchell
 Created date:       2023-07-17
-Last modified by: Anand Bhakta
-Last modified date: 2023-12-19
+Last modified by:   Anand Bhakta
+Last modified date: 2024-02-26
 
 Description:
-    Transaction metrics by retailer on a daily granularity. 
+    Transaction metrics by retailer on a daily granularity.
+	INCREMENTAL STRATEGY: LOADS ALL NEWLY INSERTED RECORDS, TRANSFORMS, THEN LOADS
+	ALL PREVIOUS PERIOD METRICS, FINALLY CALCULATING CUMULATIVE METRICS, AND MERGING BASED ON THE UNIQUE_KEY
+
 Notes:
     source_object       - txns_trans
 */
