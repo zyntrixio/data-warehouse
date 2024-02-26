@@ -12,7 +12,8 @@ Notes:
 
 {{
     config(
-        materialized="incremental"
+        materialized="incremental",
+        unique_key="UNIQUE_KEY"
     )
 }}
 
@@ -168,7 +169,8 @@ finalise as
         t035__txns__daily_retailer__dcount+t036__refund__daily_retailer__dcount as t041__txns_and_refunds__daily_retailer__dcount,
         t037__duplicate_txn__daily_retailer__dcount+t035__txns__daily_retailer__dcount as t042__txns_and_dupes__daily_retailer__dcount,
         DIV0(t037__duplicate_txn__daily_retailer__dcount,t042__txns_and_dupes__daily_retailer__dcount) as t043__duplicate_txn_per_txn__daily_retailer__percentage,
-        sysdate() as inserted_date_time
+        sysdate() as inserted_date_time,
+        MD5(date||loyalty_plan_company||loyalty_plan_name) as unique_key
     from txn_cumulative
 )
 

@@ -13,7 +13,8 @@ NOTES:
 
 {{
     config(
-        materialized="incremental"
+        materialized="incremental",
+        unique_key="UNIQUE_KEY"
     )
 }}
 
@@ -182,7 +183,8 @@ finalise as
         T051__TXNS__monthly_channel_brand_retailer__DCOUNT+T052__REFUND__monthly_channel_brand_retailer__DCOUNT as t065__txns_and_refunds__monthly_channel_brand_retailer__dcount,
         T057__DUPLICATE_TXN__monthly_channel_brand_retailer__DCOUNT+T051__TXNS__monthly_channel_brand_retailer__DCOUNT as T066__TXNS_AND_DUPES__monthly_channel_brand_retailer__DCOUNT,
         DIV0(T057__DUPLICATE_TXN__monthly_channel_brand_retailer__DCOUNT,T066__TXNS_AND_DUPES__monthly_channel_brand_retailer__DCOUNT) as T059__DUPLICATE_TXN_PER_TXN__monthly_channel_brand_retailer__PERCENTAGE,
-        sysdate() as inserted_date_time
+        sysdate() as inserted_date_time,
+        MD5(date||loyalty_plan_company||loyalty_plan_name||channel||brand) as unique_key
     from txn_cumulative
 )
 

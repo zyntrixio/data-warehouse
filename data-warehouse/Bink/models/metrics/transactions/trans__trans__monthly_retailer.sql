@@ -13,7 +13,8 @@ Notes:
 
 {{
     config(
-        materialized="incremental"
+        materialized="incremental",
+        unique_key="UNIQUE_KEY"
     )
 }}
 
@@ -153,24 +154,25 @@ finalise as
         date,
         loyalty_plan_company,
         loyalty_plan_name,
-        cumulative_spend as t004__spend__monthly_retailer__csum,
-        cumulative_refund as t005__refund__monthly_retailer__csum,
-        cumulative_txns as t006__txns__monthly_retailer__csum,
-        cumulative_refund_txns as t007__refund__monthly_retailer__csum,
-        cumulative_dupe_txns as t018__duplicate_txn__monthly_retailer__csum,
-        cumulative_bnpl_txns as t008__bnpl_txns__monthly_retailer__csum,
-        spend_amount_period_positive as t009__spend__monthly_retailer__sum,
-        refund_amount_period as t010__refund__monthly_retailer__sum,
-        count_transaction_period as t011__txns__monthly_retailer__dcount,
-        count_refund_period as t012__refund__monthly_retailer__dcount,
-        count_bnpl_period as t013__bnpl_txns__monthly_retailer__dcount,
-        count_dupe_period as t017__duplicate_txn__monthly_retailer__dcount,
-        net_spend_amount_period as t020__net_spend__monthly_retailer__sum,
-        net_spend_amount_period as t021__net_spend__monthly_retailer__csum,
+        coalesce(cumulative_spend,0) as t004__spend__monthly_retailer__csum,
+        coalesce(cumulative_refund,0) as t005__refund__monthly_retailer__csum,
+        coalesce(cumulative_txns,0) as t006__txns__monthly_retailer__csum,
+        coalesce(cumulative_refund_txns,0) as t007__refund__monthly_retailer__csum,
+        coalesce(cumulative_dupe_txns,0) as t018__duplicate_txn__monthly_retailer__csum,
+        coalesce(cumulative_bnpl_txns,0) as t008__bnpl_txns__monthly_retailer__csum,
+        coalesce(spend_amount_period_positive,0) as t009__spend__monthly_retailer__sum,
+        coalesce(refund_amount_period,0) as t010__refund__monthly_retailer__sum,
+        coalesce(count_transaction_period,0) as t011__txns__monthly_retailer__dcount,
+        coalesce(count_refund_period,0) as t012__refund__monthly_retailer__dcount,
+        coalesce(count_bnpl_period,0) as t013__bnpl_txns__monthly_retailer__dcount,
+        coalesce(count_dupe_period,0) as t017__duplicate_txn__monthly_retailer__dcount,
+        coalesce(net_spend_amount_period,0) as t020__net_spend__monthly_retailer__sum,
+        coalesce(net_spend_amount_period,0) as t021__net_spend__monthly_retailer__csum,
         t011__txns__monthly_retailer__dcount+t012__refund__monthly_retailer__dcount as t025__txns_and_refunds__monthly_retailer__dcount,
         t017__duplicate_txn__monthly_retailer__dcount+t011__txns__monthly_retailer__dcount as t026__txns_and_dupes__monthly_retailer__dcount,
         DIV0(t017__duplicate_txn__monthly_retailer__dcount,t026__txns_and_dupes__monthly_retailer__dcount) as t019__duplicate_txn_per_txn__monthly_retailer__percentage,
-        sysdate() as inserted_date_time
+        sysdate() as inserted_date_time,
+        MD5(date||loyalty_plan_company||loyalty_plan_name) as unique_key
     from txn_cumulative
 )
 

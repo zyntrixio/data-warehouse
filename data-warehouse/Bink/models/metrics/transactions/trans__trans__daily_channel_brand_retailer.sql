@@ -12,7 +12,8 @@ Notes:
 
 {{
     config(
-        materialized="incremental"
+        materialized="incremental",
+        unique_key="UNIQUE_KEY"
     )
 }}
 
@@ -163,24 +164,25 @@ finalise as
         loyalty_plan_name,
         channel,
         brand,
-        cumulative_spend AS T067__SPEND__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
-        cumulative_refund AS T068__REFUND__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
-        cumulative_txns AS T069__TXNS__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
-        cumulative_refund_txns AS T070__REFUND__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
-        cumulative_dupe_txns AS T071__DUPLICATE_TXN__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
-        cumulative_bnpl_txns AS T072__BNPL_TXNS__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
-        spend_amount_period_positive AS T073__SPEND__DAILY_CHANNEL_BRAND_RETAILER__SUM,
-        refund_amount_period AS T074__REFUND__DAILY_CHANNEL_BRAND_RETAILER__SUM,
-        count_transaction_period AS T075__TXNS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT,
-        count_refund_period AS T076__REFUND__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT,
-        count_dupe_period AS T077__DUPLICATE_TXN__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT,
-        count_bnpl_period AS T078__BNPL_TXNS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT,
-        net_spend_amount_period AS T079__NET_SPEND__DAILY_CHANNEL_BRAND_RETAILER__SUM,
-        cumulative_net_spend AS T080__NET_SPEND__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
+        coalesce(cumulative_spend, 0) AS T067__SPEND__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
+        coalesce(cumulative_refund, 0) AS T068__REFUND__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
+        coalesce(cumulative_txns, 0) AS T069__TXNS__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
+        coalesce(cumulative_refund_txns, 0) AS T070__REFUND__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
+        coalesce(cumulative_dupe_txns, 0) AS T071__DUPLICATE_TXN__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
+        coalesce(cumulative_bnpl_txns, 0) AS T072__BNPL_TXNS__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
+        coalesce(spend_amount_period_positive, 0) AS T073__SPEND__DAILY_CHANNEL_BRAND_RETAILER__SUM,
+        coalesce(refund_amount_period, 0) AS T074__REFUND__DAILY_CHANNEL_BRAND_RETAILER__SUM,
+        coalesce(count_transaction_period, 0) AS T075__TXNS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT,
+        coalesce(count_refund_period, 0) AS T076__REFUND__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT,
+        coalesce(count_dupe_period, 0) AS T077__DUPLICATE_TXN__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT,
+        coalesce(count_bnpl_period, 0) AS T078__BNPL_TXNS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT,
+        coalesce(net_spend_amount_period, 0) AS T079__NET_SPEND__DAILY_CHANNEL_BRAND_RETAILER__SUM,
+        coalesce(cumulative_net_spend, 0) AS T080__NET_SPEND__DAILY_CHANNEL_BRAND_RETAILER__CSUM,
         count_transaction_period+count_refund_period AS T081__TXNS_AND_REFUNDS__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT,
         count_dupe_period+count_transaction_period AS T082__TXNS_AND_DUPES__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT,
         DIV0(count_dupe_period,T082__TXNS_AND_DUPES__DAILY_CHANNEL_BRAND_RETAILER__DCOUNT) AS T083__DUPLICATE_TXN_PER_TXN__DAILY_CHANNEL_BRAND_RETAILER__PERCENTAGE,
-        sysdate() as inserted_date_time
+        sysdate() as inserted_date_time,
+        MD5(date||loyalty_plan_company||loyalty_plan_name||channel||brand) as unique_key
     from txn_cumulative
 )
 
