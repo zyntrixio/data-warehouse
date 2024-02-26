@@ -28,7 +28,9 @@ shandy-sqlfmt = "^0.19.2"
 line-length = 120
 
 [tool.ruff]
-line-length = 120
+select = ["ALL"]
+ignore = ["ANN101", "D407", "D413"]
+line-length = 250
 
 [tool.sqlfmt]
 exclude = ["target/**/*", "dbt_packages/**/*"]

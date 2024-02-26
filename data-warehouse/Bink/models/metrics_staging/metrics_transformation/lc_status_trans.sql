@@ -1,11 +1,13 @@
 /*
 Created by:         Anand Bhakta
 Created date:       2023-05-09
-Last modified by:
-Last modified date:
+Last modified by:   Anand Bhakta
+Last modified date: 2024-02-26
 
 Description:
-    Set up of error to and from data for loyalty card error statuses excluding pending and active
+    Set up of error to and from data for loyalty card error statuses excluding pending and active	
+    INCREMENTAL STRATEGY: LOADS ALL NEWLY INSERTED RECORDS AND ALL PREVIOUS RECORDS FOR OBJECT WHICH ARE UPDATED,
+     TRANSFORMS, THEN MERGING BASED ON THE UNIQUE_KEY
 Parameters:
     source_object       - src__fact_lc_status_change
                         - src__lookup_status_mapping
@@ -20,27 +22,20 @@ with
 lc_sc as (select * from {{ ref("stg_metrics__fact_lc_status_change") }}
 
     {% if is_incremental() %}
-            where
-            inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+            where loyalty_card_id in 
+            (
+                select 
+                    loyalty_card_id 
+                from 
+                    {{ ref("stg_metrics__fact_lc_status_change") }}
+                where 
+                    inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+                    )
     {% endif %}
 
 ),
 
 lc_lookup as (select * from {{ ref("src__lookup_status_mapping") }}),
-
-union_old_lc_records as (
-    select *
-    from lc_sc
-    {% if is_incremental() %}
-        union
-        select *
-        from {{ ref("stg_metrics__fact_lc_status_change") }}
-        where
-            loyalty_card_id in (
-                select loyalty_card_id from lc_sc
-            )
-    {% endif %}
-),
 
 event_ordering as (  -- Get Future And previous events per LC & User
     select
@@ -75,7 +70,7 @@ event_ordering as (  -- Get Future And previous events per LC & User
             order by event_date_time
         ) as prev_status_id,
         inserted_date_time
-    from union_old_lc_records
+    from lc_sc
     where
     {% for retailor, dates in var("retailor_live_dates").items() %}
         ((loyalty_plan_company = '{{retailor}}' and event_date_time >= '{{dates[0]}}' and event_date_time <= '{{dates[1]}}') or loyalty_plan_company != '{{retailor}}')

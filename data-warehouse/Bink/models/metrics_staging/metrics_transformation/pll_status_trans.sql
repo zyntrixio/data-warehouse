@@ -1,11 +1,13 @@
 /*
 Created by:         Anand Bhakta
 Created date:       2023-07-12
-Last modified by:
-Last modified date:
+Last modified by:   Anand Bhakta
+Last modified date: 2024-02-26
 
 Description:
-    Set up of error to and from data for loyalty card error statuses excluding pending and active
+    Set up of error to and from data for loyalty card error statuses excluding pending and active   
+    INCREMENTAL STRATEGY: LOADS ALL NEWLY INSERTED RECORDS AND ALL PREVIOUS RECORDS FOR OBJECT WHICH ARE UPDATED,
+     TRANSFORMS, THEN MERGING BASED ON THE UNIQUE_KEY
 Parameters:
     source_object       - src__fact_lc_status_change
                         - src__lookup_status_mapping
@@ -40,24 +42,16 @@ where
     {% endfor %}
 
     {% if is_incremental() %}
-            and
-            inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+            and 
+                (loyalty_card_id, payment_account_id) in (
+                select loyalty_card_id, payment_account_id
+                from 
+                    {{ ref("stg_metrics__pll_link_status_change") }}
+                where 
+                    inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+                    )
     {% endif %}
 
-),
-
-union_old_lc_records as (
-    select *
-    from pll_events
-    {% if is_incremental() %}
-        union
-        select *
-        from {{ ref("stg_metrics__pll_link_status_change") }}
-        where
-            (loyalty_card_id, payment_account_id) in (
-                select loyalty_card_id, payment_account_id from pll_events
-            )
-    {% endif %}
 ),
 
 from_to_dates as (
@@ -91,7 +85,7 @@ from_to_dates as (
         to_status = 'ACTIVE' as active_link,
         inserted_date_time,
         sysdate() as updated_date_time
-    from union_old_lc_records
+    from pll_events
 )
 
 select *

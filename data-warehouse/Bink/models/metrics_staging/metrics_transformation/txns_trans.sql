@@ -1,15 +1,25 @@
 /*
 Created by:         Christopher Mitchell
 Created date:       2023-07-17
-Last modified by:
-Last modified date:
+Last modified by:   Anand Bhakta
+Last modified date: 2024-02-26
 
 Description:
-    User table, which relates to the transform date into do date and from date for metrics layer
+    User table, which relates to the transform date into do date and from date for metrics layer   
+    INCREMENTAL STRATEGY: LOADS ALL NEWLY INSERTED RECORDS AND ALL PREVIOUS RECORDS FOR OBJECT WHICH ARE UPDATED,
+     TRANSFORMS, THEN MERGING BASED ON THE UNIQUE_KEY
 
 Parameters:
     ref_object      - stg_metrics__fact_transaction
 */
+
+{{
+    config(
+        materialized="incremental",
+        unique_key="EVENT_ID"
+    )
+}}
+
 with
 trans_events as (select * from {{ ref("stg_metrics__fact_transaction") }}),
 
@@ -29,6 +39,7 @@ filter_data as (
 
 transforming_refs as (
     select
+        event_id,
         date,
         user_id,
         -- external_user_ref,

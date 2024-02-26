@@ -12,7 +12,7 @@ Parameters:
 
 {{convert_to_growth("trans__trans__monthly_channel_brand_retailer",
                     ["DATE", "LOYALTY_PLAN_NAME", "LOYALTY_PLAN_COMPANY","CHANNEL"],
-                    ["BRAND"],
+                    ["BRAND", "INSERTED_DATE_TIME", "UNIQUE_KEY"],
                     ["LOYALTY_PLAN_NAME", "LOYALTY_PLAN_COMPANY","CHANNEL"],
                     "DATE",
                     "_BRAND" )

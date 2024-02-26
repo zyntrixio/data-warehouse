@@ -1,11 +1,13 @@
 /*
 Created by:         Christopher Mitchell
 Created date:       2023-05-31
-Last modified by:   Christopher Mitchell
-Last modified date: 2023-06-06
+Last modified by:   Anand Bhakta
+Last modified date: 2024-02-26
 
 Description:
-    User table, which relates to the transform date into do date and from date for metrics layer
+    User table, which relates to the transform date into do date and from date for metrics layer.   
+    INCREMENTAL STRATEGY: LOADS ALL NEWLY INSERTED RECORDS AND ALL PREVIOUS RECORDS FOR OBJECT WHICH ARE UPDATED,
+     TRANSFORMS, THEN MERGING BASED ON THE UNIQUE_KEY
 
 Parameters:
     ref_object      - src__fact_user
@@ -21,22 +23,15 @@ with
 usr_events as (select * from {{ ref("stg_metrics__fact_user") }}
 
     {% if is_incremental() %}
-            where
-            inserted_date_time >= (select max(inserted_date_time) from {{ this }})
-    {% endif %}
-),
-
-union_old_lc_records as (
-    select *
-    from usr_events
-    {% if is_incremental() %}
-        union
-        select *
-        from {{ ref("stg_metrics__fact_user") }}
-        where
-            user_id in (
-                select user_id from usr_events
-            )
+            where user_id in 
+            (
+                select 
+                    user_id 
+                from 
+                    {{ ref("stg_metrics__fact_user") }}
+                where 
+                    inserted_date_time >= (select max(inserted_date_time) from {{ this }})
+                    )
     {% endif %}
 ),
 
