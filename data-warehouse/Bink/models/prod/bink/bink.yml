@@ -184,28 +184,6 @@ models:
             - unique
             - not_null
         
-    - name: dim_payment_account
-      description: "Table containing payment accounts"
-      schema: 'Bink'
-      columns:
-        - name: 'PAYMENT_ACCOUNT_ID'
-          description: Primary Key of the table
-          quote: true
-          tests:
-            - unique
-            - not_null
-        
-    - name: dim_loyalty_card
-      description: "This is a dimension table containing loyalty card information "
-      schema: 'Bink'
-      columns:
-        - name: 'LOYALTY_CARD_ID'
-          description: Primary Key of the table
-          quote: true
-          tests:
-            - unique
-            - not_null
-
     - name: dim_merchant
       description: "This is a dimension table containing merchant information "
       schema: 'Bink'
@@ -352,19 +330,6 @@ models:
                   severity: warn
                   # error_if: ">1000"
                   # warn_if: ">10"                
-
-    - name: join_loyalty_card_payment_account
-      description: Joins the loyalty_card and payment cards with PLL links
-      schema: 'Bink'
-      columns:
-        - name: 'PLL_LINK_PK'
-          description: Primary Key of the table created as an aggregate
-          quote: true
-          tests:
-            # - unique
-            - not_null
-          
-
 
     - name: fact_voucher
       description: ""
