@@ -1,6 +1,6 @@
 /*
 Created by:         Christopher Mitchell
-Created date:       2023-07-05
+Created date:       2024-03-14
 Last modified by:
 Last modified date:
 
@@ -18,7 +18,7 @@ lc_metric as (
         *,
         'JOINS' as category
     from {{ ref("lc__links_joins__monthly_retailer") }}
-    where loyalty_plan_company = 'tgi fridays'
+    where loyalty_plan_company = 'TGI Fridays'
 ),
 
 txn_metrics as (
@@ -26,7 +26,7 @@ txn_metrics as (
         *,
         'SPEND' as category
     from {{ ref("trans__trans__monthly_retailer") }}
-    where loyalty_plan_company = 'tgi fridays'
+    where loyalty_plan_company = 'TGI Fridays'
 ),
 
 txn_avg as (
@@ -34,7 +34,7 @@ txn_avg as (
         *,
         'SPEND' as category
     from {{ ref("trans__avg__monthly_retailer") }}
-    where loyalty_plan_company = 'tgi fridays'
+    where loyalty_plan_company = 'TGI Fridays'
 ),
 
 user_metrics as (
@@ -42,7 +42,7 @@ user_metrics as (
         *,
         'USERS' as category
     from {{ ref("user__transactions__monthly_retailer") }}
-    where loyalty_plan_company = 'tgi fridays'
+    where loyalty_plan_company = 'TGI Fridays'
 ),
 
 pll_metrics as (
@@ -50,7 +50,7 @@ pll_metrics as (
         *,
         'JOINS' as category
     from {{ ref("lc__pll__monthly_retailer") }}
-    where loyalty_plan_company = 'tgi fridays'
+    where loyalty_plan_company = 'TGI Fridays'
 ),
 
 combine_all as (

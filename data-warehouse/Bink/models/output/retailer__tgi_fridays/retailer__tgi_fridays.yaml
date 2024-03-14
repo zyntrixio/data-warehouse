@@ -8,7 +8,7 @@ models:
        tests:
         - not_null  
         - accepted_values:
-            values: ['TGI FRIDAYS']
+            values: ['TGI Fridays']
 
   - name: tgi_fridays_dashboard_view__growth
     description: Data source for the works overview growth metrics
@@ -17,7 +17,7 @@ models:
        tests:
         - not_null  
         - accepted_values:
-            values: ['TGI FRIDAYS']
+            values: ['TGI Fridays']
 
   - name: tgi_fridays_dashboard_view_graphs
     description: Data source for the works overview
@@ -26,7 +26,7 @@ models:
        tests:
         - not_null  
         - accepted_values:
-            values: ['TGI FRIDAYS']
+            values: ['TGI Fridays']
 
   - name: tgi_fridays_12_month
     description: Data source for the works 12 month dashboard
@@ -35,4 +35,4 @@ models:
        tests:
         - not_null  
         - accepted_values:
-            values: ['TGI FRIDAYS']
+            values: ['TGI Fridays']

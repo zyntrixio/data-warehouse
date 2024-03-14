@@ -1,8 +1,8 @@
 /*
-Created by:         Anand Bhakta
-Created date:       2023-09-12
-Last modified by:   Christopher Mitchell
-Last modified date: 2024-01-08
+Created by:         Christopher Mitchell
+Created date:       2024-03-14
+Last modified by:   
+Last modified date: 
 
 Description:
     Datasource to produce tableau dashboard for The Works graphs
@@ -18,7 +18,7 @@ lc_metric as (
         *,
         'JOINS' as category
     from {{ ref("lc__links_joins__daily_retailer") }}
-    where loyalty_plan_company = 'tgi fridays'
+    where loyalty_plan_company = 'TGI Fridays'
 ),
 
 txn_metrics as (
@@ -26,7 +26,7 @@ txn_metrics as (
         *,
         'SPEND' as category
     from {{ ref("trans__trans__daily_retailer") }}
-    where loyalty_plan_company = 'tgi fridays'
+    where loyalty_plan_company = 'TGI Fridays'
 ),
 
 combine_all as (
