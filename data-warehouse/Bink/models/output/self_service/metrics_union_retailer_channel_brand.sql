@@ -32,6 +32,7 @@ Parameters:
                 {{ ref('trans__avg__monthly_channel_retailer')}}
                 {{ ref('trans__trans__monthly_channel_brand_retailer')}}
                 {{ ref('user__transactions__monthly_channel_brand_retailer')}}
+                {{ ref('user__transactions__daily_channel_brand_retailer')}}
 */
 
 
