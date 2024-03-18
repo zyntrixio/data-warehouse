@@ -100,6 +100,9 @@ models:
       retailer__viator:
         +schema: "RETAILER__VIATOR"
         materialized: table
+      retailer__tgi_fridays:
+        +schema: "RETAILER__TGI_FRIDAYS"
+        materialized: table
       self_service:
         +schema: "SELF_SERVICE"
         materialized: table

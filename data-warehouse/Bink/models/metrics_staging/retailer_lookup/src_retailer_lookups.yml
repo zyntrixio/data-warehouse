@@ -15,6 +15,10 @@ sources:
 
       - name: THE_WORKS_REF_FILE
         identifier: THE_WORKS_REF_FILE
+        description: Reference for naming convention
+
+      - name: TGI_FRIDAYS_REF_FILE
+        identifier: TGI_FRIDAYS_REF_FILE
         description: Reference for naming convention 
 
       - name: ITSU_REF_FILE
