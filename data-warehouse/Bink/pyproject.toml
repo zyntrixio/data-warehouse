@@ -20,7 +20,7 @@ prefect-azure = "^0.3.4"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.0.278"
-black = "^23.7.0"
+black = "^24.3.0"
 sqlfluff = "^2.3.0"
 shandy-sqlfmt = "^0.19.2"
 
