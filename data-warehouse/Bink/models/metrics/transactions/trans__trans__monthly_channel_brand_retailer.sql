@@ -15,7 +15,7 @@ NOTES:
 
 {{
     config(
-        materialized="incremental",
+        materialized="table",
         unique_key="UNIQUE_KEY"
     )
 }}
