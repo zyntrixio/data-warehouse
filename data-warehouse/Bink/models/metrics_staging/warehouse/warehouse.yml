@@ -34,6 +34,9 @@ models:
   - name: stg_metrics__fact_voucher
     description: staging layer for voucher fact
 
+  - name: stg_metrics__fact_payment_card
+    description: staging layer for payment card fact
+
   - name: stg_metrics__service_management
     description: staging layer for freshservice
 
