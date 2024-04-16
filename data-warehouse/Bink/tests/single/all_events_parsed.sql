@@ -46,7 +46,8 @@ with
                 'user.created',
                 'user.session.start',
                 'user.wallet_view',
-                'user.deleted'
+                'user.deleted',
+                'user.RTBF'
             -- ,'pll_link.statuschange'
             -- ,'transaction.exported.response'
             )
