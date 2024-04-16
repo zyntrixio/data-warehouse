@@ -58,6 +58,8 @@ user_events_select as (
                 then 'CREATED'
             when event_type = 'user.deleted'
                 then 'DELETED'
+            when event_type = 'user.RTBF'
+                then 'RTBF'
             else null
         end as event_type,
         null as is_most_recent,
