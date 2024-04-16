@@ -10,6 +10,9 @@ models:
   - name: lc_status_trans
     description: loyalty card error metric transformation layer
 
+  - name: pc_trans
+    description: payment card metrics transformation layer
+
   - name: voucher_trans
     description: voucher metrics transformation layer
 
