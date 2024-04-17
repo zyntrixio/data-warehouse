@@ -17,6 +17,7 @@ prefect = "^2.14.2"
 prefect-shell = "^0.1.5"
 pandas = "^2.2.0"
 prefect-azure = "^0.3.4"
+dnspython = "^2.6.1"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.0.278"
