@@ -1,7 +1,8 @@
+import socket
+
 from prefect import flow, task
 from prefect.blocks.system import String
 from prefect_airbyte.connections import trigger_sync
-
 from prefect_dask.task_runners import DaskTaskRunner
 from prefect_dbt.cli.commands import trigger_dbt_cli_command
 from prefect_dbt.cli.configs import SnowflakeTargetConfigs
@@ -39,14 +40,18 @@ def dbt_cli_task(dbt_cli_profile, command):
 @flow(name="ELT_Extractions", task_runner=DaskTaskRunner)
 def trigger_extractions():
     copybot_output = trigger_sync.submit(
-        airbyte_server_host=String.load("airbyte-ip").value,
+        airbyte_server_host=socket.gethostbyname(
+            "airbyte-airbyte-webapp-svc.airbyte.svc.cluster.local"
+        ),
         airbyte_server_port=String.load("airbyte-port").value,
         connection_id=String.load("airbyte-snowstorm-connection").value,
         poll_interval_s=3,
         status_updates=True,
     )
     trigger_sync.submit(
-        airbyte_server_host=String.load("airbyte-ip").value,
+        airbyte_server_host=socket.gethostbyname(
+            "airbyte-airbyte-webapp-svc.airbyte.svc.cluster.local"
+        ),
         airbyte_server_port=String.load("airbyte-port").value,
         connection_id=String.load("airbyte-hermes-connection").value,
         poll_interval_s=3,
@@ -54,7 +59,9 @@ def trigger_extractions():
         wait_for=[copybot_output],
     )
     trigger_sync.submit(
-        airbyte_server_host=String.load("airbyte-ip").value,
+        airbyte_server_host=socket.gethostbyname(
+            "airbyte-airbyte-webapp-svc.airbyte.svc.cluster.local"
+        ),
         airbyte_server_port=String.load("airbyte-port").value,
         connection_id=String.load("airbyte-harmonia-connection").value,
         poll_interval_s=3,
