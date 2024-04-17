@@ -1,4 +1,5 @@
-import dns.resolver
+import socket
+
 from prefect import flow, task
 from prefect.blocks.system import String
 from prefect_airbyte.connections import trigger_sync
@@ -8,11 +9,6 @@ from prefect_dbt.cli.configs import SnowflakeTargetConfigs
 from prefect_dbt.cli.credentials import DbtCliProfile
 from prefect_snowflake.credentials import SnowflakeCredentials
 from prefect_snowflake.database import SnowflakeConnector
-
-
-def resolve_dns(hostname):
-    for i in dns.resolver.resolve(hostname, "a"):
-        return i.address
 
 
 @task
@@ -44,7 +40,7 @@ def dbt_cli_task(dbt_cli_profile, command):
 @flow(name="ELT_Extractions", task_runner=DaskTaskRunner)
 def trigger_extractions():
     copybot_output = trigger_sync.submit(
-        airbyte_server_host=resolve_dns(
+        airbyte_server_host=socket.gethostbyname(
             "airbyte-airbyte-webapp-svc.airbyte.svc.cluster.local"
         ),
         airbyte_server_port=String.load("airbyte-port").value,
@@ -53,7 +49,7 @@ def trigger_extractions():
         status_updates=True,
     )
     trigger_sync.submit(
-        airbyte_server_host=resolve_dns(
+        airbyte_server_host=socket.gethostbyname(
             "airbyte-airbyte-webapp-svc.airbyte.svc.cluster.local"
         ),
         airbyte_server_port=String.load("airbyte-port").value,
@@ -63,7 +59,7 @@ def trigger_extractions():
         wait_for=[copybot_output],
     )
     trigger_sync.submit(
-        airbyte_server_host=resolve_dns(
+        airbyte_server_host=socket.gethostbyname(
             "airbyte-airbyte-webapp-svc.airbyte.svc.cluster.local"
         ),
         airbyte_server_port=String.load("airbyte-port").value,
